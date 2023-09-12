@@ -1,0 +1,22 @@
+{
+  "name": "client",
+  "version": "0.0.1",
+  "description": "The Talent Layer Client for interacting with Talent Layer Smart Contracts and Graph end-points",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "lint": "eslint .",
+    "prepare": "npm run build",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^1.10.12",
+    "@types/node": "^20.6.0",
+    "eslint-config-custom": "*",
+    "typescript": "^5.2.2",
+    "tsconfig": "*",
+    "viem": "1.10.9"
+  }
+}
