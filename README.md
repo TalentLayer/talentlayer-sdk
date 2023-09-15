@@ -12,7 +12,7 @@ The Talent Layer sdk enables you to interact with the TalentLayer protocol.
 
 2. navigate into the client
 
-`cd /packages/client`
+`cd packages/client`
 
 3. switch to node version 19
 
@@ -28,7 +28,7 @@ The Talent Layer sdk enables you to interact with the TalentLayer protocol.
 
 6. link the sdk so it can be used as a node_module
 
-`npm run link`
+`npm link`
 
 7. now the sdk-client is available as `@TalentLayer/client`
 
