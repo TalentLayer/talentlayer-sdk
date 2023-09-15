@@ -1,7 +1,5 @@
+import { AddressZero } from "./constants";
 import { Config, GraphQLConfig, NetworkEnum } from "./types";
-
-
-export const AddressZero = "0x0000000000000000000000000000000000000000";
 
 const mumbai: Config = {
     networkId: NetworkEnum.MUMBAI,

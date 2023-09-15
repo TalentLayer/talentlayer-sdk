@@ -1,5 +1,3 @@
-import { Axios } from 'axios';
-import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts'
 import { getGraphQLConfig } from './config';
 import GraphQLClient, { serviceQueryFields, serviceDescriptionQueryFields } from './graphql';
 import { NetworkEnum } from './types';
