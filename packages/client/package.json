@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@TalentLayer/client",
   "version": "0.0.1",
   "description": "The Talent Layer Client for interacting with Talent Layer Smart Contracts and Graph end-points",
   "main": "dist/index.js",

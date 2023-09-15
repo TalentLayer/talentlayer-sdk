@@ -1,81 +1,44 @@
-# Turborepo starter
+# Talent Layer SDK
 
-This is an official starter Turborepo.
+The Talent Layer sdk enables you to interact with the TalentLayer protocol.
 
-## Using this example
+## Getting Started
 
-Run the following command:
+> The SDK is not yet published on NPM since it is still under development.
 
-```sh
-npx create-turbo@latest
-```
+1. clone the repo 
 
-## What's inside?
+`git@github.com:TalentLayer/talentlayer-sdk.git`
 
-This Turborepo includes the following packages/apps:
+2. navigate into the client
 
-### Apps and Packages
+`cd /packages/client`
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+3. switch to node version 19
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+`nvm use 18` 
 
-### Utilities
+4. install all dependencies
 
-This Turborepo has some additional tools already setup for you:
+`npm install`
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+5. prepare the sdk for usage
 
-### Build
+`npm run prepare`
 
-To build all apps and packages, run the following command:
+6. link the sdk so it can be used as a node_module
 
-```
-cd my-turborepo
-pnpm build
-```
+`npm run link`
 
-### Develop
+7. now the sdk-client is available as `@TalentLayer/client`
 
-To develop all apps and packages, run the following command:
+8. cd into your own node project
 
-```
-cd my-turborepo
-pnpm dev
-```
+`cd my-project`
 
-### Remote Caching
+9. link the package
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+`npm link @TalentLayer/client`
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+10. now you should be able to use the SDK
 
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
