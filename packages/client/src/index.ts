@@ -32,7 +32,7 @@ export class TalentLayerClient {
 
   public async getWithQuery(query: string): Promise<any> {
     return this.graphQlClient.getFromSubgraph(query);
-  }
+  };
 
   public async getServices(params: IProps): Promise<any> {
     const pagination = params.numberPerPage
