@@ -24,4 +24,22 @@ export type GraphQLConfig = {
     subgraphUrl: string
 }
 
+export enum ServiceStatusEnum {
+    Opened = 'Opened',
+    Confirmed = 'Confirmed',
+    Finished = 'Finished',
+    Cancelled = 'Cancelled',
+    Uncompleted = 'Uncompleted',
+}
+
 export type GraphQLQuery = string;
+
+export interface IProps {
+    serviceStatus?: ServiceStatusEnum;
+    buyerId?: string;
+    sellerId?: string;
+    numberPerPage?: number;
+    offset?: number;
+    searchQuery?: string;
+    platformId?: string;
+}
