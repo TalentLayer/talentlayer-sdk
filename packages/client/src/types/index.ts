@@ -43,3 +43,24 @@ export interface IProps {
     searchQuery?: string;
     platformId?: string;
 }
+
+export type IPFSClientConfig = {
+    infuraClientId: string;
+    infuraClientSecret: string;
+}
+
+export type TalentLayerClientConfig = {
+    chainId: NetworkEnum;
+    infuraClientId?: string;
+    infuraClientSecret?: string;
+}
+
+export type TalentLayerProfile = {
+    title?: string;
+    role?: string;
+    image_url?: string;
+    video_url?: string;
+    name?: string;
+    about?: string;
+    skills?: string;
+}

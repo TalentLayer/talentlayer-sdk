@@ -1,13 +1,26 @@
 import { getGraphQLConfig } from './config';
 import GraphQLClient, { serviceQueryFields, serviceDescriptionQueryFields } from './graphql';
-import { IProps, NetworkEnum } from './types';
+import { IProps, NetworkEnum, TalentLayerClientConfig, TalentLayerProfile } from './types';
+import IPFSClient from './ipfs';
 
 
 // TODO: replace any here with the right type;
 export class TalentLayerClient {
   graphQlClient: GraphQLClient
-  constructor(chainId: NetworkEnum) {
-    this.graphQlClient = new GraphQLClient(getGraphQLConfig(chainId))
+  ipfsClient?: IPFSClient
+  constructor(config: TalentLayerClientConfig) {
+    this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId))
+    if (config.infuraClientId && config.infuraClientSecret) {
+      this.ipfsClient = new IPFSClient({ infuraClientId: config.infuraClientId, infuraClientSecret: config.infuraClientSecret });
+    }
+
+  }
+
+  public async uploadProfileDataToIpfs(profileData: TalentLayerProfile): Promise<string> {
+    if (this.ipfsClient) {
+      return this.ipfsClient.postToIpfs(JSON.stringify(profileData));
+    }
+    throw new Error("SDK initialised without ipfs config");
   }
 
   static getFilteredServiceCondition(params: IProps): string {
@@ -33,6 +46,14 @@ export class TalentLayerClient {
   public async getWithQuery(query: string): Promise<any> {
     return this.graphQlClient.getFromSubgraph(query);
   };
+
+  public getIpfsClient(): IPFSClient {
+    if (this.ipfsClient) {
+      return this.ipfsClient
+    }
+
+    throw Error("IPFS client not intiaislised properly")
+  }
 
   public async getServices(params: IProps): Promise<any> {
     const pagination = params.numberPerPage
