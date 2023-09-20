@@ -11,6 +11,7 @@
     "isolatedModules": true,
     "module": "ESNext",
     "moduleResolution": "Node",
+    "resolveJsonModule": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,

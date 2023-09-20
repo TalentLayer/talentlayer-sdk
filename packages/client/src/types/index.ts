@@ -15,7 +15,7 @@ export type Config = {
     networkId: NetworkEnum;
     subgraphUrl: string;
     escrowConfig: { [key: string]: any };
-    contracts: { [key: string]: `0x${string}` };
+    contracts: { [key: string]: { address: `0x${string}`, abi: any } };
     tokens: { [key: string]: IToken };
 };
 
@@ -49,10 +49,18 @@ export type IPFSClientConfig = {
     infuraClientSecret: string;
 }
 
+
+export type ViemClientConfig = {
+    rpcUrl?: string;
+    privateKey?: string;
+    mnemonic?: String;
+}
+
 export type TalentLayerClientConfig = {
     chainId: NetworkEnum;
     infuraClientId?: string;
     infuraClientSecret?: string;
+    walletConfig?: ViemClientConfig
 }
 
 export type TalentLayerProfile = {
@@ -63,4 +71,20 @@ export type TalentLayerProfile = {
     name?: string;
     about?: string;
     skills?: string;
+}
+
+export type ProposalMeta = {
+    about: string,
+    video_url: string
+}
+
+export interface CreateServiceArgs {
+    profileId: number;
+    cid: string;
+}
+
+export interface CreateProposalArgs {
+    profileId: number;
+    serviceId: number;
+    cid: string;
 }
