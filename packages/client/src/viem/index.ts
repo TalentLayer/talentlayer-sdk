@@ -51,7 +51,6 @@ export class ViemClient {
         }
 
         let browserProvider = globalThis?.ethereum || window?.ethereum;
-        console.log("SDK: ", browserProvider);
         if (browserProvider) {
             this.client = createWalletClient({
                 chain: polygonMumbai,
@@ -63,7 +62,7 @@ export class ViemClient {
         return false;
     }
 
-    public async writeContract(contractName: string, functionName: string, args: Array) {
+    public async writeContract(contractName: string, functionName: string, args: Array, value?: bigint) {
         const [address] = await this.client.getAddresses()
 
         if (!address) {
@@ -82,9 +81,26 @@ export class ViemClient {
             abi: contract.abi,
             functionName,
             args,
-            account: address
+            account: address,
+            value
         })
 
+    }
+
+    public async readContract(contractName: string, functionName: string, args: Array) {
+        const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
+        const contract = chainConfig.contracts[contractName];
+
+        if (!contract) {
+            throw Error("Invalid contract name passed.");
+        }
+
+        return this.client.readContract({
+            address: contract.address,
+            abi: contract.abi,
+            functionName,
+            args
+        })
     }
 
     public async updateProfileData(userId: string, cid: string) {

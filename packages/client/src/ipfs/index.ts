@@ -1,6 +1,8 @@
 import { IPFSClientConfig } from '../types';
 
 export default class IPFSClient {
+
+    static readonly IPFS_CLIENT_ERROR = 'IPFS client not initialised'
     ipfs: any;
 
     constructor(ipfsClientConfig: IPFSClientConfig) {
@@ -20,7 +22,7 @@ export default class IPFSClient {
 
     }
 
-    public async postToIpfs(data: string): Promise<any> {
+    public async post(data: string): Promise<any> {
         if (this.ipfs) {
             const result = await this.ipfs.add(data);
             return result.path;

@@ -96,9 +96,4 @@ export const getGraphQLConfig = (chainId: NetworkEnum): GraphQLConfig => {
     }
 }
 
-
-
-
-
-
 export { chains }

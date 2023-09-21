@@ -73,12 +73,13 @@ export type TalentLayerProfile = {
     skills?: string;
 }
 
-export type ProposalMeta = {
+export type ProposalDetails = {
     about: string,
-    video_url: string
+    video_url: string,
+    [key: string]: any
 }
 
-export interface CreateServiceArgs {
+export interface ICreateServiceSignature {
     profileId: number;
     cid: string;
 }
@@ -87,4 +88,17 @@ export interface CreateProposalArgs {
     profileId: number;
     serviceId: number;
     cid: string;
+}
+
+export type ServiceDetails = {
+    title: string,
+    about: string,
+    keywords: string,
+    rateToken: string,
+    rateAmount: string,
+}
+
+export type ClientTransactionResponse = {
+    tx: `0x${string}`,
+    cid: string
 }
