@@ -12,7 +12,7 @@
     "tsconfig": "*",
     "turbo": "latest"
   },
-  "name": "tl-sdk",
+  "name": "talentlayer-sdk",
   "packageManager": "yarn@1.22.19",
   "workspaces": [
     "apps/*",
