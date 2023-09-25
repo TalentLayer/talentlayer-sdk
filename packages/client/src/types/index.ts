@@ -11,6 +11,10 @@ export enum NetworkEnum {
     MUMBAI = 80001,
 }
 
+export enum RateToken {
+    NATIVE = '0x0000000000000000000000000000000000000000'
+}
+
 export type Config = {
     networkId: NetworkEnum;
     subgraphUrl: string;
@@ -58,9 +62,10 @@ export type ViemClientConfig = {
 
 export type TalentLayerClientConfig = {
     chainId: NetworkEnum;
-    infuraClientId?: string;
-    infuraClientSecret?: string;
-    walletConfig?: ViemClientConfig
+    infuraClientId: string;
+    infuraClientSecret: string;
+    walletConfig?: ViemClientConfig;
+    platformId: number;
 }
 
 export type TalentLayerProfile = {
@@ -96,6 +101,12 @@ export type ServiceDetails = {
     keywords: string,
     rateToken: string,
     rateAmount: string,
+}
+
+export type ReviewDetails = {
+    content: string,
+    rating: number,
+    [key: string]: any
 }
 
 export type ClientTransactionResponse = {

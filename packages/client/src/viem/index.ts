@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createWalletClient, custom, http, WalletClient } from "viem";
+import { createWalletClient, createPublicClient, custom, http, WalletClient, createClient } from "viem";
 import { polygonMumbai } from 'viem/chains';
 import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts'
 
@@ -9,11 +9,16 @@ import TalentLayerID from "../contracts/ABI/TalentLayerID.json"
 
 export class ViemClient {
     client: WalletClient;
+    publicClient;
 
     constructor(config: ViemClientConfig) {
 
         // initialise a default public wallet client;
         this.client = createWalletClient({
+            chain: polygonMumbai,
+            transport: http()
+        })
+        this.publicClient = createPublicClient({
             chain: polygonMumbai,
             transport: http()
         })
@@ -95,7 +100,7 @@ export class ViemClient {
             throw Error("Invalid contract name passed.");
         }
 
-        return this.client.readContract({
+        return this.publicClient.readContract({
             address: contract.address,
             abi: contract.abi,
             functionName,

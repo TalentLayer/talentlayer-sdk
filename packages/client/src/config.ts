@@ -8,7 +8,7 @@ import TalentLayerPlatformID from "./contracts/ABI/TalentLayerPlatformID.json"
 import TalentLayerArbitrator from "./contracts/ABI/TalentLayerArbitrator.json"
 
 
-const contracts: { [key: string]: { address: `0x${string}`, abi: any } } = {
+export const contracts: { [key: string]: { address: `0x${string}`, abi: any } } = {
     talentLayerId: {
         address: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
         abi: TalentLayerID.abi
