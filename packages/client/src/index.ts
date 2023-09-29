@@ -40,7 +40,6 @@ export class TalentLayerClient {
   // @ts-ignore
   get erc20(): IERC20 {
     return new ERC20(
-      this.graphQlClient,
       this.ipfsClient,
       this.viemClient,
       this.platformID

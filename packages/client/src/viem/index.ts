@@ -1,24 +1,27 @@
 import { createWalletClient, createPublicClient, custom, http, WalletClient, createClient, PublicClient } from "viem";
-import { polygonMumbai } from 'viem/chains';
 import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts'
-
 import { getChainConfig } from "../config";
 import { NetworkEnum, ViemClientConfig } from "../types";
 import TalentLayerID from "../contracts/ABI/TalentLayerID.json"
+import { chains } from "../blockchain-bindings/chains";
 
 export class ViemClient {
     client: WalletClient;
     publicClient: PublicClient;
+    chainId: NetworkEnum.IEXEC | NetworkEnum.MUMBAI;
 
     constructor(config: ViemClientConfig) {
 
+        // if chainId is not provided, set it to mumbai
+        this.chainId = config.chainId || NetworkEnum.MUMBAI;
+
         // initialise a default public wallet client;
         this.client = createWalletClient({
-            chain: polygonMumbai,
+            chain: chains[this.chainId],
             transport: http()
         })
         this.publicClient = createPublicClient({
-            chain: polygonMumbai,
+            chain: chains[this.chainId],
             transport: http()
         })
 
@@ -36,7 +39,7 @@ export class ViemClient {
             const account = privateKeyToAccount(config.privateKey);
             this.client = createWalletClient({
                 account,
-                chain: polygonMumbai,
+                chain: chains[this.chainId],
                 transport: transportProtocol
             })
 
@@ -47,7 +50,7 @@ export class ViemClient {
             const account = mnemonicToAccount(config.mnemonic);
             this.client = createWalletClient({
                 account,
-                chain: polygonMumbai,
+                chain: chains[this.chainId],
                 transport: transportProtocol
             })
 
@@ -58,7 +61,7 @@ export class ViemClient {
         let browserProvider = globalThis?.ethereum || window?.ethereum;
         if (browserProvider) {
             this.client = createWalletClient({
-                chain: polygonMumbai,
+                chain: chains[this.chainId],
                 transport: custom(browserProvider)
             });
             return true;
@@ -75,7 +78,7 @@ export class ViemClient {
             throw Error("Wallet Client not initialised properly");
         }
 
-        const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
+        const chainConfig = getChainConfig(this.chainId);
         const contract = chainConfig.contracts[contractName];
 
         if (!contract) {
@@ -95,7 +98,7 @@ export class ViemClient {
     }
 
     public async readContract(contractName: string, functionName: string, args: Array<any>) {
-        const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
+        const chainConfig = getChainConfig(this.chainId);
         const contract = chainConfig.contracts[contractName];
 
         if (!contract) {
@@ -119,7 +122,7 @@ export class ViemClient {
             throw Error("Wallet Client not initialised properly");
         }
 
-        const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
+        const chainConfig = getChainConfig(this.chainId);
 
         // @ts-ignore
         return this.client.writeContract({
