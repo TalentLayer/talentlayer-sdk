@@ -10,6 +10,7 @@ import { IProfile, Profile } from './blockchain-bindings/profile';
 import { IProposal, Proposal } from './blockchain-bindings/proposal';
 import { Escrow, IEscrow } from './blockchain-bindings/escrow';
 import { IERC20, ERC20 } from './blockchain-bindings/erc20';
+import { IPlatform, Platform } from './platform';
 
 // TODO: replace any here with the right type;
 export class TalentLayerClient {
@@ -53,6 +54,13 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID
+    )
+  }
+
+  // @ts-ignore
+  get platform(): IPlatform {
+    return new Platform(
+      this.graphQlClient
     )
   }
 

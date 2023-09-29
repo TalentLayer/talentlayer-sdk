@@ -21,4 +21,14 @@ export default class GraphQLClient {
 
     }
 
+    public async get(query: GraphQLQuery) {
+        const response = await axios.post(this.config.subgraphUrl, { query });
+
+        if (response.status === 200) {
+            return response.data;
+        }
+
+        throw (response);
+    }
+
 }

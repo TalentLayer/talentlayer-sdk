@@ -56,8 +56,8 @@ export type IPFSClientConfig = {
 
 export type ViemClientConfig = {
     rpcUrl?: string;
-    privateKey?: string;
-    mnemonic?: String;
+    privateKey?: `0x${string}`;
+    mnemonic?: string;
 }
 
 export type TalentLayerClientConfig = {

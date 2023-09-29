@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { createWalletClient, createPublicClient, custom, http, WalletClient, createClient } from "viem";
+import { createWalletClient, createPublicClient, custom, http, WalletClient, createClient, PublicClient } from "viem";
 import { polygonMumbai } from 'viem/chains';
 import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts'
 
@@ -9,7 +8,7 @@ import TalentLayerID from "../contracts/ABI/TalentLayerID.json"
 
 export class ViemClient {
     client: WalletClient;
-    publicClient;
+    publicClient: PublicClient;
 
     constructor(config: ViemClientConfig) {
 
@@ -55,6 +54,7 @@ export class ViemClient {
             return true;
         }
 
+        // @ts-ignore
         let browserProvider = globalThis?.ethereum || window?.ethereum;
         if (browserProvider) {
             this.client = createWalletClient({
@@ -67,7 +67,8 @@ export class ViemClient {
         return false;
     }
 
-    public async writeContract(contractName: string, functionName: string, args: Array, value?: bigint) {
+    public async writeContract(contractName: string, functionName: string, args: Array<any>, value?: bigint) {
+        // @ts-ignore
         const [address] = await this.client.getAddresses()
 
         if (!address) {
@@ -81,6 +82,7 @@ export class ViemClient {
             throw Error("Invalid contract name passed.");
         }
 
+        // @ts-ignore
         return this.client.writeContract({
             address: contract.address,
             abi: contract.abi,
@@ -92,7 +94,7 @@ export class ViemClient {
 
     }
 
-    public async readContract(contractName: string, functionName: string, args: Array) {
+    public async readContract(contractName: string, functionName: string, args: Array<any>) {
         const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
         const contract = chainConfig.contracts[contractName];
 
@@ -100,6 +102,7 @@ export class ViemClient {
             throw Error("Invalid contract name passed.");
         }
 
+        // @ts-ignore
         return this.publicClient.readContract({
             address: contract.address,
             abi: contract.abi,
@@ -109,6 +112,7 @@ export class ViemClient {
     }
 
     public async updateProfileData(userId: string, cid: string) {
+        // @ts-ignore
         const [address] = await this.client.getAddresses()
 
         if (!address) {
@@ -117,8 +121,9 @@ export class ViemClient {
 
         const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
 
+        // @ts-ignore
         return this.client.writeContract({
-            address: chainConfig.contracts.talentLayerId,
+            address: chainConfig.contracts.talentLayerId.address,
             abi: TalentLayerID.abi,
             functionName: 'updateProfileData',
             args: [userId, cid],

@@ -71,9 +71,9 @@ export class Profile {
     }
 
     public async update(profileDta: TalentLayerProfile, userId: string): Promise<ClientTransactionResponse> {
+        console.log("SDK: updating profile")
         const cid = await this.upload(profileDta);
 
-        console.log("SDK: updating profile")
         const tx = await this.viemClient.writeContract(
             'talentLayerId',
             'updateProfileData',

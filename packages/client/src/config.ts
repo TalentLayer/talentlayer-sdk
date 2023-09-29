@@ -13,7 +13,7 @@ export const contracts: { [key: string]: { address: `0x${string}`, abi: any } } 
         address: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
         abi: TalentLayerID.abi
     },
-    serviceRegistry: {
+    talentLayerService: {
         address: "0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D",
         abi: TalerLayerService.abi
     },

@@ -82,7 +82,7 @@ export class Proposal {
         const signature = await this.getSignature({ profileId: Number(userId), serviceId: Number(serviceId), cid })
 
         const tx = await this.viemClient.writeContract(
-            'serviceRegistry',
+            'talentLayerService',
             'createProposal',
             [
                 userId,

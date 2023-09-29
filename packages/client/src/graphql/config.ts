@@ -21,7 +21,7 @@ const mumbai: Config = {
   subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
   contracts: {
     talentLayerId: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
-    serviceRegistry: '0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D',
+    talentLayerService: '0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D',
     talentLayerReview: '0x050F59E1871d3B7ca97e6fb9DCE64b3818b14B18',
     talentLayerEscrow: '0x4bE920eC3e8552292B2147480111063E0dc36872',
     talentLayerPlatformId: '0xEFD8dbC421380Ee04BAdB69216a0FD97F64CbFD4',
@@ -53,7 +53,7 @@ const local: Config = {
   subgraphUrl: 'http://localhost:8020/',
   contracts: {
     talentLayerId: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
-    serviceRegistry: '0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D',
+    talentLayerService: '0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D',
     talentLayerReview: '0x050F59E1871d3B7ca97e6fb9DCE64b3818b14B18',
     talentLayerEscrow: '0x4bE920eC3e8552292B2147480111063E0dc36872',
     talentLayerPlatformId: '0xEFD8dbC421380Ee04BAdB69216a0FD97F64CbFD4',
