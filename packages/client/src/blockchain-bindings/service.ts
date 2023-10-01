@@ -63,7 +63,7 @@ export class Service {
         }
         `;
 
-    const response = await this.graphQlClient.getFromSubgraph(query);
+    const response = await this.graphQlClient.get(query);
 
     return response?.data?.service || {};
   }
@@ -92,7 +92,7 @@ export class Service {
             }
           }`;
 
-    return this.graphQlClient.getFromSubgraph(query);
+    return this.graphQlClient.get(query);
   };
 
 
@@ -114,7 +114,7 @@ export class Service {
               }
             }
           }`;
-    return this.graphQlClient.getFromSubgraph(query);
+    return this.graphQlClient.get(query);
   };
 
   public async create(serviceDetails: ServiceDetails, userId: string, platformId: number): Promise<ClientTransactionResponse> {

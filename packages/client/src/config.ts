@@ -30,7 +30,7 @@ export const contracts: { [key: string]: { address: `0x${string}`, abi: any } } 
         abi: TalentLayerPlatformID.abi
     },
     talentLayerArbitrator: {
-        address: '0xd6eCCD00F4F411CDf3DCc3009164d0C388b18fd1',
+        address: '0x2CA01a0058cfB3cc4755a7773881ea88eCfBba7C',
         abi: TalentLayerArbitrator.abi
     },
 }
@@ -60,7 +60,7 @@ const mumbai: Config = {
             abi: TalentLayerPlatformID.abi
         },
         talentLayerArbitrator: {
-            address: '0xd6eCCD00F4F411CDf3DCc3009164d0C388b18fd1',
+            address: '0x2CA01a0058cfB3cc4755a7773881ea88eCfBba7C',
             abi: TalentLayerArbitrator.abi
         },
     },

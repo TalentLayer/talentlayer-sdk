@@ -116,3 +116,5 @@ export type ClientTransactionResponse = {
     tx: `0x${string}`,
     cid: string
 }
+
+export type TransactionHash = `0x${string}`;

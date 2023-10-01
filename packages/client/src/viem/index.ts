@@ -101,6 +101,7 @@ export class ViemClient {
         const chainConfig = getChainConfig(this.chainId);
         const contract = chainConfig.contracts[contractName];
 
+        console.log("SDK: reading contract", contract);
         if (!contract) {
             throw Error("Invalid contract name passed.");
         }

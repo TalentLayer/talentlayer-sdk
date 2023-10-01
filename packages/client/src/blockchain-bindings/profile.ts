@@ -57,7 +57,7 @@ export class Profile {
       }
       `;
 
-        const response = await this.graphQlClient.getFromSubgraph(query);
+        const response = await this.graphQlClient.get(query);
 
         if (response && response?.data?.users && Array.isArray(response?.data?.users)) {
             return response?.data?.users[0]

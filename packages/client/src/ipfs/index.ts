@@ -12,15 +12,15 @@ export default class IPFSClient {
             'Basic ' +
             btoa(ipfsClientConfig.infuraClientId + ':' + ipfsClientConfig.infuraClientSecret);
         this.authorization = authorization;
-        // import('ipfs-http-client')
-        //     .then(({ create }) => {
-        //         this.ipfs = create({
-        //             url: 'https://infura-ipfs.io:5001/api/v0',
-        //             headers: {
-        //                 authorization,
-        //             },
-        //         });
-        //     })
+        import('ipfs-http-client')
+            .then(({ create }) => {
+                this.ipfs = create({
+                    url: 'https://infura-ipfs.io:5001/api/v0',
+                    headers: {
+                        authorization,
+                    },
+                });
+            })
 
 
     }
@@ -29,22 +29,11 @@ export default class IPFSClient {
         const formData = new FormData();
         formData.append('file', new Blob([data], { type: 'application/json' }));
 
-        // if (this.ipfs) {
-        //     const result = await this.ipfs.add(data);
-        //     return result.path;
-        // }
+        if (this.ipfs) {
+            const result = await this.ipfs.add(data);
+            return result.path;
+        }
 
-        const res = await axios.post('https://ipfs.infura.io:5001/api/v0/add', formData, {
-            headers: {
-                "Content-Type": "multipart/form-data;",
-                "Authorization": `Bearer ${this.authorization}`,
-            },
-        })
-
-        console.log("SDK: axios ipfs", res);
-
-        return "obacd";
-
-        // throw Error("IPFS client not intiialised properly");
+        throw Error("IPFS client not intiialised properly");
     }
 }

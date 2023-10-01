@@ -53,7 +53,7 @@ export class Proposal {
 
         const query = getProposalsByService(serviceId);
 
-        const response = await this.graphQlClient.getFromSubgraph(query);
+        const response = await this.graphQlClient.get(query);
         if (Array.isArray(response?.data?.proposals) && response?.data?.proposals?.length > 0) {
             return response?.data?.proposals[0];
         }

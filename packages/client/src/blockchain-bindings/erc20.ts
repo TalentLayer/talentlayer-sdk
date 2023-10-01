@@ -70,3 +70,5 @@ export class ERC20 {
         return approval;
     }
 }
+
+// TODO: contracts should not be used here. IT shuold be chain specific contract
