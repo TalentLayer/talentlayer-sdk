@@ -103,6 +103,7 @@ export class Platform {
             [
                 this.platformID,
                 address,
+                ""
             ]
         )
 

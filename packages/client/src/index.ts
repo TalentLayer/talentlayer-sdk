@@ -1,7 +1,7 @@
 import { getGraphQLConfig } from './config';
 import axios from 'axios';
 import GraphQLClient from './graphql';
-import { TalentLayerClientConfig } from './types';
+import { NetworkEnum, TalentLayerClientConfig } from './types';
 import IPFSClient from './ipfs';
 import { ViemClient } from './viem';
 import { IService, Service } from './blockchain-bindings/service';
@@ -21,14 +21,16 @@ export class TalentLayerClient {
   ipfsClient: IPFSClient
   viemClient: ViemClient
   platformID: number;
+  chainId: NetworkEnum;
   static readonly PUBLIC_SIGNATURE_API_URL: string = "https://api.defender.openzeppelin.com/autotasks/4b1688f9-01a4-435d-89ae-d05e0aa0a53b/runs/webhook/b9818d77-3c43-4c3d-bfb8-4c77036de92f/ACXhXsQoCKP8zZVE26gFbh";
 
   constructor(config: TalentLayerClientConfig) {
-    console.log("SDK: client initialising");
+    console.log("SDK: client initialising", config);
     this.platformID = config.platformId
     this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId))
     this.ipfsClient = new IPFSClient({ infuraClientId: config.infuraClientId, infuraClientSecret: config.infuraClientSecret });
     this.viemClient = new ViemClient(config.walletConfig || {});
+    this.chainId = config.chainId || NetworkEnum.MUMBAI;
   }
 
   static async getSignature(method: string, args: Record<string, any>) {
@@ -73,7 +75,9 @@ export class TalentLayerClient {
   get disputes(): IDispute {
     return new Disputes(
       this.viemClient,
-      this.platformID
+      this.platformID,
+      this.graphQlClient,
+      this.chainId
     )
   }
 
