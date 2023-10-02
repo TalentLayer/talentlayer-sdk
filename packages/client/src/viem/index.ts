@@ -1,25 +1,27 @@
-// @ts-nocheck
-import { createWalletClient, createPublicClient, custom, http, WalletClient, createClient } from "viem";
-import { polygonMumbai } from 'viem/chains';
+import { createWalletClient, createPublicClient, custom, http, WalletClient, createClient, PublicClient } from "viem";
 import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts'
-
 import { getChainConfig } from "../config";
 import { NetworkEnum, ViemClientConfig } from "../types";
 import TalentLayerID from "../contracts/ABI/TalentLayerID.json"
+import { chains } from "../blockchain-bindings/chains";
 
 export class ViemClient {
     client: WalletClient;
-    publicClient;
+    publicClient: PublicClient;
+    chainId: NetworkEnum.IEXEC | NetworkEnum.MUMBAI;
 
     constructor(config: ViemClientConfig) {
 
+        // if chainId is not provided, set it to mumbai
+        this.chainId = config.chainId || NetworkEnum.MUMBAI;
+
         // initialise a default public wallet client;
         this.client = createWalletClient({
-            chain: polygonMumbai,
+            chain: chains[this.chainId],
             transport: http()
         })
         this.publicClient = createPublicClient({
-            chain: polygonMumbai,
+            chain: chains[this.chainId],
             transport: http()
         })
 
@@ -37,7 +39,7 @@ export class ViemClient {
             const account = privateKeyToAccount(config.privateKey);
             this.client = createWalletClient({
                 account,
-                chain: polygonMumbai,
+                chain: chains[this.chainId],
                 transport: transportProtocol
             })
 
@@ -48,17 +50,18 @@ export class ViemClient {
             const account = mnemonicToAccount(config.mnemonic);
             this.client = createWalletClient({
                 account,
-                chain: polygonMumbai,
+                chain: chains[this.chainId],
                 transport: transportProtocol
             })
 
             return true;
         }
 
+        // @ts-ignore
         let browserProvider = globalThis?.ethereum || window?.ethereum;
         if (browserProvider) {
             this.client = createWalletClient({
-                chain: polygonMumbai,
+                chain: chains[this.chainId],
                 transport: custom(browserProvider)
             });
             return true;
@@ -67,20 +70,22 @@ export class ViemClient {
         return false;
     }
 
-    public async writeContract(contractName: string, functionName: string, args: Array, value?: bigint) {
+    public async writeContract(contractName: string, functionName: string, args: Array<any>, value?: bigint) {
+        // @ts-ignore
         const [address] = await this.client.getAddresses()
 
         if (!address) {
             throw Error("Wallet Client not initialised properly");
         }
 
-        const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
+        const chainConfig = getChainConfig(this.chainId);
         const contract = chainConfig.contracts[contractName];
 
         if (!contract) {
             throw Error("Invalid contract name passed.");
         }
 
+        // @ts-ignore
         return this.client.writeContract({
             address: contract.address,
             abi: contract.abi,
@@ -92,14 +97,16 @@ export class ViemClient {
 
     }
 
-    public async readContract(contractName: string, functionName: string, args: Array) {
-        const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
+    public async readContract(contractName: string, functionName: string, args: Array<any>) {
+        const chainConfig = getChainConfig(this.chainId);
         const contract = chainConfig.contracts[contractName];
 
+        console.log("SDK: reading contract", contract);
         if (!contract) {
             throw Error("Invalid contract name passed.");
         }
 
+        // @ts-ignore
         return this.publicClient.readContract({
             address: contract.address,
             abi: contract.abi,
@@ -109,16 +116,18 @@ export class ViemClient {
     }
 
     public async updateProfileData(userId: string, cid: string) {
+        // @ts-ignore
         const [address] = await this.client.getAddresses()
 
         if (!address) {
             throw Error("Wallet Client not initialised properly");
         }
 
-        const chainConfig = getChainConfig(NetworkEnum.MUMBAI);
+        const chainConfig = getChainConfig(this.chainId);
 
+        // @ts-ignore
         return this.client.writeContract({
-            address: chainConfig.contracts.talentLayerId,
+            address: chainConfig.contracts.talentLayerId.address,
             abi: TalentLayerID.abi,
             functionName: 'updateProfileData',
             args: [userId, cid],

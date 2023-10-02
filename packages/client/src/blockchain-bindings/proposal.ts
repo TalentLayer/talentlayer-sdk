@@ -53,7 +53,7 @@ export class Proposal {
 
         const query = getProposalsByService(serviceId);
 
-        const response = await this.graphQlClient.getFromSubgraph(query);
+        const response = await this.graphQlClient.get(query);
         if (Array.isArray(response?.data?.proposals) && response?.data?.proposals?.length > 0) {
             return response?.data?.proposals[0];
         }
@@ -82,7 +82,7 @@ export class Proposal {
         const signature = await this.getSignature({ profileId: Number(userId), serviceId: Number(serviceId), cid })
 
         const tx = await this.viemClient.writeContract(
-            'serviceRegistry',
+            'talentLayerService',
             'createProposal',
             [
                 userId,

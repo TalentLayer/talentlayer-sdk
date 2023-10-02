@@ -1,4 +1,3 @@
-import GraphQLClient from "../graphql";
 import IPFSClient from "../ipfs";
 import ERC20Contract from "../contracts/ABI/ERC20.json";
 
@@ -12,14 +11,13 @@ export interface IERC20 {
 }
 
 export class ERC20 {
-    graphQlClient: GraphQLClient;
     ipfsClient: IPFSClient;
     viemClient: ViemClient;
     platformID: number;
 
-    constructor(graphQlClient: GraphQLClient, ipfsClient: IPFSClient, viemClient: ViemClient, platformId: number) {
+    constructor(ipfsClient: IPFSClient, viemClient: ViemClient, platformId: number) {
         console.log("SDK: erc20 initialising: ");
-        this.graphQlClient = graphQlClient;
+
         this.platformID = platformId;
         this.ipfsClient = ipfsClient
         this.viemClient = viemClient;
@@ -72,3 +70,5 @@ export class ERC20 {
         return approval;
     }
 }
+
+// TODO: contracts should not be used here. IT shuold be chain specific contract

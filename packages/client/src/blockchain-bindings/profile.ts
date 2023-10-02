@@ -57,7 +57,7 @@ export class Profile {
       }
       `;
 
-        const response = await this.graphQlClient.getFromSubgraph(query);
+        const response = await this.graphQlClient.get(query);
 
         if (response && response?.data?.users && Array.isArray(response?.data?.users)) {
             return response?.data?.users[0]
@@ -71,9 +71,9 @@ export class Profile {
     }
 
     public async update(profileDta: TalentLayerProfile, userId: string): Promise<ClientTransactionResponse> {
+        console.log("SDK: updating profile")
         const cid = await this.upload(profileDta);
 
-        console.log("SDK: updating profile")
         const tx = await this.viemClient.writeContract(
             'talentLayerId',
             'updateProfileData',

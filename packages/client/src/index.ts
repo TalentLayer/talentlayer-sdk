@@ -10,6 +10,10 @@ import { IProfile, Profile } from './blockchain-bindings/profile';
 import { IProposal, Proposal } from './blockchain-bindings/proposal';
 import { Escrow, IEscrow } from './blockchain-bindings/escrow';
 import { IERC20, ERC20 } from './blockchain-bindings/erc20';
+import { Platform } from './platform';
+import { IPlatform } from './platform/types';
+import { IDispute } from './disputes/types';
+import { Disputes } from './disputes';
 
 // TODO: replace any here with the right type;
 export class TalentLayerClient {
@@ -39,7 +43,6 @@ export class TalentLayerClient {
   // @ts-ignore
   get erc20(): IERC20 {
     return new ERC20(
-      this.graphQlClient,
       this.ipfsClient,
       this.viemClient,
       this.platformID
@@ -51,6 +54,24 @@ export class TalentLayerClient {
     return new Proposal(
       this.graphQlClient,
       this.ipfsClient,
+      this.viemClient,
+      this.platformID
+    )
+  }
+
+  // @ts-ignore
+  get platform(): IPlatform {
+    return new Platform(
+      this.graphQlClient,
+      this.viemClient,
+      this.platformID,
+      this.ipfsClient
+    )
+  }
+
+  // @ts-ignore
+  get disputes(): IDispute {
+    return new Disputes(
       this.viemClient,
       this.platformID
     )
