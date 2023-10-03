@@ -11,7 +11,7 @@ export class Disputes {
     wallet: ViemClient;
     platformID: number;
     subgraph: GraphQLClient;
-    chainId: NetworkEnum.IEXEC | NetworkEnum.MUMBAI;
+    chainId: NetworkEnum;
     constructor(walletClient: ViemClient, platformId: number, graphQlClient: GraphQLClient, chainId: number) {
         this.wallet = walletClient;
         this.platformID = platformId;

@@ -30,7 +30,7 @@ export class TalentLayerClient {
     this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId))
     this.ipfsClient = new IPFSClient({ baseUrl: config.ipfsConfig.baseUrl, clientId: config.ipfsConfig.clientId, clientSecret: config.ipfsConfig.clientSecret });
     this.viemClient = new ViemClient(config.walletConfig || {});
-    this.chainId = config.chainId || NetworkEnum.MUMBAI;
+    this.chainId = config.chainId;
   }
 
   static async getSignature(method: string, args: Record<string, any>) {

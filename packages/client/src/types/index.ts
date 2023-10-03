@@ -7,9 +7,9 @@ export type IToken = {
 };
 
 export enum NetworkEnum {
-    LOCAL = 1337,
     MUMBAI = 80001,
     IEXEC = 134,
+    POLYGON = 137
 }
 
 export enum RateToken {
@@ -60,8 +60,7 @@ export type ViemClientConfig = {
     rpcUrl?: string;
     privateKey?: `0x${string}`;
     mnemonic?: string;
-    // TODO: extend viem client to support local chain
-    chainId?: NetworkEnum.IEXEC | NetworkEnum.MUMBAI;
+    chainId?: NetworkEnum;
 }
 
 export type TalentLayerClientConfig = {

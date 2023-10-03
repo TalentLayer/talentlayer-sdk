@@ -8,7 +8,7 @@ import { chains } from "../blockchain-bindings/chains";
 export class ViemClient {
     client: WalletClient;
     publicClient: PublicClient;
-    chainId: NetworkEnum.IEXEC | NetworkEnum.MUMBAI;
+    chainId: NetworkEnum;
 
     constructor(config: ViemClientConfig) {
 
