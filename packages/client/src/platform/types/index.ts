@@ -17,5 +17,5 @@ export interface IPlatform {
     updateProposalPostingFee(value: number): Promise<TransactionHash>;
     getByOwner(address: `0x${string}`): Promise<any>;
     setFeeTimeout(timeout: number): Promise<TransactionHash>;
-    setArbitrator(address: `0x${string}`): Promise<TransactionHash>;
+    updateArbitrator(address: `0x${string}`): Promise<TransactionHash>;
 }

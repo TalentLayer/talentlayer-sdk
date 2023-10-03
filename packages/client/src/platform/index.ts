@@ -85,7 +85,7 @@ export class Platform {
         return tx;
     }
 
-    public async setArbitrator(address: `0x${string}`): Promise<TransactionHash> {
+    public async updateArbitrator(address: `0x${string}`): Promise<TransactionHash> {
 
         const chainConfig = getChainConfig(this.wallet.chainId);
         const contract = chainConfig.contracts['talentLayerArbitrator'];
