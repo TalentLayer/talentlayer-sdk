@@ -1,5 +1,5 @@
 import { TalentLayerClient } from "..";
-import GraphQLClient, { getProposalsByService } from "../graphql";
+import GraphQLClient, { getProposalById } from "../graphql";
 import IPFSClient from "../ipfs";
 import { ClientTransactionResponse, CreateProposalArgs, ProposalDetails } from "../types";
 import { ViemClient } from "../viem";
@@ -45,17 +45,14 @@ export class Proposal {
 
     public async getOne(proposalId: string): Promise<any> {
 
-        const serviceId = proposalId.split('-')[0];
-
-        if (!serviceId) {
-            throw Error("Proposal ID not valid");
-        };
-
-        const query = getProposalsByService(serviceId);
+        const query = getProposalById(proposalId);
 
         const response = await this.graphQlClient.get(query);
-        if (Array.isArray(response?.data?.proposals) && response?.data?.proposals?.length > 0) {
-            return response?.data?.proposals[0];
+        console.log("SDK: proposal response", response);
+
+        if (response?.data?.proposal) {
+
+            return response?.data?.proposal;
         }
         return null;
     }
