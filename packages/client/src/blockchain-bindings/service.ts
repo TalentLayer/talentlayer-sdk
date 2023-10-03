@@ -1,6 +1,7 @@
 import { TalentLayerClient } from "..";
 import GraphQLClient, { serviceDescriptionQueryFields, serviceQueryFields } from "../graphql";
 import IPFSClient from "../ipfs";
+import { getPlatformById } from "../platform/graphql/queries";
 import { ClientTransactionResponse, ICreateServiceSignature, IProps, ServiceDetails } from "../types";
 import { ViemClient } from "../viem";
 
@@ -119,6 +120,11 @@ export class Service {
 
   public async create(serviceDetails: ServiceDetails, userId: string, platformId: number): Promise<ClientTransactionResponse> {
 
+    const platformDetailsResponse = await this.graphQlClient.get(getPlatformById(this.platformID.toString()));
+
+    let servicePostingFee = platformDetailsResponse?.data?.platform.servicePostingFee;
+    servicePostingFee = BigInt(servicePostingFee || "0");
+
     const cid = await this.updloadServiceDataToIpfs(serviceDetails);
     const signature = await Service.getServiceSignature({ profileId: Number(userId), cid })
 
@@ -130,7 +136,8 @@ export class Service {
         platformId,
         cid,
         signature
-      ]
+      ],
+      servicePostingFee
     )
 
     if (cid && tx) {

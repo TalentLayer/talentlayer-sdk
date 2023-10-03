@@ -85,8 +85,9 @@ export class ViemClient {
             throw Error("Invalid contract name passed.");
         }
 
+        console.log("SDK: simulating contract call");
         // @ts-ignore
-        return this.client.writeContract({
+        const { request } = await this.publicClient.simulateContract({
             address: contract.address,
             abi: contract.abi,
             functionName,
@@ -94,6 +95,10 @@ export class ViemClient {
             account: address,
             value
         })
+
+        console.log("SDK: executing contract call with request", request);
+        // @ts-ignore
+        return this.client.writeContract(request);
 
     }
 
