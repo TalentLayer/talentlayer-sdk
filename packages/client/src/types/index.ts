@@ -50,8 +50,9 @@ export interface IProps {
 }
 
 export type IPFSClientConfig = {
-    infuraClientId: string;
-    infuraClientSecret: string;
+    clientId: string;
+    clientSecret: string;
+    baseUrl: string;
 }
 
 
@@ -65,8 +66,7 @@ export type ViemClientConfig = {
 
 export type TalentLayerClientConfig = {
     chainId: NetworkEnum;
-    infuraClientId: string;
-    infuraClientSecret: string;
+    ipfsConfig: IPFSClientConfig;
     walletConfig?: ViemClientConfig;
     platformId: number;
 }

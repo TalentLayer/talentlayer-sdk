@@ -10,12 +10,12 @@ export default class IPFSClient {
     constructor(ipfsClientConfig: IPFSClientConfig) {
         const authorization =
             'Basic ' +
-            btoa(ipfsClientConfig.infuraClientId + ':' + ipfsClientConfig.infuraClientSecret);
+            btoa(ipfsClientConfig.clientId + ':' + ipfsClientConfig.clientSecret);
         this.authorization = authorization;
         import('ipfs-http-client')
             .then(({ create }) => {
                 this.ipfs = create({
-                    url: 'https://infura-ipfs.io:5001/api/v0',
+                    url: ipfsClientConfig.baseUrl,
                     headers: {
                         authorization,
                     },

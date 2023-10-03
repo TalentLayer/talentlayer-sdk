@@ -28,7 +28,7 @@ export class TalentLayerClient {
     console.log("SDK: client initialising", config);
     this.platformID = config.platformId
     this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId))
-    this.ipfsClient = new IPFSClient({ infuraClientId: config.infuraClientId, infuraClientSecret: config.infuraClientSecret });
+    this.ipfsClient = new IPFSClient({ baseUrl: config.ipfsConfig.baseUrl, clientId: config.ipfsConfig.clientId, clientSecret: config.ipfsConfig.clientSecret });
     this.viemClient = new ViemClient(config.walletConfig || {});
     this.chainId = config.chainId || NetworkEnum.MUMBAI;
   }
