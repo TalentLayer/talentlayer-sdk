@@ -1,4 +1,4 @@
-import { parseEther, zeroAddress } from "viem";
+import { numberToBytes, numberToHex, parseEther, toBytes, toHex, zeroAddress } from "viem";
 import { getChainConfig } from "../config";
 import GraphQLClient from "../graphql";
 import { getPlatformById } from "../platform/graphql/queries";
@@ -19,7 +19,7 @@ export class Disputes {
         this.chainId = chainId;
     }
 
-    public async getArbitrationPrice(): Promise<any> {
+    public async getArbitrationCost(): Promise<any> {
         const platformResponse = await this.subgraph.get(getPlatformById(this.platformID.toString()))
 
         if (!platformResponse?.data?.platform) {
@@ -38,7 +38,7 @@ export class Disputes {
         const chainConfig = getChainConfig(this.chainId);
         const contract = chainConfig.contracts['talentLayerArbitrator'];
 
-        console.log("SDK: reading contract", contract);
+        console.log("SDK: reading contract");
         if (!contract) {
             throw Error("Invalid contract name passed.");
         }
@@ -47,15 +47,15 @@ export class Disputes {
         return this.wallet.publicClient.readContract({
             address: arbitrator,
             abi: contract.abi,
-            functionName: 'arbitrationPrice',
-            args: [this.platformID]
+            functionName: 'arbitrationCost',
+            args: [toHex(this.platformID, { size: 32 })]
         })
     }
 
     public async setPrice(value: number | string): Promise<TransactionHash> {
 
         const transformedPrice = parseEther(value.toString());
-        console.log("SDK: setting arbitration price", transformedPrice)
+        console.log("SDK: setting arbitration price")
         const tx = await this.wallet.writeContract(
             'talentLayerArbitrator',
             'setArbitrationPrice',

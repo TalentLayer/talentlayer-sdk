@@ -89,12 +89,12 @@ export class Platform {
 
         const chainConfig = getChainConfig(this.wallet.chainId);
         const contract = chainConfig.contracts['talentLayerArbitrator'];
-        const allowedArbitrators = [zeroAddress, contract.address];
+        const allowedArbitrators = [zeroAddress, contract.address.toLowerCase()];
 
         console.log("SDK: allowedArbitrators", allowedArbitrators)
 
         if (!allowedArbitrators.includes(address)) {
-            throw new Error("Invalid Arbitrator")
+            throw new Error(`Invalid Arbitrator: ${address}`)
         }
 
         const tx = await this.wallet.writeContract(
