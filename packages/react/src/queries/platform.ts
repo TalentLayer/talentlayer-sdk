@@ -1,5 +1,3 @@
-import { TalentLayerClient } from "../../client/src";
-
 const platformFields = `
     id
     address
@@ -30,10 +28,7 @@ const platformDescriptionFields = `
     image_url
 `;
 
-export function getPlatform(
-  tlClient: TalentLayerClient,
-  id: string
-): Promise<any> {
+export function getPlatform(id: string) {
   const query = `
     {
       platform(id: ${id}) {
@@ -44,5 +39,19 @@ export function getPlatform(
       }
     }
     `;
-  return tlClient.graphQlClient.getFromSubgraph(query);
+  return query;
+}
+
+export function getPlatformsByOwner(addressOwner: string) {
+  const query = `
+    {
+      platforms(where: {address: "${addressOwner}"}) {
+        ${platformFields}
+        description {
+          ${platformDescriptionFields}
+        }
+      }
+    }
+    `;
+  return query;
 }

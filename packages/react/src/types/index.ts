@@ -1,4 +1,4 @@
-import { Connector } from "wagmi";
+import { Connector } from 'wagmi';
 
 export type IHive = {
   id: string;
@@ -65,7 +65,7 @@ export type IAccount = {
   isReconnecting: boolean;
   isConnected: boolean;
   isDisconnected: boolean;
-  status: "connecting" | "reconnecting" | "connected" | "disconnected";
+  status: 'connecting' | 'reconnecting' | 'connected' | 'disconnected';
 };
 
 export type ICompletionScores = {
@@ -217,17 +217,17 @@ export type IReviewDetails = {
 };
 
 export enum ServiceStatusEnum {
-  Opened = "Opened",
-  Confirmed = "Confirmed",
-  Finished = "Finished",
-  Cancelled = "Cancelled",
-  Uncompleted = "Uncompleted",
+  Opened = 'Opened',
+  Confirmed = 'Confirmed',
+  Finished = 'Finished',
+  Cancelled = 'Cancelled',
+  Uncompleted = 'Uncompleted',
 }
 
 export enum ProposalStatusEnum {
-  Pending = "Pending",
-  Validated = "Validated",
-  Rejected = "Rejected",
+  Pending = 'Pending',
+  Validated = 'Validated',
+  Rejected = 'Rejected',
 }
 
 export type IProposalDetails = {
@@ -275,8 +275,8 @@ export enum ProfileTypeEnum {
 }
 
 export enum PaymentTypeEnum {
-  Release = "Release",
-  Reimburse = "Reimburse",
+  Release = 'Release',
+  Reimburse = 'Reimburse',
 }
 
 export enum NetworkEnum {
@@ -314,3 +314,14 @@ export type IUserGain = {
   token: IToken;
   totalGain: string;
 };
+
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I,
+) => void
+  ? I
+  : never;
+
+export type OnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+  {
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
+  }[Keys];

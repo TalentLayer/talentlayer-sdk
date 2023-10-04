@@ -1,83 +1,84 @@
-import React from "react";
-import { createContext, ReactNode, useEffect, useMemo, useState } from "react";
-import { useAccount } from "wagmi";
-import { IAccount, ICompletionScores, IUser } from "../types";
-import { getPlatform } from "../temp";
-import { getCompletionScores } from "../utils/profile";
-import { TalentLayerClient } from "../../../client/src/index";
-import { TalentLayerClientConfig } from "../../../client/src/types";
+import React, { ContextType } from 'react';
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useAccount } from 'wagmi';
+import { IAccount, IUser, NetworkEnum } from '../types';
+import { TalentLayerClient } from '@talentlayer/client';
+
+type TalentLayerConfig = {
+  chainId: NetworkEnum;
+  platformId: number;
+  infuraClientId: string;
+  infuraClientSecret: string;
+};
 
 interface TalentLayerProviderProps {
   children: ReactNode;
-  config: TalentLayerClientConfig & {
-    platformId: string;
-    isActiveDelegate?: boolean;
-    delegateAddress?: string;
-  };
+  config: TalentLayerConfig;
+}
+
+export interface Subgraph {
+  query: (query: string) => any;
 }
 
 const TalentLayerContext = createContext<{
   user?: IUser;
   account?: IAccount;
-  isActiveDelegate: boolean;
   refreshData: () => Promise<boolean>;
   loading: boolean;
-  completionScores?: ICompletionScores;
+  client: TalentLayerClient | undefined;
+  platformId: number;
+  chainId?: NetworkEnum;
+  subgraph: Subgraph;
 }>({
   user: undefined,
   account: undefined,
-  isActiveDelegate: false,
   refreshData: async () => {
     return false;
   },
   loading: true,
-  completionScores: undefined,
+  client: {} as TalentLayerClient,
+  platformId: -1,
+  chainId: undefined,
+  subgraph: { query: _ => new Promise(resolve => resolve(null)) },
 });
 
 export function TalentLayerProvider(props: TalentLayerProviderProps) {
   const { children, config } = props;
+  const { chainId, platformId } = config;
 
   const account = useAccount();
 
   const [user, setUser] = useState<IUser | undefined>();
-  const [isActiveDelegate, setIsActiveDelegate] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [completionScores, setCompletionScores] = useState<ICompletionScores>();
 
-  const tlClient = new TalentLayerClient(config);
+  let talentLayerClient = new TalentLayerClient(config);
 
-  // TODO - automatically switch to the default chain is the current one is not part of the config
+  async function loadData() {
+    if (!talentLayerClient) return false;
 
-  async function fetchData() {
     if (!account.address || !account.isConnected) {
       setLoading(false);
       return false;
     }
 
     try {
-      const userResponse = await tlClient.profile.getByAddress(account.address);
+      const userResponse = await talentLayerClient.profile.getByAddress(account.address);
 
-      if (userResponse?.data?.data?.users?.length == 0) {
+      if (userResponse) {
         setLoading(false);
         return false;
       }
 
-      const currentUser = userResponse.data.data.users[0];
+      const currentUser = userResponse;
 
-      const platformResponse = await getPlatform(tlClient, config.platformId);
+      const platformResponse = await talentLayerClient.platform.getOne(
+        config.platformId.toString(),
+      );
 
-      const platform = platformResponse?.data?.data?.platform;
+      const platform = platformResponse;
       currentUser.isAdmin = platform?.address === currentUser?.address;
 
       setUser(currentUser);
-      setIsActiveDelegate(
-        config.isActiveDelegate &&
-          config.delegateAddress &&
-          userResponse.data.data.users[0].delegates &&
-          userResponse.data.data.users[0].delegates.indexOf(
-            config.delegateAddress.toLowerCase()
-          ) !== -1
-      );
 
       setLoading(false);
       return true;
@@ -90,31 +91,25 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
   }
 
   useEffect(() => {
-    fetchData();
+    if (!talentLayerClient) return;
+
+    loadData();
   }, [account.address]);
 
-  useEffect(() => {
-    if (!user) return;
-    const completionScores = getCompletionScores(user);
-    setCompletionScores(completionScores);
-  }, [user]);
-
-  const value = useMemo(() => {
+  const value = useMemo<ContextType<typeof TalentLayerContext>>(() => {
     return {
       user,
       account: account ? account : undefined,
-      isActiveDelegate,
-      refreshData: fetchData,
+      refreshData: loadData,
       loading,
-      completionScores,
+      client: talentLayerClient,
+      chainId,
+      platformId,
+      subgraph: { query: (query: string) => talentLayerClient.graphQlClient.get(query) },
     };
-  }, [account.address, user?.id, isActiveDelegate, loading, completionScores]);
+  }, [account.address, user?.id, loading]);
 
-  return (
-    <TalentLayerContext.Provider value={value}>
-      {children}
-    </TalentLayerContext.Provider>
-  );
+  return <TalentLayerContext.Provider value={value}>{children}</TalentLayerContext.Provider>;
 }
 
 export default TalentLayerContext;
