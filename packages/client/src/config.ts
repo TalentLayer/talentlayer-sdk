@@ -135,57 +135,61 @@ const iexec: Config = {
     },
 };
 
-const local: Config = {
-    networkId: NetworkEnum.LOCAL,
-    subgraphUrl: 'http://localhost:8020/',
+
+const polygon: Config = {
+    networkId: NetworkEnum.IEXEC,
+    subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
     contracts: {
         talentLayerId: {
-            address: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
+            address: '0xD7D1B2b0A665F03618cb9a45Aa3070f789cb91f2',
             abi: TalentLayerID.abi
         },
         talentLayerService: {
-            address: "0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D",
+            address: "0xae8Bba1a403816568230d92099ccB87f41BbcA78",
             abi: TalerLayerService.abi
         },
         talentLayerReview: {
-            address: '0x050F59E1871d3B7ca97e6fb9DCE64b3818b14B18',
+            address: '0x7bBC20c8Fcb75A126810161DFB1511f6D3B1f2bE',
             abi: TalentLayerReview.abi
         },
         talentLayerEscrow: {
-            address: '0x4bE920eC3e8552292B2147480111063E0dc36872',
+            address: '0x21C716673897f4a2A3c12053f3973F51Ce7b0cf6',
             abi: TalentLayerEscrow.abi
         },
         talentLayerPlatformId: {
-            address: '0xEFD8dbC421380Ee04BAdB69216a0FD97F64CbFD4',
+            address: '0x09FF07297d48eD9aD870caCE4b33BF30869C1D17',
             abi: TalentLayerPlatformID.abi
         },
         talentLayerArbitrator: {
-            address: '0xd6eCCD00F4F411CDf3DCc3009164d0C388b18fd1',
+            address: '0x4502E695A747F1b382a16D6C8AE3FD94DA78e7a0',
             abi: TalentLayerArbitrator.abi
         },
     },
     escrowConfig: {
+        adminFee: '0',
+        adminWallet: '0x2E6f7222d4d7A71B05E7C35389d23C3dB400851f',
         timeoutPayment: 3600 * 24 * 7,
     },
     tokens: {
-        [AddressZero]: {
-            address: AddressZero,
-            symbol: 'ETH',
-            name: 'ETH',
+        ['0x0000000000000000000000000000000000000000']: {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'RLC',
+            name: 'iExec RLC',
             decimals: 18,
         },
-        '0xfF695df29837B571c4DAE01B5711500f6306E93f': {
-            address: '0xfF695df29837B571c4DAE01B5711500f6306E93f',
-            symbol: 'ERC20',
-            name: 'Simple ERC20',
+        '0xe62C28709E4F19Bae592a716b891A9B76bf897E4': {
+            address: '0xe62C28709E4F19Bae592a716b891A9B76bf897E4',
+            symbol: 'SERC20',
+            name: 'SimpleERC20',
             decimals: 18,
         },
     },
 };
+
 const chains: { [networkId in NetworkEnum]: Config } = {
-    [NetworkEnum.LOCAL]: local,
     [NetworkEnum.MUMBAI]: mumbai,
     [NetworkEnum.IEXEC]: iexec,
+    [NetworkEnum.POLYGON]: polygon
 };
 
 export const getChainConfig = (networkId: NetworkEnum) => chains[networkId];

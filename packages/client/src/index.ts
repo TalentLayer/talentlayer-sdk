@@ -22,24 +22,16 @@ export class TalentLayerClient {
   viemClient: ViemClient
   platformID: number;
   chainId: NetworkEnum;
-  static readonly PUBLIC_SIGNATURE_API_URL: string = "https://api.defender.openzeppelin.com/autotasks/4b1688f9-01a4-435d-89ae-d05e0aa0a53b/runs/webhook/b9818d77-3c43-4c3d-bfb8-4c77036de92f/ACXhXsQoCKP8zZVE26gFbh";
+  signatureUrl?: string;
 
   constructor(config: TalentLayerClientConfig) {
     console.log("SDK: client initialising", config);
     this.platformID = config.platformId
     this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId))
-    this.ipfsClient = new IPFSClient({ infuraClientId: config.infuraClientId, infuraClientSecret: config.infuraClientSecret });
+    this.ipfsClient = new IPFSClient({ baseUrl: config.ipfsConfig.baseUrl, clientId: config.ipfsConfig.clientId, clientSecret: config.ipfsConfig.clientSecret });
     this.viemClient = new ViemClient(config.walletConfig || {});
-    this.chainId = config.chainId || NetworkEnum.MUMBAI;
-  }
-
-  static async getSignature(method: string, args: Record<string, any>) {
-    const res = await axios.post(TalentLayerClient.PUBLIC_SIGNATURE_API_URL, {
-      method,
-      args,
-    });
-
-    return JSON.parse(res.data.result);
+    this.chainId = config.chainId;
+    this.signatureUrl = config?.signatureUrl;
   }
 
   // @ts-ignore
@@ -57,7 +49,8 @@ export class TalentLayerClient {
       this.graphQlClient,
       this.ipfsClient,
       this.viemClient,
-      this.platformID
+      this.platformID,
+      this.signatureUrl
     )
   }
 
@@ -87,7 +80,8 @@ export class TalentLayerClient {
       this.graphQlClient,
       this.ipfsClient,
       this.viemClient,
-      this.platformID
+      this.platformID,
+      this.signatureUrl
     );
   }
 

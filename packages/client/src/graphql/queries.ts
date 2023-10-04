@@ -53,6 +53,40 @@ export const serviceDescriptionQueryFields = `
 export const getProposalsByService = (serviceId: string) => (`
 {
   proposals(where: {service_: {id: ${serviceId}}}) {
+    id
+    seller {
+      id
+      handle
+      address
+      cid
+      rating
+      userStats {
+        numReceivedReviews
+      }
+    }
+    service {
+      id
+    }
+    cid
+    rateToken {
+      address
+    }
+    rateAmount
+    description {
+      about
+      video_url
+    }
+    status
+    expirationDate
+  }
+}
+`)
+
+
+export const getProposalById = (id: string) => (`
+{
+  proposal(id: "${id}") {
+    id
     seller {
       id
       handle

@@ -1,7 +1,7 @@
-import { TalentLayerClient } from "..";
-import GraphQLClient, { getProposalsByService } from "../graphql";
+import GraphQLClient, { getProposalById } from "../graphql";
 import IPFSClient from "../ipfs";
 import { ClientTransactionResponse, CreateProposalArgs, ProposalDetails } from "../types";
+import { getSignature } from "../utils/signature";
 import { ViemClient } from "../viem";
 
 export interface IProposal {
@@ -34,34 +34,39 @@ export class Proposal {
     ipfsClient: IPFSClient;
     viemClient: ViemClient;
     platformID: number;
+    signatureUrl?: string;
 
-    constructor(graphQlClient: GraphQLClient, ipfsClient: IPFSClient, viemClient: ViemClient, platformId: number) {
+    constructor(
+        graphQlClient: GraphQLClient,
+        ipfsClient: IPFSClient,
+        viemClient: ViemClient,
+        platformId: number,
+        signatureUrl?: string
+    ) {
         console.log("SDK: proposal initialising: ");
         this.graphQlClient = graphQlClient;
         this.platformID = platformId;
         this.ipfsClient = ipfsClient
         this.viemClient = viemClient;
+        this.signatureUrl = signatureUrl;
     }
 
     public async getOne(proposalId: string): Promise<any> {
 
-        const serviceId = proposalId.split('-')[0];
-
-        if (!serviceId) {
-            throw Error("Proposal ID not valid");
-        };
-
-        const query = getProposalsByService(serviceId);
+        const query = getProposalById(proposalId);
 
         const response = await this.graphQlClient.get(query);
-        if (Array.isArray(response?.data?.proposals) && response?.data?.proposals?.length > 0) {
-            return response?.data?.proposals[0];
+        console.log("SDK: proposal response", response);
+
+        if (response?.data?.proposal) {
+
+            return response?.data?.proposal;
         }
         return null;
     }
 
     public async getSignature(args: CreateProposalArgs): Promise<any> {
-        return TalentLayerClient.getSignature('createProposal', args);
+        return getSignature('createProposal', args, this.signatureUrl);
     }
 
     public async upload(proposalDetails: ProposalDetails): Promise<string> {

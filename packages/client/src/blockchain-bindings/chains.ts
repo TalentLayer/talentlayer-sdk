@@ -1,5 +1,5 @@
 import { defineChain } from "viem";
-import { polygonMumbai } from 'viem/chains';
+import { polygon, polygonMumbai } from 'viem/chains';
 import { NetworkEnum } from "../types";
 
 // @ts-ignore
@@ -29,5 +29,6 @@ const iexec = defineChain({
 
 export const chains = {
     [NetworkEnum.MUMBAI]: polygonMumbai,
-    [NetworkEnum.IEXEC]: iexec
+    [NetworkEnum.IEXEC]: iexec,
+    [NetworkEnum.POLYGON]: polygon
 }
