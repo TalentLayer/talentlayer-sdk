@@ -68,6 +68,7 @@ export type TalentLayerClientConfig = {
     ipfsConfig: IPFSClientConfig;
     walletConfig?: ViemClientConfig;
     platformId: number;
+    signatureUrl?: string;
 }
 
 export type TalentLayerProfile = {

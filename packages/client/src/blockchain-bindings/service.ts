@@ -1,8 +1,8 @@
-import { TalentLayerClient } from "..";
 import GraphQLClient, { serviceDescriptionQueryFields, serviceQueryFields } from "../graphql";
 import IPFSClient from "../ipfs";
 import { getPlatformById } from "../platform/graphql/queries";
 import { ClientTransactionResponse, ICreateServiceSignature, IProps, ServiceDetails } from "../types";
+import { getSignature } from "../utils/signature";
 import { ViemClient } from "../viem";
 
 export interface IService {
@@ -18,13 +18,21 @@ export class Service {
   ipfsClient: IPFSClient;
   viemClient: ViemClient;
   platformID: number;
+  signatureUrl?: string;
 
-  constructor(graphQlClient: GraphQLClient, ipfsClient: IPFSClient, viemClient: ViemClient, platformId: number) {
+  constructor(
+    graphQlClient: GraphQLClient,
+    ipfsClient: IPFSClient,
+    viemClient: ViemClient,
+    platformId: number,
+    signatureUrl?: string
+  ) {
     console.log("SDK: service initialising: ");
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient
     this.viemClient = viemClient;
+    this.signatureUrl = signatureUrl;
 
   }
 
@@ -48,8 +56,8 @@ export class Service {
     return condition === ', where: {}' ? '' : condition;
   };
 
-  static async getServiceSignature(args: ICreateServiceSignature) {
-    return TalentLayerClient.getSignature('createService', args);
+  public async getServiceSignature(args: ICreateServiceSignature) {
+    return getSignature('createService', args, this.signatureUrl);
   }
 
   public async getOne(id: string): Promise<any> {
@@ -126,7 +134,7 @@ export class Service {
     servicePostingFee = BigInt(servicePostingFee || "0");
 
     const cid = await this.updloadServiceDataToIpfs(serviceDetails);
-    const signature = await Service.getServiceSignature({ profileId: Number(userId), cid })
+    const signature = await this.getServiceSignature({ profileId: Number(userId), cid })
 
     const tx = await this.viemClient.writeContract(
       'talentLayerService',

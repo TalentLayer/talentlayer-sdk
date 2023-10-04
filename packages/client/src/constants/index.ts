@@ -1,2 +1,3 @@
 export const AddressZero = "0x0000000000000000000000000000000000000000";
 export const FEE_RATE_DIVIDER = 10_000;
+export const DEFAULT_SIGNATURE_VALUE = '0x';
