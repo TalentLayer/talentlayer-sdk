@@ -18,21 +18,21 @@ export class Service {
   ipfsClient: IPFSClient;
   viemClient: ViemClient;
   platformID: number;
-  signatureUrl?: string;
+  signatureApiUrl?: string;
 
   constructor(
     graphQlClient: GraphQLClient,
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
-    signatureUrl?: string
+    signatureApiUrl?: string
   ) {
     console.log("SDK: service initialising: ");
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient
     this.viemClient = viemClient;
-    this.signatureUrl = signatureUrl;
+    this.signatureApiUrl = signatureApiUrl;
 
   }
 
@@ -57,7 +57,7 @@ export class Service {
   };
 
   public async getServiceSignature(args: ICreateServiceSignature) {
-    return getSignature('createService', args, this.signatureUrl);
+    return getSignature('createService', args, this.signatureApiUrl);
   }
 
   public async getOne(id: string): Promise<any> {

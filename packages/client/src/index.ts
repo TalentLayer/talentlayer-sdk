@@ -22,7 +22,7 @@ export class TalentLayerClient {
   viemClient: ViemClient
   platformID: number;
   chainId: NetworkEnum;
-  signatureUrl?: string;
+  signatureApiUrl?: string;
 
   constructor(config: TalentLayerClientConfig) {
     console.log("SDK: client initialising", config);
@@ -31,7 +31,7 @@ export class TalentLayerClient {
     this.ipfsClient = new IPFSClient({ baseUrl: config.ipfsConfig.baseUrl, clientId: config.ipfsConfig.clientId, clientSecret: config.ipfsConfig.clientSecret });
     this.viemClient = new ViemClient(config.walletConfig || {});
     this.chainId = config.chainId;
-    this.signatureUrl = config?.signatureUrl;
+    this.signatureApiUrl = config?.signatureApiUrl;
   }
 
   // @ts-ignore
@@ -50,7 +50,7 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
-      this.signatureUrl
+      this.signatureApiUrl
     )
   }
 
@@ -81,7 +81,7 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
-      this.signatureUrl
+      this.signatureApiUrl
     );
   }
 

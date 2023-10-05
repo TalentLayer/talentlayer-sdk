@@ -34,21 +34,21 @@ export class Proposal {
     ipfsClient: IPFSClient;
     viemClient: ViemClient;
     platformID: number;
-    signatureUrl?: string;
+    signatureApiUrl?: string;
 
     constructor(
         graphQlClient: GraphQLClient,
         ipfsClient: IPFSClient,
         viemClient: ViemClient,
         platformId: number,
-        signatureUrl?: string
+        signatureApiUrl?: string
     ) {
         console.log("SDK: proposal initialising: ");
         this.graphQlClient = graphQlClient;
         this.platformID = platformId;
         this.ipfsClient = ipfsClient
         this.viemClient = viemClient;
-        this.signatureUrl = signatureUrl;
+        this.signatureApiUrl = signatureApiUrl;
     }
 
     public async getOne(proposalId: string): Promise<any> {
@@ -66,7 +66,7 @@ export class Proposal {
     }
 
     public async getSignature(args: CreateProposalArgs): Promise<any> {
-        return getSignature('createProposal', args, this.signatureUrl);
+        return getSignature('createProposal', args, this.signatureApiUrl);
     }
 
     public async upload(proposalDetails: ProposalDetails): Promise<string> {
