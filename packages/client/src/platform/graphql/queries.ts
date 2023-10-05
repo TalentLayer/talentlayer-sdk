@@ -29,7 +29,7 @@ const platformDescriptionFields = `
 `;
 
 export const getPlatformById = (id: string) => (
-    `{
+  `{
         platform(id: ${id}) {
           ${platformFields}
           description {
@@ -42,7 +42,7 @@ export const getPlatformById = (id: string) => (
 
 
 export const getPlatformsByOwner = (address: `0x${string}`) => (
-    `
+  `
     {
         platforms(where: {address: "${address}"}) {
           ${platformFields}
@@ -53,3 +53,20 @@ export const getPlatformsByOwner = (address: `0x${string}`) => (
       }
     `
 );
+
+export const getProtocolById = (id: number) => (
+  `
+  query Protocol {
+    protocol(id: "${id}", subgraphError: "allow") {
+        id
+        userMintFee
+        platformMintFee
+        protocolEscrowFeeRate
+        totalMintFees
+        minArbitrationFeeTimeout
+        shortHandlesMaxPrice
+        minServiceCompletionPercentage
+    }
+  }
+  `
+)
