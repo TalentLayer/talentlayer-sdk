@@ -14,7 +14,7 @@ The Talent Layer sdk enables you to interact with the TalentLayer protocol.
 
 `cd packages/client`
 
-3. switch to node version 19
+3. switch to node version 18
 
 `nvm use 18` 
 
