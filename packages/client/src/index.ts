@@ -111,7 +111,8 @@ export class TalentLayerClient {
       this.graphQlClient,
       this.ipfsClient,
       this.viemClient,
-      this.platformID
+      this.platformID,
+      this.chainId
     )
   }
 }
