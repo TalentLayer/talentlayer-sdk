@@ -82,7 +82,7 @@ export class ViemClient {
         const contract = chainConfig.contracts[contractName];
 
         if (!contract) {
-            throw Error("Invalid contract name passed.");
+            throw Error(`Invalid contract name passed. ${contractName}`);
         }
 
         console.log("SDK: simulating contract call");

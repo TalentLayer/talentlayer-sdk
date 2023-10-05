@@ -1,5 +1,6 @@
 import GraphQLClient, { getProposalById } from "../graphql";
 import IPFSClient from "../ipfs";
+import { Platform } from "../platform";
 import { ClientTransactionResponse, CreateProposalArgs, ProposalDetails } from "../types";
 import { getSignature } from "../utils/signature";
 import { ViemClient } from "../viem";
@@ -56,7 +57,6 @@ export class Proposal {
         const query = getProposalById(proposalId);
 
         const response = await this.graphQlClient.get(query);
-        console.log("SDK: proposal response", response);
 
         if (response?.data?.proposal) {
 
@@ -84,7 +84,14 @@ export class Proposal {
         expirationDate: string
     ): Promise<ClientTransactionResponse> {
         const cid = await this.upload(proposalDetails);
-        const signature = await this.getSignature({ profileId: Number(userId), serviceId: Number(serviceId), cid })
+        const signature = await this.getSignature({ profileId: Number(userId), serviceId: Number(serviceId), cid });
+
+        const platform = new Platform(this.graphQlClient, this.viemClient, this.platformID, this.ipfsClient);
+
+        const platformDetails = await platform.getOne(this.platformID.toString());
+
+
+        const proposalPostingFees = BigInt(platformDetails?.proposalPostingFee || "0");
 
         const tx = await this.viemClient.writeContract(
             'talentLayerService',
@@ -98,7 +105,8 @@ export class Proposal {
                 cid,
                 expirationDate,
                 signature
-            ]
+            ],
+            proposalPostingFees
         )
 
         if (cid && tx) {
@@ -119,7 +127,7 @@ export class Proposal {
     ): Promise<ClientTransactionResponse> {
         const cid = await this.upload(proposalDetails);
         const tx = await this.viemClient.writeContract(
-            'serviceRegistry',
+            'talentLayerService',
             'updateProposal',
             [
                 userId,

@@ -97,8 +97,14 @@ export const getProposalById = (id: string) => (`
         numReceivedReviews
       }
     }
+    platform {
+      id
+    }
     service {
       id
+      platform {
+        id
+      }
     }
     cid
     rateToken {
@@ -114,3 +120,22 @@ export const getProposalById = (id: string) => (`
   }
 }
 `)
+
+
+export const getProtocolAndPlatformsFees = (
+  chainId: number,
+  originServicePlatformId: string,
+  originValidatedProposalPlatformId: string,
+): string => (`
+  {
+    protocols {
+      protocolEscrowFeeRate
+    }
+    servicePlatform: platform(id:${originServicePlatformId}){
+      originServiceFeeRate
+    }
+    proposalPlatform: platform(id:${originValidatedProposalPlatformId}){
+      originValidatedProposalFeeRate
+    }
+  }
+`);

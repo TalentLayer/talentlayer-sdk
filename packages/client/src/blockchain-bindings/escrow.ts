@@ -1,7 +1,10 @@
-import GraphQLClient from "../graphql";
+import { getChainConfig } from "../config";
+import GraphQLClient, { getProtocolAndPlatformsFees } from "../graphql";
 import IPFSClient from "../ipfs";
-import { ClientTransactionResponse, RateToken } from "../types";
+import { ClientTransactionResponse, NetworkEnum, RateToken } from "../types";
+import { calculateApprovalAmount } from "../utils/fees";
 import { ViemClient } from "../viem";
+import { ERC20, IERC20 } from "./erc20";
 import { Proposal } from "./proposal";
 import { Service } from "./service";
 
@@ -16,13 +19,17 @@ export class Escrow {
     ipfsClient: IPFSClient;
     viemClient: ViemClient;
     platformID: number;
+    chainId: NetworkEnum;
+    erc20: IERC20;
 
-    constructor(graphQlClient: GraphQLClient, ipfsClient: IPFSClient, viemClient: ViemClient, platformId: number) {
+    constructor(graphQlClient: GraphQLClient, ipfsClient: IPFSClient, viemClient: ViemClient, platformId: number, chainId: NetworkEnum) {
         console.log("SDK: escrow initialising: ");
         this.graphQlClient = graphQlClient;
         this.platformID = platformId;
         this.ipfsClient = ipfsClient
         this.viemClient = viemClient;
+        this.chainId = chainId;
+        this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID);
 
     }
 
@@ -30,6 +37,14 @@ export class Escrow {
 
         const proposalInstance = new Proposal(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID);
         const proposal = await proposalInstance.getOne(proposalId);
+        console.log("SDK: proposal ", proposal, proposal.rateToken.address);
+        // @ts-ignore
+        const [address] = await this.viemClient.client.getAddresses();
+        const chainConfig = getChainConfig(this.chainId);
+        const escrowContract = chainConfig.contracts["talentLayerEscrow"];
+        const erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID);
+
+
 
         if (!proposal) {
             throw new Error("Proposal not found");
@@ -43,7 +58,7 @@ export class Escrow {
 
         let tx, cid = proposal.cid;
 
-        if (proposal.rateToken = RateToken.NATIVE) {
+        if (proposal.rateToken.address === RateToken.NATIVE) {
             tx = await this.viemClient.writeContract(
                 "talentLayerEscrow",
                 "createTransaction",
@@ -56,12 +71,59 @@ export class Escrow {
                 value
             )
         } else {
+
+            console.log("SDK: fetching allowance")
+            // @ts-ignore
+            const allowance: bigint = await erc20.checkAllowance(proposal.rateToken.address)
+
+            console.log("SDK: fetched allowance", allowance, allowance < BigInt(proposal.rateAmount))
+
+
+            if (allowance < BigInt(proposal.rateAmount)) {
+
+                const protocolAndPlatformsFeesResponse = await this.graphQlClient.get(
+                    getProtocolAndPlatformsFees(this.chainId, proposal.service.platform.id, proposal.platform.id)
+                );
+
+                console.log("SDK: fees", protocolAndPlatformsFeesResponse);
+
+                if (!protocolAndPlatformsFeesResponse.data) {
+                    throw Error("Unable to fetch fees")
+                }
+
+                const approvalAmount = calculateApprovalAmount(
+                    proposal.rateAmount,
+                    protocolAndPlatformsFeesResponse.data.servicePlatform.originServiceFeeRate,
+                    protocolAndPlatformsFeesResponse.data.proposalPlatform.originValidatedProposalFeeRate,
+                    protocolAndPlatformsFeesResponse.data.protocols[0].protocolEscrowFeeRate
+
+                )
+
+                console.log("SDK: approval amount", approvalAmount);
+                let approvalTransaction;
+                try {
+                    approvalTransaction = await this.erc20.approve(proposal.rateToken.address, approvalAmount);
+
+                    // @ts-ignore
+                    const approvalTransactionReceipt = await this.viemClient.publicClient.waitForTransactionReceipt({ hash: approvalTransaction });
+
+                    console.log("SDK: approvalTransactionReceipt", approvalTransactionReceipt);
+
+                    if (approvalTransactionReceipt.status !== 'success') {
+                        throw new Error("Unable to get approval")
+                    }
+                } catch (e) {
+                    console.error("SDK error: ", e)
+                    throw new Error("Approval transaction failed with error");
+                }
+            }
+
             tx = await this.viemClient.writeContract(
                 "talentLayerEscrow",
                 "createTransaction",
                 [
-                    parseInt(serviceId, 10),
-                    parseInt(sellerId, 10),
+                    serviceId,
+                    sellerId,
                     metaEvidenceCid,
                     cid
                 ]
