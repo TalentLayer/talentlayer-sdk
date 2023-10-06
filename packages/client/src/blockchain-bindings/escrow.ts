@@ -9,7 +9,7 @@ import { Proposal } from "./proposal";
 import { Service } from "./service";
 
 export interface IEscrow {
-    approve(serviceId: string, proposalId: string, metaEvidenceCid: string, value?: bigint): Promise<ClientTransactionResponse>
+    approve(serviceId: string, proposalId: string, metaEvidenceCid: string): Promise<ClientTransactionResponse>
     release(serviceId: string, amount: bigint, userId: number): Promise<any>
     reimburse(serviceId: string, amount: bigint, userId: number): Promise<any>
 }
@@ -33,18 +33,11 @@ export class Escrow {
 
     }
 
-    public async approve(serviceId: string, proposalId: string, metaEvidenceCid: string, value?: bigint): Promise<ClientTransactionResponse> {
+    public async approve(serviceId: string, proposalId: string, metaEvidenceCid: string): Promise<ClientTransactionResponse> {
 
         const proposalInstance = new Proposal(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID);
         const proposal = await proposalInstance.getOne(proposalId);
-        console.log("SDK: proposal ", proposal, proposal.rateToken.address);
-        // @ts-ignore
-        const [address] = await this.viemClient.client.getAddresses();
-        const chainConfig = getChainConfig(this.chainId);
-        const escrowContract = chainConfig.contracts["talentLayerEscrow"];
         const erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID);
-
-
 
         if (!proposal) {
             throw new Error("Proposal not found");
@@ -58,6 +51,26 @@ export class Escrow {
 
         let tx, cid = proposal.cid;
 
+        const protocolAndPlatformsFeesResponse = await this.graphQlClient.get(
+            getProtocolAndPlatformsFees(this.chainId, proposal.service.platform.id, proposal.platform.id)
+        );
+
+        console.log("SDK: fees", protocolAndPlatformsFeesResponse);
+
+        if (!protocolAndPlatformsFeesResponse.data) {
+            throw Error("Unable to fetch fees")
+        }
+
+        const approvalAmount = calculateApprovalAmount(
+            proposal.rateAmount,
+            protocolAndPlatformsFeesResponse.data.servicePlatform.originServiceFeeRate,
+            protocolAndPlatformsFeesResponse.data.proposalPlatform.originValidatedProposalFeeRate,
+            protocolAndPlatformsFeesResponse.data.protocols[0].protocolEscrowFeeRate
+
+        );
+
+        console.log("SDK: escrow seeking approval for amount: ", approvalAmount);
+
         if (proposal.rateToken.address === RateToken.NATIVE) {
             tx = await this.viemClient.writeContract(
                 "talentLayerEscrow",
@@ -68,7 +81,7 @@ export class Escrow {
                     metaEvidenceCid,
                     cid
                 ],
-                value
+                approvalAmount
             )
         } else {
 
@@ -78,28 +91,9 @@ export class Escrow {
 
             console.log("SDK: fetched allowance", allowance, allowance < BigInt(proposal.rateAmount))
 
+            if (allowance < approvalAmount) {
+                console.log("SDK: approvalAmount less than allowance. Now requesting allowance")
 
-            if (allowance < BigInt(proposal.rateAmount)) {
-
-                const protocolAndPlatformsFeesResponse = await this.graphQlClient.get(
-                    getProtocolAndPlatformsFees(this.chainId, proposal.service.platform.id, proposal.platform.id)
-                );
-
-                console.log("SDK: fees", protocolAndPlatformsFeesResponse);
-
-                if (!protocolAndPlatformsFeesResponse.data) {
-                    throw Error("Unable to fetch fees")
-                }
-
-                const approvalAmount = calculateApprovalAmount(
-                    proposal.rateAmount,
-                    protocolAndPlatformsFeesResponse.data.servicePlatform.originServiceFeeRate,
-                    protocolAndPlatformsFeesResponse.data.proposalPlatform.originValidatedProposalFeeRate,
-                    protocolAndPlatformsFeesResponse.data.protocols[0].protocolEscrowFeeRate
-
-                )
-
-                console.log("SDK: approval amount", approvalAmount);
                 let approvalTransaction;
                 try {
                     approvalTransaction = await this.erc20.approve(proposal.rateToken.address, approvalAmount);

@@ -79,6 +79,7 @@ export type TalentLayerProfile = {
     name?: string;
     about?: string;
     skills?: string;
+    [key: string]: any
 }
 
 export type ProposalDetails = {
@@ -104,6 +105,7 @@ export type ServiceDetails = {
     keywords: string,
     rateToken: string,
     rateAmount: string,
+    [key: string]: any
 }
 
 export type ReviewDetails = {
