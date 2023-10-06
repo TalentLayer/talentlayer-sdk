@@ -4,6 +4,9 @@ The Talent Layer sdk enables you to interact with the TalentLayer protocol.
 
 ## Getting Started
 
+To get started with the SDK and how to create a client read the doc here: [click here 🦝](https://github.com/TalentLayer/talentlayer-sdk/tree/develop/packages/client#introduction)
+
+## Build the package on your own
 > The SDK is not yet published on NPM since it is still under development.
 
 1. clone the repo 
