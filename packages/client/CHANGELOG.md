@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.1
+
+### Patch Changes
+
+- added implicit calculation for approval amount & Adding support for custom properties
+
 ## 0.1.0
 
 ### Minor Changes
