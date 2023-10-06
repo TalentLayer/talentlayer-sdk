@@ -23,7 +23,7 @@ PUBLIC_SIGNATURE_API_URL
 2. Install the package
 
 ```bash
-npm install @talentLayer/client --save
+npm install @talentlayer/client --save
 ```
 
 #### Initialisation
