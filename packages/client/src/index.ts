@@ -15,7 +15,10 @@ import { IPlatform } from './platform/types';
 import { IDispute } from './disputes/types';
 import { Disputes } from './disputes';
 
-// TODO: replace any here with the right type;
+
+/**
+ * Main client for interacting with the TalentLayer protocol.
+ */
 export class TalentLayerClient {
   graphQlClient: GraphQLClient
   ipfsClient: IPFSClient
@@ -24,6 +27,10 @@ export class TalentLayerClient {
   chainId: NetworkEnum;
   signatureApiUrl?: string;
 
+  /**
+  * Initializes a new instance of the TalentLayerClient.
+  * @param {TalentLayerClientConfig} config - Configuration options for the client.
+  */
   constructor(config: TalentLayerClientConfig) {
     console.log("SDK: client initialising", config);
     this.platformID = config.platformId
@@ -34,6 +41,11 @@ export class TalentLayerClient {
     this.signatureApiUrl = config?.signatureApiUrl;
   }
 
+
+  /**
+   * Provides access to ERC20 token functionalities.
+   * @type {IERC20}
+   */
   // @ts-ignore
   get erc20(): IERC20 {
     return new ERC20(
@@ -43,6 +55,11 @@ export class TalentLayerClient {
     )
   }
 
+  /**
+   * Provides access to proposal functionalities.
+   * Use this to create, update, approve, proposals
+   * @type {IProposal}
+   */
   // @ts-ignore
   get proposal(): IProposal {
     return new Proposal(
@@ -54,6 +71,10 @@ export class TalentLayerClient {
     )
   }
 
+  /**
+   * Provides access to dispute functionalities.
+   * @type {IPlatform}
+   */
   // @ts-ignore
   get platform(): IPlatform {
     return new Platform(
@@ -64,6 +85,10 @@ export class TalentLayerClient {
     )
   }
 
+  /**
+   * Provides access to platform functionalities.
+   * @type {IDispute}
+   */
   // @ts-ignore
   get disputes(): IDispute {
     return new Disputes(
@@ -73,6 +98,11 @@ export class TalentLayerClient {
       this.chainId
     )
   }
+
+  /**
+ * Provides access to service functionalities.
+ * @type {IDispute}
+ */
 
   // @ts-ignore
   get service(): IService {
@@ -85,6 +115,10 @@ export class TalentLayerClient {
     );
   }
 
+  /**
+   * Provides access to dispute functionalities.
+   * @type {IProfile}
+   */
   // @ts-ignore
   get profile(): IProfile {
     return new Profile(
@@ -95,6 +129,10 @@ export class TalentLayerClient {
     )
   }
 
+  /**
+   * Provides access to review functionalities.
+   * @type {IReview}
+   */
   // @ts-ignore
   get review(): IReview {
     return new Review(
@@ -105,6 +143,10 @@ export class TalentLayerClient {
     );
   }
 
+  /**
+   * Provides access to escrow functionalities.
+   * @type {IEscrow}
+   */
   // @ts-ignore
   get escrow(): IEscrow {
     return new Escrow(
