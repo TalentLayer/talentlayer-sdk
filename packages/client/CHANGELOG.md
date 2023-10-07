@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.3
+
+### Patch Changes
+
+- fix chaindId issue on viemClient
+
 ## 0.1.2
 
 ### Patch Changes
