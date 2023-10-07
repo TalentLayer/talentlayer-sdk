@@ -123,7 +123,7 @@ const iexec: Config = {
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {
-    ["0x0000000000000000000000000000000000000000"]: {
+    "0x0000000000000000000000000000000000000000": {
       address: "0x0000000000000000000000000000000000000000",
       symbol: "RLC",
       name: "iExec RLC",
@@ -139,9 +139,9 @@ const iexec: Config = {
 };
 
 const polygon: Config = {
-  networkId: NetworkEnum.IEXEC,
+  networkId: NetworkEnum.POLYGON,
   subgraphUrl:
-    "https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai",
+    "https://api.thegraph.com/subgraphs/name/talentlayer/talentlayer-polygon",
   contracts: {
     talentLayerId: {
       address: "0xD7D1B2b0A665F03618cb9a45Aa3070f789cb91f2",
@@ -174,16 +174,22 @@ const polygon: Config = {
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {
-    ["0x0000000000000000000000000000000000000000"]: {
+    "0x0000000000000000000000000000000000000000": {
       address: "0x0000000000000000000000000000000000000000",
-      symbol: "RLC",
-      name: "iExec RLC",
+      symbol: "MATIC",
+      name: "Matic",
       decimals: 18,
     },
-    "0xe62C28709E4F19Bae592a716b891A9B76bf897E4": {
-      address: "0xe62C28709E4F19Bae592a716b891A9B76bf897E4",
-      symbol: "SERC20",
-      name: "SimpleERC20",
+    "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": {
+      address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      symbol: "USDC",
+      name: "USDC",
+      decimals: 6,
+    },
+    "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": {
+      address: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+      symbol: "WETH",
+      name: "WETH",
       decimals: 18,
     },
   },
