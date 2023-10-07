@@ -1,46 +1,48 @@
-import { getGraphQLConfig } from './config';
-import axios from 'axios';
-import GraphQLClient from './graphql';
-import { NetworkEnum, TalentLayerClientConfig } from './types';
-import IPFSClient from './ipfs';
-import { ViemClient } from './viem';
-import { IService, Service } from './blockchain-bindings/service';
-import { IReview, Review } from './blockchain-bindings/review';
-import { IProfile, Profile } from './blockchain-bindings/profile';
-import { IProposal, Proposal } from './blockchain-bindings/proposal';
-import { Escrow, IEscrow } from './blockchain-bindings/escrow';
-import { IERC20, ERC20 } from './blockchain-bindings/erc20';
-import { Platform } from './platform';
-import { IPlatform } from './platform/types';
-import { IDispute } from './disputes/types';
-import { Disputes } from './disputes';
-
+import { getGraphQLConfig } from "./config";
+import axios from "axios";
+import GraphQLClient from "./graphql";
+import { NetworkEnum, TalentLayerClientConfig } from "./types";
+import IPFSClient from "./ipfs";
+import { ViemClient } from "./viem";
+import { IService, Service } from "./blockchain-bindings/service";
+import { IReview, Review } from "./blockchain-bindings/review";
+import { IProfile, Profile } from "./blockchain-bindings/profile";
+import { IProposal, Proposal } from "./blockchain-bindings/proposal";
+import { Escrow, IEscrow } from "./blockchain-bindings/escrow";
+import { IERC20, ERC20 } from "./blockchain-bindings/erc20";
+import { Platform } from "./platform";
+import { IPlatform } from "./platform/types";
+import { IDispute } from "./disputes/types";
+import { Disputes } from "./disputes";
 
 /**
  * Main client for interacting with the TalentLayer protocol.
  */
 export class TalentLayerClient {
-  graphQlClient: GraphQLClient
-  ipfsClient: IPFSClient
-  viemClient: ViemClient
+  graphQlClient: GraphQLClient;
+  ipfsClient: IPFSClient;
+  viemClient: ViemClient;
   platformID: number;
   chainId: NetworkEnum;
   signatureApiUrl?: string;
 
   /**
-  * Initializes a new instance of the TalentLayerClient.
-  * @param {TalentLayerClientConfig} config - Configuration options for the client.
-  */
+   * Initializes a new instance of the TalentLayerClient.
+   * @param {TalentLayerClientConfig} config - Configuration options for the client.
+   */
   constructor(config: TalentLayerClientConfig) {
     console.log("SDK: client initialising", config);
-    this.platformID = config.platformId
-    this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId))
-    this.ipfsClient = new IPFSClient({ baseUrl: config.ipfsConfig.baseUrl, clientId: config.ipfsConfig.clientId, clientSecret: config.ipfsConfig.clientSecret });
+    this.platformID = config.platformId;
+    this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId));
+    this.ipfsClient = new IPFSClient({
+      baseUrl: config.ipfsConfig.baseUrl,
+      clientId: config.ipfsConfig.clientId,
+      clientSecret: config.ipfsConfig.clientSecret,
+    });
     this.viemClient = new ViemClient(config.walletConfig || {});
     this.chainId = config.chainId;
     this.signatureApiUrl = config?.signatureApiUrl;
   }
-
 
   /**
    * Provides access to ERC20 token functionalities.
@@ -48,11 +50,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get erc20(): IERC20 {
-    return new ERC20(
-      this.ipfsClient,
-      this.viemClient,
-      this.platformID
-    )
+    return new ERC20(this.ipfsClient, this.viemClient, this.platformID);
   }
 
   /**
@@ -67,8 +65,8 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
-      this.signatureApiUrl
-    )
+      this.signatureApiUrl,
+    );
   }
 
   /**
@@ -81,8 +79,8 @@ export class TalentLayerClient {
       this.graphQlClient,
       this.viemClient,
       this.platformID,
-      this.ipfsClient
-    )
+      this.ipfsClient,
+    );
   }
 
   /**
@@ -95,14 +93,14 @@ export class TalentLayerClient {
       this.viemClient,
       this.platformID,
       this.graphQlClient,
-      this.chainId
-    )
+      this.chainId,
+    );
   }
 
   /**
- * Provides access to service functionalities.
- * @type {IDispute}
- */
+   * Provides access to service functionalities.
+   * @type {IDispute}
+   */
 
   // @ts-ignore
   get service(): IService {
@@ -111,7 +109,7 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
-      this.signatureApiUrl
+      this.signatureApiUrl,
     );
   }
 
@@ -125,8 +123,8 @@ export class TalentLayerClient {
       this.graphQlClient,
       this.ipfsClient,
       this.viemClient,
-      this.platformID
-    )
+      this.platformID,
+    );
   }
 
   /**
@@ -139,7 +137,7 @@ export class TalentLayerClient {
       this.graphQlClient,
       this.ipfsClient,
       this.viemClient,
-      this.platformID
+      this.platformID,
     );
   }
 
@@ -154,7 +152,7 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
-      this.chainId
-    )
+      this.chainId,
+    );
   }
 }

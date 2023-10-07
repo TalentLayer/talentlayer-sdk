@@ -34,7 +34,6 @@ export const serviceQueryFields = `
   }
 `;
 
-
 export const serviceDescriptionQueryFields = `
   id
   title
@@ -50,7 +49,7 @@ export const serviceDescriptionQueryFields = `
   }
 `;
 
-export const getProposalsByService = (serviceId: string) => (`
+export const getProposalsByService = (serviceId: string) => `
 {
   proposals(where: {service_: {id: ${serviceId}}}) {
     id
@@ -80,10 +79,9 @@ export const getProposalsByService = (serviceId: string) => (`
     expirationDate
   }
 }
-`)
+`;
 
-
-export const getProposalById = (id: string) => (`
+export const getProposalById = (id: string) => `
 {
   proposal(id: "${id}") {
     id
@@ -119,14 +117,13 @@ export const getProposalById = (id: string) => (`
     expirationDate
   }
 }
-`)
-
+`;
 
 export const getProtocolAndPlatformsFees = (
   chainId: number,
   originServicePlatformId: string,
   originValidatedProposalPlatformId: string,
-): string => (`
+): string => `
   {
     protocols {
       protocolEscrowFeeRate
@@ -138,4 +135,4 @@ export const getProtocolAndPlatformsFees = (
       originValidatedProposalFeeRate
     }
   }
-`);
+`;

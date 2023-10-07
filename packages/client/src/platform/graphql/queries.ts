@@ -1,4 +1,3 @@
-
 const platformFields = `
     id
     address
@@ -28,7 +27,7 @@ const platformDescriptionFields = `
     image_url
 `;
 
-export const getPlatformById = (id: string) => (
+export const getPlatformById = (id: string) =>
   `{
         platform(id: ${id}) {
           ${platformFields}
@@ -37,11 +36,9 @@ export const getPlatformById = (id: string) => (
           }
         }
       }
-      `
-);
+      `;
 
-
-export const getPlatformsByOwner = (address: `0x${string}`) => (
+export const getPlatformsByOwner = (address: `0x${string}`) =>
   `
     {
         platforms(where: {address: "${address}"}) {
@@ -51,10 +48,9 @@ export const getPlatformsByOwner = (address: `0x${string}`) => (
           }
         }
       }
-    `
-);
+    `;
 
-export const getProtocolById = (id: number) => (
+export const getProtocolById = (id: number) =>
   `
   query Protocol {
     protocol(id: "${id}", subgraphError: "allow") {
@@ -68,5 +64,4 @@ export const getProtocolById = (id: number) => (
         minServiceCompletionPercentage
     }
   }
-  `
-)
+  `;
