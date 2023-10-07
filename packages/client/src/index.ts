@@ -39,7 +39,7 @@ export class TalentLayerClient {
       clientId: config.ipfsConfig.clientId,
       clientSecret: config.ipfsConfig.clientSecret,
     });
-    this.viemClient = new ViemClient(config.walletConfig || {});
+    this.viemClient = new ViemClient(config.chainId, config.walletConfig || {});
     this.chainId = config.chainId;
     this.signatureApiUrl = config?.signatureApiUrl;
   }

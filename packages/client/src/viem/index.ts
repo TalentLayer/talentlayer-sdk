@@ -4,7 +4,6 @@ import {
   custom,
   http,
   WalletClient,
-  createClient,
   PublicClient,
 } from "viem";
 import { mnemonicToAccount, privateKeyToAccount } from "viem/accounts";
@@ -18,9 +17,9 @@ export class ViemClient {
   publicClient: PublicClient;
   chainId: NetworkEnum;
 
-  constructor(config: ViemClientConfig) {
+  constructor(chainId: NetworkEnum, config: ViemClientConfig) {
     // if chainId is not provided, set it to mumbai
-    this.chainId = config.chainId || NetworkEnum.MUMBAI;
+    this.chainId = chainId || config.chainId || NetworkEnum.MUMBAI;
 
     // initialise a default public wallet client;
     this.client = createWalletClient({
