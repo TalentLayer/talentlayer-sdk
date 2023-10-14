@@ -39,7 +39,7 @@ export class Escrow {
     this.ipfsClient = ipfsClient;
     this.viemClient = viemClient;
     this.chainId = chainId;
-    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID);
+    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
   }
 
   public async approve(
@@ -54,7 +54,7 @@ export class Escrow {
       this.platformID,
     );
     const proposal = await proposalInstance.getOne(proposalId);
-    const erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID);
+    const erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
 
     if (!proposal) {
       throw new Error("Proposal not found");

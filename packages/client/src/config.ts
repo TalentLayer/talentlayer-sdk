@@ -7,35 +7,6 @@ import TalentLayerEscrow from "./contracts/ABI/TalentLayerEscrow.json";
 import TalentLayerPlatformID from "./contracts/ABI/TalentLayerPlatformID.json";
 import TalentLayerArbitrator from "./contracts/ABI/TalentLayerArbitrator.json";
 
-export const contracts: {
-  [key: string]: { address: `0x${string}`; abi: any };
-} = {
-  talentLayerId: {
-    address: "0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306",
-    abi: TalentLayerID.abi,
-  },
-  talentLayerService: {
-    address: "0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D",
-    abi: TalerLayerService.abi,
-  },
-  talentLayerReview: {
-    address: "0x050F59E1871d3B7ca97e6fb9DCE64b3818b14B18",
-    abi: TalentLayerReview.abi,
-  },
-  talentLayerEscrow: {
-    address: "0x4bE920eC3e8552292B2147480111063E0dc36872",
-    abi: TalentLayerEscrow.abi,
-  },
-  talentLayerPlatformId: {
-    address: "0xEFD8dbC421380Ee04BAdB69216a0FD97F64CbFD4",
-    abi: TalentLayerPlatformID.abi,
-  },
-  talentLayerArbitrator: {
-    address: "0x2CA01a0058cfB3cc4755a7773881ea88eCfBba7C",
-    abi: TalentLayerArbitrator.abi,
-  },
-};
-
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
   subgraphUrl:
