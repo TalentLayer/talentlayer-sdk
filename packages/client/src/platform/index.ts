@@ -1,12 +1,12 @@
-import { Hash, parseEther, zeroAddress } from "viem";
+import { parseEther, zeroAddress } from "viem";
 import { getChainConfig } from "../config";
 import { FEE_RATE_DIVIDER } from "../constants";
 import GraphQLClient from "../graphql";
 import IPFSClient from "../ipfs";
-import { ClientTransactionResponse, TransactionHash } from "../types";
+import { ClientTransactionResponse, NetworkEnum, TransactionHash } from "../types";
 import { ViemClient } from "../viem";
 import { getPlatformById, getPlatformsByOwner } from "./graphql/queries";
-import { PlatformDetails } from "./types";
+import { Arbitrator, PlatformDetails } from "./types";
 
 export class Platform {
   subgraph: GraphQLClient;
@@ -81,16 +81,22 @@ export class Platform {
     return tx;
   }
 
+  public getArbitrators(chainId: NetworkEnum): Arbitrator[] {
+    const chainConfig = getChainConfig(chainId);
+    const contract = chainConfig.contracts["talentLayerArbitrator"];
+    const allowedArbitrators = [{ address: zeroAddress, name: "None" }, { address: contract.address, name: "TalentLayer Arbitrator" }];
+
+    return allowedArbitrators;
+  }
+
   public async updateArbitrator(
     address: `0x${string}`,
   ): Promise<TransactionHash> {
-    const chainConfig = getChainConfig(this.wallet.chainId);
-    const contract = chainConfig.contracts["talentLayerArbitrator"];
-    const allowedArbitrators = [zeroAddress, contract.address.toLowerCase()];
+    const allowedArbitrators: Arbitrator[] = this.getArbitrators(this.wallet.chainId);
 
-    console.log("SDK: allowedArbitrators", allowedArbitrators);
+    const allowedArbitratorAddresses = allowedArbitrators.map((_arbitrator: Arbitrator) => _arbitrator.address.toLowerCase());
 
-    if (!allowedArbitrators.includes(address)) {
+    if (!allowedArbitratorAddresses.includes(address.toLowerCase())) {
       throw new Error(`Invalid Arbitrator: ${address}`);
     }
 
@@ -168,6 +174,3 @@ export class Platform {
     return tx;
   }
 }
-
-// TODO:
-// add simlate contract in the main writeContract functions
