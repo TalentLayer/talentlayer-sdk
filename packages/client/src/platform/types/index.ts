@@ -1,4 +1,5 @@
-import { ClientTransactionResponse, TransactionHash } from "../../types";
+import { Hash } from "viem";
+import { ClientTransactionResponse, NetworkEnum, TransactionHash } from "../../types";
 
 export type PlatformDetails = {
   about: string;
@@ -7,6 +8,11 @@ export type PlatformDetails = {
   image_url: string;
   [key: string]: any;
 };
+
+export type Arbitrator = {
+  address: Hash;
+  name: string;
+}
 
 export interface IPlatform {
   getOne(id: string): Promise<any>;
@@ -17,5 +23,6 @@ export interface IPlatform {
   updateProposalPostingFee(value: number): Promise<TransactionHash>;
   getByOwner(address: `0x${string}`): Promise<any>;
   setFeeTimeout(timeout: number): Promise<TransactionHash>;
+  getArbitrators(chainId: NetworkEnum): Arbitrator[];
   updateArbitrator(address: `0x${string}`): Promise<TransactionHash>;
 }
