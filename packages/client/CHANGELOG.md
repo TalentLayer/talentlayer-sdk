@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.4
+
+### Patch Changes
+
+- fix arbitrator & fix non dynamic contract
+
 ## 0.1.3
 
 ### Patch Changes
