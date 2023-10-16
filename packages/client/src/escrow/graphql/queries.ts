@@ -1,6 +1,6 @@
 export const getProtocolAndPlatformsFees = (
-    originServicePlatformId: string,
-    originValidatedProposalPlatformId: string,
+  originServicePlatformId: string,
+  originValidatedProposalPlatformId: string,
 ): string => `
     {
       protocols {

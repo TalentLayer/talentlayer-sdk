@@ -1,23 +1,23 @@
-import { getGraphQLConfig } from "./config";
-import axios from "axios";
-import GraphQLClient from "./graphql";
-import { NetworkEnum, TalentLayerClientConfig } from "./types";
-import IPFSClient from "./ipfs";
-import { ViemClient } from "./viem";
-import { IERC20, ERC20 } from "./blockchain-bindings/erc20";
-import { Platform } from "./platform";
-import { IPlatform } from "./platform/types";
-import { IDispute } from "./disputes/types";
-import { Disputes } from "./disputes";
-import { Proposal } from "./proposals";
-import { IProposal } from "./proposals/types";
-import { Profile } from "./profile";
-import { IProfile } from "./profile/types";
-import { Escrow } from "./escrow";
-import { IEscrow } from "./escrow/types";
-import { IService, Service } from "./services";
-import { IReview } from "./review/types";
-import { Review } from "./review";
+import { getGraphQLConfig } from './config';
+import axios from 'axios';
+import GraphQLClient from './graphql';
+import { NetworkEnum, TalentLayerClientConfig } from './types';
+import IPFSClient from './ipfs';
+import { ViemClient } from './viem';
+import { IERC20, ERC20 } from './blockchain-bindings/erc20';
+import { Platform } from './platform';
+import { IPlatform } from './platform/types';
+import { IDispute } from './disputes/types';
+import { Disputes } from './disputes';
+import { Proposal } from './proposals';
+import { IProposal } from './proposals/types';
+import { Profile } from './profile';
+import { IProfile } from './profile/types';
+import { Escrow } from './escrow';
+import { IEscrow } from './escrow/types';
+import { IService, Service } from './services';
+import { IReview } from './review/types';
+import { Review } from './review';
 
 /**
  * Main client for interacting with the TalentLayer protocol.
@@ -35,7 +35,7 @@ export class TalentLayerClient {
    * @param {TalentLayerClientConfig} config - Configuration options for the client.
    */
   constructor(config: TalentLayerClientConfig) {
-    console.log("SDK: client initialising", config);
+    console.log('SDK: client initialising', config);
     this.platformID = config.platformId;
     this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId));
     this.ipfsClient = new IPFSClient({
@@ -79,12 +79,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get platform(): IPlatform {
-    return new Platform(
-      this.graphQlClient,
-      this.viemClient,
-      this.platformID,
-      this.ipfsClient,
-    );
+    return new Platform(this.graphQlClient, this.viemClient, this.platformID, this.ipfsClient);
   }
 
   /**
@@ -93,12 +88,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get disputes(): IDispute {
-    return new Disputes(
-      this.viemClient,
-      this.platformID,
-      this.graphQlClient,
-      this.chainId,
-    );
+    return new Disputes(this.viemClient, this.platformID, this.graphQlClient, this.chainId);
   }
 
   /**
@@ -123,12 +113,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get profile(): IProfile {
-    return new Profile(
-      this.graphQlClient,
-      this.ipfsClient,
-      this.viemClient,
-      this.platformID,
-    );
+    return new Profile(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID);
   }
 
   /**
@@ -137,12 +122,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get review(): IReview {
-    return new Review(
-      this.graphQlClient,
-      this.ipfsClient,
-      this.viemClient,
-      this.platformID,
-    );
+    return new Review(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID);
   }
 
   /**

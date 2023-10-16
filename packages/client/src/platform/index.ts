@@ -1,12 +1,12 @@
-import { parseEther, zeroAddress } from "viem";
-import { getChainConfig } from "../config";
-import { FEE_RATE_DIVIDER } from "../constants";
-import GraphQLClient from "../graphql";
-import IPFSClient from "../ipfs";
-import { ClientTransactionResponse, NetworkEnum, TransactionHash } from "../types";
-import { ViemClient } from "../viem";
-import { getPlatformById, getPlatformsByOwner } from "./graphql/queries";
-import { Arbitrator, PlatformDetails } from "./types";
+import { parseEther, zeroAddress } from 'viem';
+import { getChainConfig } from '../config';
+import { FEE_RATE_DIVIDER } from '../constants';
+import GraphQLClient from '../graphql';
+import IPFSClient from '../ipfs';
+import { ClientTransactionResponse, NetworkEnum, TransactionHash } from '../types';
+import { ViemClient } from '../viem';
+import { getPlatformById, getPlatformsByOwner } from './graphql/queries';
+import { Arbitrator, PlatformDetails } from './types';
 
 export class Platform {
   subgraph: GraphQLClient;
@@ -14,7 +14,7 @@ export class Platform {
   platformID: number;
   ipfs: IPFSClient;
 
-  static readonly UPDATE_ERROR = "unable to update platform details";
+  static readonly UPDATE_ERROR = 'unable to update platform details';
 
   constructor(
     graphQlClient: GraphQLClient,
@@ -52,17 +52,14 @@ export class Platform {
     return [];
   }
 
-  public async update(
-    data: PlatformDetails,
-  ): Promise<ClientTransactionResponse> {
-    console.log("SDK: update platform details");
+  public async update(data: PlatformDetails): Promise<ClientTransactionResponse> {
+    console.log('SDK: update platform details');
     const cid = await this.upload(data);
-    console.log("SDK: platform details uploaded to ipfs", cid);
-    const tx = await this.wallet.writeContract(
-      "talentLayerPlatformId",
-      "updateProfileData",
-      [this.platformID, cid],
-    );
+    console.log('SDK: platform details uploaded to ipfs', cid);
+    const tx = await this.wallet.writeContract('talentLayerPlatformId', 'updateProfileData', [
+      this.platformID,
+      cid,
+    ]);
 
     if (!cid || !tx) {
       throw new Error(Platform.UPDATE_ERROR);
@@ -73,8 +70,8 @@ export class Platform {
 
   public async setFeeTimeout(timeout: number): Promise<TransactionHash> {
     const tx = await this.wallet.writeContract(
-      "talentLayerPlatformId",
-      "updateArbitrationFeeTimeout",
+      'talentLayerPlatformId',
+      'updateArbitrationFeeTimeout',
       [this.platformID, timeout],
     );
 
@@ -83,91 +80,81 @@ export class Platform {
 
   public getArbitrators(chainId: NetworkEnum): Arbitrator[] {
     const chainConfig = getChainConfig(chainId);
-    const contract = chainConfig.contracts["talentLayerArbitrator"];
-    const allowedArbitrators = [{ address: zeroAddress, name: "None" }, { address: contract.address, name: "TalentLayer Arbitrator" }];
+    const contract = chainConfig.contracts['talentLayerArbitrator'];
+    const allowedArbitrators = [
+      { address: zeroAddress, name: 'None' },
+      { address: contract.address, name: 'TalentLayer Arbitrator' },
+    ];
 
     return allowedArbitrators;
   }
 
-  public async updateArbitrator(
-    address: `0x${string}`,
-  ): Promise<TransactionHash> {
+  public async updateArbitrator(address: `0x${string}`): Promise<TransactionHash> {
     const allowedArbitrators: Arbitrator[] = this.getArbitrators(this.wallet.chainId);
 
-    const allowedArbitratorAddresses = allowedArbitrators.map((_arbitrator: Arbitrator) => _arbitrator.address.toLowerCase());
+    const allowedArbitratorAddresses = allowedArbitrators.map((_arbitrator: Arbitrator) =>
+      _arbitrator.address.toLowerCase(),
+    );
 
     if (!allowedArbitratorAddresses.includes(address.toLowerCase())) {
       throw new Error(`Invalid Arbitrator: ${address}`);
     }
 
-    const tx = await this.wallet.writeContract(
-      "talentLayerPlatformId",
-      "updateArbitrator",
-      [this.platformID, address, ""],
-    );
+    const tx = await this.wallet.writeContract('talentLayerPlatformId', 'updateArbitrator', [
+      this.platformID,
+      address,
+      '',
+    ]);
 
     return tx;
   }
 
   // Fee functions
-  public async updateOriginServiceFeeRate(
-    value: number,
-  ): Promise<TransactionHash> {
-    const transformedFeeRate = Math.round(
-      (Number(value) * FEE_RATE_DIVIDER) / 100,
-    );
+  public async updateOriginServiceFeeRate(value: number): Promise<TransactionHash> {
+    const transformedFeeRate = Math.round((Number(value) * FEE_RATE_DIVIDER) / 100);
 
-    console.log("SDK: transformedFeeRate", transformedFeeRate, this.platformID);
+    console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
     const tx = await this.wallet.writeContract(
-      "talentLayerPlatformId",
-      "updateOriginServiceFeeRate",
+      'talentLayerPlatformId',
+      'updateOriginServiceFeeRate',
       [this.platformID, transformedFeeRate],
     );
 
     return tx;
   }
 
-  public async updateOriginValidatedProposalFeeRate(
-    value: number,
-  ): Promise<TransactionHash> {
-    const transformedFeeRate = Math.round(
-      (Number(value) * FEE_RATE_DIVIDER) / 100,
-    );
+  public async updateOriginValidatedProposalFeeRate(value: number): Promise<TransactionHash> {
+    const transformedFeeRate = Math.round((Number(value) * FEE_RATE_DIVIDER) / 100);
 
-    console.log("SDK: transformedFeeRate", transformedFeeRate, this.platformID);
+    console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
     const tx = await this.wallet.writeContract(
-      "talentLayerPlatformId",
-      "updateOriginValidatedProposalFeeRate",
+      'talentLayerPlatformId',
+      'updateOriginValidatedProposalFeeRate',
       [this.platformID, transformedFeeRate],
     );
 
     return tx;
   }
 
-  public async updateServicePostingFee(
-    value: number,
-  ): Promise<TransactionHash> {
+  public async updateServicePostingFee(value: number): Promise<TransactionHash> {
     const transformedFeeRate = parseEther(value.toString());
 
-    console.log("SDK: transformedFeeRate", transformedFeeRate, this.platformID);
-    const tx = await this.wallet.writeContract(
-      "talentLayerPlatformId",
-      "updateServicePostingFee",
-      [this.platformID, transformedFeeRate],
-    );
+    console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
+    const tx = await this.wallet.writeContract('talentLayerPlatformId', 'updateServicePostingFee', [
+      this.platformID,
+      transformedFeeRate,
+    ]);
 
     return tx;
   }
 
-  public async updateProposalPostingFee(
-    value: number,
-  ): Promise<TransactionHash> {
+  public async updateProposalPostingFee(value: number): Promise<TransactionHash> {
     const transformedFeeRate = parseEther(value.toString());
-    console.log("SDK: updateProposalPostingFee", transformedFeeRate);
+    console.log('SDK: updateProposalPostingFee', transformedFeeRate);
 
     const tx = await this.wallet.writeContract(
-      "talentLayerPlatformId",
-      "updateProposalPostingFee",
+      'talentLayerPlatformId',
+      'updateProposalPostingFee',
       [this.platformID, transformedFeeRate],
     );
 

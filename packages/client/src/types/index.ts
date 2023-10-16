@@ -1,4 +1,4 @@
-import { Hash } from "viem";
+import { Hash } from 'viem';
 
 export type IToken = {
   name: string;
@@ -15,7 +15,7 @@ export enum NetworkEnum {
 }
 
 export enum RateToken {
-  NATIVE = "0x0000000000000000000000000000000000000000",
+  NATIVE = '0x0000000000000000000000000000000000000000',
 }
 
 export type Config = {

@@ -1,4 +1,4 @@
-import { TransactionHash } from "../types";
+import { TransactionHash } from '../types';
 
 export interface IDispute {
   getArbitrationCost(): Promise<any>;

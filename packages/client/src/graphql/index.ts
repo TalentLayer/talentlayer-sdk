@@ -1,6 +1,6 @@
-import axios from "axios";
-import { GraphQLConfig, GraphQLQuery } from "../types";
-export * from "./queries";
+import axios from 'axios';
+import { GraphQLConfig, GraphQLQuery } from '../types';
+export * from './queries';
 export default class GraphQLClient {
   config: GraphQLConfig;
 

@@ -1,5 +1,5 @@
-import axios from "axios";
-import { DEFAULT_SIGNATURE_VALUE } from "../constants";
+import axios from 'axios';
+import { DEFAULT_SIGNATURE_VALUE } from '../constants';
 
 export const getSignature = async (
   method: string,

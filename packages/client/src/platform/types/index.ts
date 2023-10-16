@@ -1,5 +1,5 @@
-import { Hash } from "viem";
-import { ClientTransactionResponse, NetworkEnum, TransactionHash } from "../../types";
+import { Hash } from 'viem';
+import { ClientTransactionResponse, NetworkEnum, TransactionHash } from '../../types';
 
 export type PlatformDetails = {
   about: string;
@@ -12,7 +12,7 @@ export type PlatformDetails = {
 export type Arbitrator = {
   address: Hash;
   name: string;
-}
+};
 
 export interface IPlatform {
   getOne(id: string): Promise<any>;

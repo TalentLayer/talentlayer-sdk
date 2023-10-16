@@ -1,7 +1,7 @@
-import { Hash } from "viem";
+import { Hash } from 'viem';
 
-export const getProfileByAddress = (address: Hash) => (
-    `
+export const getProfileByAddress = (address: Hash) =>
+  `
       {
         users(where: {address: "${address.toLocaleLowerCase()}"}, first: 1) {
           id
@@ -29,5 +29,4 @@ export const getProfileByAddress = (address: Hash) => (
           }
         }
       }
-      `
-)
+      `;
