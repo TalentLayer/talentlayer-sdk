@@ -4,16 +4,20 @@ import GraphQLClient from "./graphql";
 import { NetworkEnum, TalentLayerClientConfig } from "./types";
 import IPFSClient from "./ipfs";
 import { ViemClient } from "./viem";
-import { IService, Service } from "./blockchain-bindings/service";
-import { IReview, Review } from "./blockchain-bindings/review";
-import { IProfile, Profile } from "./blockchain-bindings/profile";
-import { IProposal, Proposal } from "./blockchain-bindings/proposal";
-import { Escrow, IEscrow } from "./blockchain-bindings/escrow";
 import { IERC20, ERC20 } from "./blockchain-bindings/erc20";
 import { Platform } from "./platform";
 import { IPlatform } from "./platform/types";
 import { IDispute } from "./disputes/types";
 import { Disputes } from "./disputes";
+import { Proposal } from "./proposals";
+import { IProposal } from "./proposals/types";
+import { Profile } from "./profile";
+import { IProfile } from "./profile/types";
+import { Escrow } from "./escrow";
+import { IEscrow } from "./escrow/types";
+import { IService, Service } from "./services";
+import { IReview } from "./review/types";
+import { Review } from "./review";
 
 /**
  * Main client for interacting with the TalentLayer protocol.
