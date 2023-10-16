@@ -1,15 +1,8 @@
-import GraphQLClient from "../graphql";
-import IPFSClient from "../ipfs";
-import { ClientTransactionResponse, ReviewDetails } from "../types";
-import { ViemClient } from "../viem";
-
-export interface IReview {
-  create(
-    data: ReviewDetails,
-    serviceId: string,
-    userId: string,
-  ): Promise<ClientTransactionResponse>;
-}
+import GraphQLClient from '../graphql';
+import IPFSClient from '../ipfs';
+import { ClientTransactionResponse } from '../types';
+import { ViemClient } from '../viem';
+import { ReviewDetails } from './types';
 
 export class Review {
   graphQlClient: GraphQLClient;
@@ -17,7 +10,7 @@ export class Review {
   viemClient: ViemClient;
   platformId: number;
 
-  static CREATE_ERROR = "unable to submit review";
+  static CREATE_ERROR = 'unable to submit review';
 
   constructor(
     graphQlClient: GraphQLClient,
@@ -46,14 +39,15 @@ export class Review {
     serviceId: string,
     userId: string,
   ): Promise<ClientTransactionResponse> {
-    console.log("SDK: creating review");
+    console.log('SDK: creating review');
     const cid = await this.uploadReviewDataToIpfs(data);
 
-    const tx = await this.viemClient.writeContract(
-      "talentLayerReview",
-      "mint",
-      [userId, serviceId, cid, data.rating],
-    );
+    const tx = await this.viemClient.writeContract('talentLayerReview', 'mint', [
+      userId,
+      serviceId,
+      cid,
+      data.rating,
+    ]);
 
     if (cid && tx) {
       return { cid, tx };

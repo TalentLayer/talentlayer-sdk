@@ -5,12 +5,12 @@ import {
   http,
   WalletClient,
   PublicClient,
-} from "viem";
-import { mnemonicToAccount, privateKeyToAccount } from "viem/accounts";
-import { getChainConfig } from "../config";
-import { NetworkEnum, ViemClientConfig } from "../types";
-import TalentLayerID from "../contracts/ABI/TalentLayerID.json";
-import { chains } from "../blockchain-bindings/chains";
+} from 'viem';
+import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts';
+import { getChainConfig } from '../config';
+import { NetworkEnum, ViemClientConfig } from '../types';
+import TalentLayerID from '../contracts/ABI/TalentLayerID.json';
+import { chains } from '../blockchain-bindings/chains';
 
 export class ViemClient {
   client: WalletClient;
@@ -85,7 +85,7 @@ export class ViemClient {
     const [address] = await this.client.getAddresses();
 
     if (!address) {
-      throw Error("Wallet Client not initialised properly");
+      throw Error('Wallet Client not initialised properly');
     }
 
     const chainConfig = getChainConfig(this.chainId);
@@ -95,7 +95,7 @@ export class ViemClient {
       throw Error(`Invalid contract name passed. ${contractName}`);
     }
 
-    console.log("SDK: simulating contract call");
+    console.log('SDK: simulating contract call');
     // @ts-ignore
     const { request } = await this.publicClient.simulateContract({
       address: contract.address,
@@ -106,22 +106,18 @@ export class ViemClient {
       value,
     });
 
-    console.log("SDK: executing contract call with request", request);
+    console.log('SDK: executing contract call with request', request);
     // @ts-ignore
     return this.client.writeContract(request);
   }
 
-  public async readContract(
-    contractName: string,
-    functionName: string,
-    args: Array<any>,
-  ) {
+  public async readContract(contractName: string, functionName: string, args: Array<any>) {
     const chainConfig = getChainConfig(this.chainId);
     const contract = chainConfig.contracts[contractName];
 
-    console.log("SDK: reading contract", contract);
+    console.log('SDK: reading contract', contract);
     if (!contract) {
-      throw Error("Invalid contract name passed.");
+      throw Error('Invalid contract name passed.');
     }
 
     // @ts-ignore
@@ -138,7 +134,7 @@ export class ViemClient {
     const [address] = await this.client.getAddresses();
 
     if (!address) {
-      throw Error("Wallet Client not initialised properly");
+      throw Error('Wallet Client not initialised properly');
     }
 
     const chainConfig = getChainConfig(this.chainId);
@@ -147,7 +143,7 @@ export class ViemClient {
     return this.client.writeContract({
       address: chainConfig.contracts.talentLayerId.address,
       abi: TalentLayerID.abi,
-      functionName: "updateProfileData",
+      functionName: 'updateProfileData',
       args: [userId, cid],
       account: address,
     });

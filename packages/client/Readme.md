@@ -27,7 +27,7 @@ npm install @talentlayer/client --save
 #### Initialisation
 
 ```ts
-import { TalentLayerClient } from "@talentLayer/client"; // Adjust the import based on the SDK's actual export structure
+import { TalentLayerClient } from '@talentLayer/client'; // Adjust the import based on the SDK's actual export structure
 
 const client = new TalentLayerClient({
   chainId: YOUR_CHAIN_ID, // Replace with your chain ID
@@ -66,7 +66,7 @@ PUBLIC_SIGNATURE_API_URL`
 Here's how to initialize the SDK on the backend:
 
 ```ts
-import { TalentLayerClient } from "@talentLayer/client"; // Adjust the import based on the SDK's actual export structure
+import { TalentLayerClient } from '@talentLayer/client'; // Adjust the import based on the SDK's actual export structure
 
 const client = new TalentLayerClient({
   chainId: YOUR_CHAIN_ID, // Replace with your chain ID
@@ -79,8 +79,8 @@ const client = new TalentLayerClient({
   signatureApiUrl: process.env.PUBLIC_SIGNATURE_API_URL,
   walletConfig: {
     rpcUrl: YOUR_RPC_URL, // Your RPC URL
-    privateKey: "0xYOUR_PRIVATE_KEY", // Your private key prefixed with '0x'
-    mnemonic: "YOUR_MNEMONIC", //  Your mnemonic phrase
+    privateKey: '0xYOUR_PRIVATE_KEY', // Your private key prefixed with '0x'
+    mnemonic: 'YOUR_MNEMONIC', //  Your mnemonic phrase
     chainId: YOUR_CHAIN_ID,
   },
 });

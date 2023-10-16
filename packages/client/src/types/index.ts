@@ -1,3 +1,5 @@
+import { Hash } from 'viem';
+
 export type IToken = {
   name: string;
   address: `0x${string}`;
@@ -13,7 +15,7 @@ export enum NetworkEnum {
 }
 
 export enum RateToken {
-  NATIVE = "0x0000000000000000000000000000000000000000",
+  NATIVE = '0x0000000000000000000000000000000000000000',
 }
 
 export type Config = {
@@ -29,25 +31,7 @@ export type GraphQLConfig = {
   subgraphUrl: string;
 };
 
-export enum ServiceStatusEnum {
-  Opened = "Opened",
-  Confirmed = "Confirmed",
-  Finished = "Finished",
-  Cancelled = "Cancelled",
-  Uncompleted = "Uncompleted",
-}
-
 export type GraphQLQuery = string;
-
-export interface IProps {
-  serviceStatus?: ServiceStatusEnum;
-  buyerId?: string;
-  sellerId?: string;
-  numberPerPage?: number;
-  offset?: number;
-  searchQuery?: string;
-  platformId?: string;
-}
 
 export type IPFSClientConfig = {
   clientId: string;
@@ -70,51 +54,8 @@ export type TalentLayerClientConfig = {
   signatureApiUrl?: string;
 };
 
-export type TalentLayerProfile = {
-  title?: string;
-  role?: string;
-  image_url?: string;
-  video_url?: string;
-  name?: string;
-  about?: string;
-  skills?: string;
-  [key: string]: any;
-};
-
-export type ProposalDetails = {
-  about: string;
-  video_url: string;
-  [key: string]: any;
-};
-
-export interface ICreateServiceSignature {
-  profileId: number;
-  cid: string;
-}
-
-export interface CreateProposalArgs {
-  profileId: number;
-  serviceId: number;
-  cid: string;
-}
-
-export type ServiceDetails = {
-  title: string;
-  about: string;
-  keywords: string;
-  rateToken: string;
-  rateAmount: string;
-  [key: string]: any;
-};
-
-export type ReviewDetails = {
-  content: string;
-  rating: number;
-  [key: string]: any;
-};
-
 export type ClientTransactionResponse = {
-  tx: `0x${string}`;
+  tx: Hash;
   cid: string;
 };
 

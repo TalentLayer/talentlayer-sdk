@@ -1,39 +1,11 @@
-import GraphQLClient, { getProposalById } from "../graphql";
-import IPFSClient from "../ipfs";
-import { Platform } from "../platform";
-import {
-  ClientTransactionResponse,
-  CreateProposalArgs,
-  ProposalDetails,
-} from "../types";
-import { getSignature } from "../utils/signature";
-import { ViemClient } from "../viem";
-
-export interface IProposal {
-  getSignature(args: CreateProposalArgs): Promise<any>;
-
-  getOne(proposalId: string): Promise<any>;
-
-  create(
-    proposalDetails: ProposalDetails,
-    userId: string,
-    serviceId: string,
-    rateToken: string,
-    rateAmount: string,
-    expirationDate: string,
-  ): Promise<ClientTransactionResponse>;
-
-  update(
-    proposalDetails: ProposalDetails,
-    userId: string,
-    serviceId: string,
-    rateToken: string,
-    rateAmount: string,
-    expirationDate: string,
-  ): Promise<ClientTransactionResponse>;
-
-  upload(proposalDetails: ProposalDetails): Promise<string>;
-}
+import GraphQLClient from '../graphql';
+import IPFSClient from '../ipfs';
+import { Platform } from '../platform';
+import { ClientTransactionResponse } from '../types';
+import { getSignature } from '../utils/signature';
+import { ViemClient } from '../viem';
+import { getProposalById } from './graphql';
+import { CreateProposalArgs, ProposalDetails } from './types';
 
 export class Proposal {
   graphQlClient: GraphQLClient;
@@ -49,7 +21,7 @@ export class Proposal {
     platformId: number,
     signatureApiUrl?: string,
   ) {
-    console.log("SDK: proposal initialising: ");
+    console.log('SDK: proposal initialising: ');
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
@@ -69,7 +41,7 @@ export class Proposal {
   }
 
   public async getSignature(args: CreateProposalArgs): Promise<any> {
-    return getSignature("createProposal", args, this.signatureApiUrl);
+    return getSignature('createProposal', args, this.signatureApiUrl);
   }
 
   public async upload(proposalDetails: ProposalDetails): Promise<string> {
@@ -100,23 +72,12 @@ export class Proposal {
 
     const platformDetails = await platform.getOne(this.platformID.toString());
 
-    const proposalPostingFees = BigInt(
-      platformDetails?.proposalPostingFee || "0",
-    );
+    const proposalPostingFees = BigInt(platformDetails?.proposalPostingFee || '0');
 
     const tx = await this.viemClient.writeContract(
-      "talentLayerService",
-      "createProposal",
-      [
-        userId,
-        serviceId,
-        rateToken,
-        rateAmount,
-        this.platformID,
-        cid,
-        expirationDate,
-        signature,
-      ],
+      'talentLayerService',
+      'createProposal',
+      [userId, serviceId, rateToken, rateAmount, this.platformID, cid, expirationDate, signature],
       proposalPostingFees,
     );
 
@@ -124,7 +85,7 @@ export class Proposal {
       return { cid, tx };
     }
 
-    throw new Error("Unable to update propsal service");
+    throw new Error('Unable to update propsal service');
   }
 
   public async update(
@@ -136,16 +97,19 @@ export class Proposal {
     expirationDate: string,
   ): Promise<ClientTransactionResponse> {
     const cid = await this.upload(proposalDetails);
-    const tx = await this.viemClient.writeContract(
-      "talentLayerService",
-      "updateProposal",
-      [userId, serviceId, rateToken, rateAmount, cid, expirationDate],
-    );
+    const tx = await this.viemClient.writeContract('talentLayerService', 'updateProposal', [
+      userId,
+      serviceId,
+      rateToken,
+      rateAmount,
+      cid,
+      expirationDate,
+    ]);
 
     if (cid && tx) {
       return { cid, tx };
     }
 
-    throw new Error("Unable to update propsal service");
+    throw new Error('Unable to update propsal service');
   }
 }

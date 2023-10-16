@@ -1,29 +1,29 @@
-import { defineChain } from "viem";
-import { polygon, polygonMumbai } from "viem/chains";
-import { NetworkEnum } from "../types";
+import { defineChain } from 'viem';
+import { polygon, polygonMumbai } from 'viem/chains';
+import { NetworkEnum } from '../types';
 
 // @ts-ignore
 const iexec = defineChain({
   id: 134,
-  name: "iExec Sidechain",
-  network: "iexec",
+  name: 'iExec Sidechain',
+  network: 'iexec',
   nativeCurrency: {
     decimals: 18,
-    name: "xRLC",
-    symbol: "xRLC",
+    name: 'xRLC',
+    symbol: 'xRLC',
   },
   rpcUrls: {
     default: {
-      http: ["https://bellecour.iex.ec"],
+      http: ['https://bellecour.iex.ec'],
     },
     public: {
-      http: ["https://bellecour.iex.ec"],
+      http: ['https://bellecour.iex.ec'],
     },
   },
   blockExplorers: {
     default: {
-      name: "BlockScout",
-      url: "https://blockscout-bellecour.iex.ec/",
+      name: 'BlockScout',
+      url: 'https://blockscout-bellecour.iex.ec/',
     },
   },
   testnet: false,
