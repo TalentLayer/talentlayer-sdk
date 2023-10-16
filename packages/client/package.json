@@ -1,6 +1,6 @@
 {
   "name": "@talentlayer/client",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "The TalentLayer Client for interacting with TalentLayer Smart Contracts and Graph end-points",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.5
+
+### Patch Changes
+
+- Content refactoring
+
 ## 0.1.4
 
 ### Patch Changes
