@@ -34,7 +34,6 @@ export const serviceQueryFields = `
   }
 `;
 
-
 export const serviceDescriptionQueryFields = `
   id
   title
@@ -50,7 +49,7 @@ export const serviceDescriptionQueryFields = `
   }
 `;
 
-export const getProposalsByService = (serviceId: string) => (`
+export const getProposalsByService = (serviceId: string) => `
 {
   proposals(where: {service_: {id: ${serviceId}}}) {
     id
@@ -80,37 +79,4 @@ export const getProposalsByService = (serviceId: string) => (`
     expirationDate
   }
 }
-`)
-
-
-export const getProposalById = (id: string) => (`
-{
-  proposal(id: "${id}") {
-    id
-    seller {
-      id
-      handle
-      address
-      cid
-      rating
-      userStats {
-        numReceivedReviews
-      }
-    }
-    service {
-      id
-    }
-    cid
-    rateToken {
-      address
-    }
-    rateAmount
-    description {
-      about
-      video_url
-    }
-    status
-    expirationDate
-  }
-}
-`)
+`;
