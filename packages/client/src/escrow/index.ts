@@ -120,8 +120,8 @@ export class Escrow {
       }
 
       tx = await this.viemClient.writeContract('talentLayerEscrow', 'createTransaction', [
-        serviceId,
-        sellerId,
+        parseInt(serviceId, 10),
+        parseInt(sellerId, 10),
         metaEvidenceCid,
         cid,
       ]);
