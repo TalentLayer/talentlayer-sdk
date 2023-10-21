@@ -4,7 +4,7 @@
     "description": "The TalentLayer Client for React with abstractions for easy interaction with the TalentLayer protocol",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "private": false,
     "scripts": {
         "lint": "eslint .",
