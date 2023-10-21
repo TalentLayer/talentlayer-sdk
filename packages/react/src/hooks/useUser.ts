@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react';
-import { getUsers } from '../queries/users';
-import { IUser } from '../types';
+import { IUser, OnlyOne } from '../types';
 import useTalentLayer from './useTalentLayer';
 import queries from '../queries';
 
-export default function useUsers  (options: {
-  searchQuery?: string;
-  numberPerPage?: number;
-}) {
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [hasMoreData, setHasMoreData] = useState(true);
-  const [offset, setOffset] = useState(0);
+export default function useUser(options: OnlyOne<{ userId: string; address: string }>) {
+  const [user, setUser] = useState<IUser>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
 
@@ -20,42 +14,30 @@ export default function useUsers  (options: {
     if (!talentLayer.client) return;
 
     try {
-      setLoading(true);
-      const query = queries.users.getUsers(options.numberPerPage, offset, options.searchQuery);
-      const response = await talentLayer.subgraph.query(query);
-
-        if (offset === 0) {
-          setUsers(response.data.users || []);
-        } else {
-          setUsers([...users, ...response.data.users]);
-        }
-
-      if (options.numberPerPage && response?.data?.users.length < options.numberPerPage) {
-        setHasMoreData(false);
-      } else {
-        setHasMoreData(true);
+      if (options.userId) {
+        const query = queries.users.getUserById(options.userId);
+        const response = await talentLayer.subgraph.query(query);
+        setUser(response.data?.user);
       }
+
+      if (options.address) {
+        const query = queries.users.getUserByAddress(options.address);
+        const response = await talentLayer.subgraph.query(query);
+        setUser(response.data?.user);
+      }
+
+      setLoading(true);
     } catch (error: any) {
       console.error(error);
-      setError(error)
+      setError(error);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    setUsers([]);
-    setOffset(0);
-  }, [options.searchQuery]);
-
-  useEffect(() => {
     loadData();
-  }, [options.numberPerPage, options.searchQuery, offset]);
+  }, [options]);
 
-  function loadMore() {
-    options.numberPerPage ? setOffset(offset + options.numberPerPage) : '';
-  }
-
-  return [{ items: users, hasMoreData, loadMore } as const, loading, error] as const;
-};
-
+  return [user, loading, error] as const;
+}

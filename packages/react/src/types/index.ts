@@ -30,6 +30,7 @@ export type IUser = {
 };
 
 export type IUserDetails = {
+  id: string;
   title: string;
   name: string;
   role?: string;
@@ -37,9 +38,9 @@ export type IUserDetails = {
   video_url?: string;
   about?: string;
   skills_raw?: string;
+  user: IUser;
   web3mailPreferences?: IWeb3mailPreferences;
 };
-
 export type IWeb3mailPreferences = {
   activeOnNewService: boolean;
   activeOnNewProposal: boolean;
@@ -246,6 +247,7 @@ export type IProposal = {
   cid: string;
   status: ProposalStatusEnum;
   seller: IUser;
+  buyer: IUser;
   rateToken: IToken;
   rateAmount: string;
   service: IService;

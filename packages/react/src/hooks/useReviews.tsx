@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { IProposal } from '../types';
+import { IProposal, IReview } from '../types';
 import useTalentLayer from './useTalentLayer';
+import queries from '../queries';
 
-export default function useProposal(proposalId: string) {
-  const [data, setData] = useState<IProposal>();
+export default function useReviews(serviceId: string) {
+  const [data, setData] = useState<IReview[]>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
@@ -14,10 +15,10 @@ export default function useProposal(proposalId: string) {
     if (!talentLayer.client) return;
 
     try {
-      if (proposalId !== undefined) {
-        const proposal = await talentLayer.client.proposal.getOne(proposalId);
-        return setData(proposal);
-      }
+      const query = queries.reviews.getReviewsByService(serviceId);
+      const reviews = await talentLayer.subgraph.query(query);
+      console.log(reviews.data)
+      return setData(reviews.data);
 
       throw new Error('Proposal not found');
     } catch (error: any) {
@@ -30,7 +31,7 @@ export default function useProposal(proposalId: string) {
 
   useEffect(() => {
     loadData();
-  }, [proposalId]);
+  }, []);
 
   return [data, loading, error] as const;
 }

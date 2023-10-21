@@ -26,11 +26,12 @@ export default function useServices(filters: {
       let response;
       let newServices: IService[] = [];
 
-      response = await talentLayer.client.service.search({
+      response = await talentLayer.client.service.getServices({
         offset,
         ...filters,
         platformId: filters.platformId || talentLayer.platformId.toString(),
       });
+
       if (filters.searchQuery) {
         newServices = response.data;
       } else {

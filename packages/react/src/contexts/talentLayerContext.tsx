@@ -1,19 +1,16 @@
+'use client';
+
 import React, { ContextType } from 'react';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { IAccount, IUser, NetworkEnum } from '../types';
 import { TalentLayerClient } from '@talentlayer/client';
 
-type TalentLayerConfig = {
-  chainId: NetworkEnum;
-  platformId: number;
-  infuraClientId: string;
-  infuraClientSecret: string;
-};
-
 interface TalentLayerProviderProps {
   children: ReactNode;
-  config: TalentLayerConfig;
+  config: ConstructorParameters<typeof TalentLayerClient>[0] & {
+    account: ReturnType<typeof useAccount>;
+  };
 }
 
 export interface Subgraph {
@@ -46,7 +43,7 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
   const { children, config } = props;
   const { chainId, platformId } = config;
 
-  const account = useAccount();
+  const account = config.account;
 
   const [user, setUser] = useState<IUser | undefined>();
   const [loading, setLoading] = useState(true);
@@ -64,11 +61,6 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
     try {
       const userResponse = await talentLayerClient.profile.getByAddress(account.address);
 
-      if (userResponse) {
-        setLoading(false);
-        return false;
-      }
-
       const currentUser = userResponse;
 
       const platformResponse = await talentLayerClient.platform.getOne(
@@ -80,13 +72,13 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
 
       setUser(currentUser);
 
-      setLoading(false);
       return true;
     } catch (err: any) {
-      setLoading(false);
       console.error(err);
       //TODO - Handle error for the developer in a visual manner
       return false;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -106,7 +98,7 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
       chainId,
       platformId,
       subgraph: { query: (query: string) => talentLayerClient.graphQlClient.get(query) },
-    };
+    } as any;
   }, [account.address, user?.id, loading]);
 
   return <TalentLayerContext.Provider value={value}>{children}</TalentLayerContext.Provider>;

@@ -19,6 +19,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
+        "@talentlayer/client": "^0.1.6",
         "axios": "^1.5.0",
         "ipfs-http-client": "^60.0.1",
         "net": "^1.0.2",
