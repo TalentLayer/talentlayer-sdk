@@ -95,7 +95,7 @@ export class TalentLayerClient {
 
   /**
    * Provides access to service functionalities.
-   * @type {IDispute}
+   * @type {IService}
    */
 
   // @ts-ignore
