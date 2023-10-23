@@ -7,6 +7,7 @@ import { ViemClient } from '../viem';
 import {
   getFilteredServiceCondition,
   getFilteredServiceDescriptionCondition,
+  getReviewsByService,
 } from './graphql/queries';
 import { ICreateServiceSignature, IProps, ServiceDetails } from './types';
 
@@ -19,6 +20,7 @@ export interface IService {
   ): Promise<ClientTransactionResponse>;
   updloadServiceDataToIpfs(serviceData: ServiceDetails): Promise<string>;
   getServices(params: IProps): Promise<any>;
+  getServiceReviews(serviceId: string): Promise<any>;
   search(params: IProps): Promise<any>;
 }
 
@@ -90,6 +92,14 @@ export class Service {
             }`;
 
     return this.graphQlClient.get(query);
+  }
+
+  public async getServiceReviews(serviceId: string): Promise<any> {
+    const query = getReviewsByService(serviceId);
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data || null;
   }
 
   public async search(params: IProps): Promise<any> {
