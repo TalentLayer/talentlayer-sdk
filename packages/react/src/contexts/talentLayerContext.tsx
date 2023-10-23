@@ -48,7 +48,7 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
   const [user, setUser] = useState<IUser | undefined>();
   const [loading, setLoading] = useState(true);
 
-  let talentLayerClient = new TalentLayerClient(config);
+  const [talentLayerClient, setTalentLayerClient] = useState<TalentLayerClient>();
 
   async function loadData() {
     if (!talentLayerClient) return false;
@@ -75,7 +75,7 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
       return true;
     } catch (err: any) {
       console.error(err);
-      //TODO - Handle error for the developer in a visual manner
+
       return false;
     } finally {
       setLoading(false);
@@ -83,10 +83,17 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
   }
 
   useEffect(() => {
+    if (chainId && account.address) {
+      const tlClient = new TalentLayerClient(config);
+      setTalentLayerClient(tlClient);
+    }
+  }, [chainId, account.address]);
+
+  useEffect(() => {
     if (!talentLayerClient) return;
 
     loadData();
-  }, [account.address]);
+  }, [talentLayerClient]);
 
   const value = useMemo<ContextType<typeof TalentLayerContext>>(() => {
     return {
@@ -97,7 +104,9 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
       client: talentLayerClient,
       chainId,
       platformId,
-      subgraph: { query: (query: string) => talentLayerClient.graphQlClient.get(query) },
+      subgraph: {
+        query: (query: string) => (talentLayerClient as TalentLayerClient).graphQlClient.get(query),
+      },
     } as any;
   }, [account.address, user?.id, loading]);
 
