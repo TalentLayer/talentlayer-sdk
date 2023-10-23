@@ -20,6 +20,8 @@ import { IReview } from './review/types';
 import { Review } from './review';
 import { IUser } from './users/types';
 import { User } from './users';
+import { IFees } from './fees/types';
+import { Fees } from './fees';
 
 /**
  * Main client for interacting with the TalentLayer protocol.
@@ -150,6 +152,22 @@ export class TalentLayerClient {
   // @ts-ignore
   get user(): IUser {
     return new User(
+      this.graphQlClient,
+      this.ipfsClient,
+      this.viemClient,
+      this.platformID,
+      this.signatureApiUrl,
+    );
+  }
+
+  /**
+   * Provides access to user functionalities.
+   * @type {IFees}
+   */
+
+  // @ts-ignore
+  get fees(): IFees {
+    return new Fees(
       this.graphQlClient,
       this.ipfsClient,
       this.viemClient,

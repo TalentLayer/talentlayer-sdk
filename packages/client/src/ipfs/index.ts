@@ -10,14 +10,14 @@ export default class IPFSClient {
     const authorization =
       'Basic ' + btoa(ipfsClientConfig.clientId + ':' + ipfsClientConfig.clientSecret);
     this.authorization = authorization;
-    import('ipfs-http-client').then(({ create }) => {
-      this.ipfs = create({
-        url: ipfsClientConfig.baseUrl,
-        headers: {
-          authorization,
-        },
-      });
-    });
+    // import('ipfs-http-client').then(({ create }) => {
+    //   this.ipfs = create({
+    //     url: ipfsClientConfig.baseUrl,
+    //     headers: {
+    //       authorization,
+    //     },
+    //   });
+    // });
   }
 
   public async post(data: string): Promise<any> {
