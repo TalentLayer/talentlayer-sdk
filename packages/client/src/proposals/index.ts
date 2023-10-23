@@ -4,7 +4,7 @@ import { Platform } from '../platform';
 import { ClientTransactionResponse } from '../types';
 import { getSignature } from '../utils/signature';
 import { ViemClient } from '../viem';
-import { getProposalById } from './graphql';
+import { getAllProposalsByServiceId, getAllProposalsByUser, getProposalById } from './graphql';
 import { CreateProposalArgs, ProposalDetails } from './types';
 
 export class Proposal {
@@ -38,6 +38,22 @@ export class Proposal {
       return response?.data?.proposal;
     }
     return null;
+  }
+
+  public async getByServiceId(serviceId: string): Promise<any> {
+    const query = getAllProposalsByServiceId(serviceId)
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data?.proposals || null
+  }
+
+  public async getByUser(userId: string): Promise<any> {
+    const query = getAllProposalsByUser(userId)
+    
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data?.proposals || null
   }
 
   public async getSignature(args: CreateProposalArgs): Promise<any> {
