@@ -1,7 +1,7 @@
-import GraphQLClient from "../graphql";
-import IPFSClient from "../ipfs";
-import { ViemClient } from "../viem";
-import { getUserById, getUserTotalGains, getUsers } from "./graphql";
+import GraphQLClient from '../graphql';
+import IPFSClient from '../ipfs';
+import { ViemClient } from '../viem';
+import { getPaymentsForUser, getUserById, getUserTotalGains, getUsers } from './graphql';
 
 export class User {
   graphQlClient: GraphQLClient;
@@ -15,7 +15,7 @@ export class User {
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
-    signatureApiUrl?: string
+    signatureApiUrl?: string,
   ) {
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
@@ -37,11 +37,7 @@ export class User {
     offset?: number;
     searchQuery?: string;
   }): Promise<any> {
-    const query = getUsers(
-      params.numberPerPage,
-      params.offset,
-      params.searchQuery
-    );
+    const query = getUsers(params.numberPerPage, params.offset, params.searchQuery);
 
     return this.graphQlClient.get(query);
   }
@@ -52,5 +48,19 @@ export class User {
     const response = await this.graphQlClient.get(query);
 
     return response?.data?.user?.totalGains || null;
+  }
+
+  public async getPayments(
+    userId: string,
+    numberPerPage?: number,
+    offset?: number,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<any> {
+    const query = getPaymentsForUser(userId, numberPerPage, offset, startDate, endDate)
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data?.payments || null
   }
 }

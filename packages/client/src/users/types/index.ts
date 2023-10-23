@@ -8,4 +8,6 @@ export interface IUser {
   }): Promise<any>;
 
   getTotalGains(userId: string): Promise<any>;
+
+  getPayments(userId: string, numberPerPage?: number, offset?: number, startDate?: string, endDate?: string): Promise<any>
 }

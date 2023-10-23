@@ -1,14 +1,8 @@
-export const getUsers = (
-  numberPerPage?: number,
-  offset?: number,
-  searchQuery?: string
-) => {
-  const pagination = numberPerPage
-    ? "first: " + numberPerPage + ", skip: " + offset
-    : "";
-  let condition = ", where: {";
-  condition += searchQuery ? `, handle_contains_nocase: "${searchQuery}"` : "";
-  condition += "}";
+export const getUsers = (numberPerPage?: number, offset?: number, searchQuery?: string) => {
+  const pagination = numberPerPage ? 'first: ' + numberPerPage + ', skip: ' + offset : '';
+  let condition = ', where: {';
+  condition += searchQuery ? `, handle_contains_nocase: "${searchQuery}"` : '';
+  condition += '}';
 
   return `
         {
@@ -120,3 +114,43 @@ export const getUserTotalGains = (id: string) => `
 }
 `;
 
+export const getPaymentsForUser = (
+  userId: string,
+  numberPerPage?: number,
+  offset?: number,
+  startDate?: string,
+  endDate?: string,
+) => {
+  const pagination = numberPerPage ? 'first: ' + numberPerPage + ', skip: ' + offset : '';
+
+  const startDataCondition = startDate ? `, createdAt_gte: "${startDate}"` : '';
+  const endDateCondition = endDate ? `, createdAt_lte: "${endDate}"` : '';
+
+  const query = `
+    {
+      payments(where: {
+        service_: {seller: "${userId}"}
+        ${startDataCondition}
+        ${endDateCondition}
+      }, 
+      orderBy: createdAt orderDirection: desc ${pagination} ) {
+        id, 
+        rateToken {
+          address
+          decimals
+          name
+          symbol
+        }
+        amount
+        transactionHash
+        paymentType
+        createdAt
+        service {
+          id, 
+          cid
+        }
+      }
+    }
+    `;
+  return query;
+};
