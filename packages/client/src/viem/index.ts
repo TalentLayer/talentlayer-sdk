@@ -63,14 +63,14 @@ export class ViemClient {
     }
 
     // @ts-ignore
-    // let browserProvider = globalThis?.ethereum || window?.ethereum;
-    // if (browserProvider) {
-    //   this.client = createWalletClient({
-    //     chain: chains[this.chainId],
-    //     transport: custom(browserProvider),
-    //   });
-    //   return true;
-    // }
+    let browserProvider = globalThis?.ethereum || window?.ethereum;
+    if (browserProvider) {
+      this.client = createWalletClient({
+        chain: chains[this.chainId],
+        transport: custom(browserProvider),
+      });
+      return true;
+    }
 
     return false;
   }
