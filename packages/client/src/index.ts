@@ -18,6 +18,8 @@ import { IEscrow } from './escrow/types';
 import { IService, Service } from './services';
 import { IReview } from './review/types';
 import { Review } from './review';
+import { IUser } from './users/types';
+import { User } from './users';
 
 /**
  * Main client for interacting with the TalentLayer protocol.
@@ -137,6 +139,22 @@ export class TalentLayerClient {
       this.viemClient,
       this.platformID,
       this.chainId,
+    );
+  }
+
+  /**
+   * Provides access to user functionalities.
+   * @type {IUser}
+   */
+
+  // @ts-ignore
+  get user(): IUser {
+    return new User(
+      this.graphQlClient,
+      this.ipfsClient,
+      this.viemClient,
+      this.platformID,
+      this.signatureApiUrl,
     );
   }
 }
