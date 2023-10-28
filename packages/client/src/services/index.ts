@@ -19,8 +19,6 @@ export interface IService {
   ): Promise<ClientTransactionResponse>;
   updloadServiceDataToIpfs(serviceData: ServiceDetails): Promise<string>;
   getServices(params: IProps): Promise<any>;
-  getServiceReviews(serviceId: string): Promise<any>;
-  getServicePayments(serviceId: string, paymentType?: string): Promise<any>
   search(params: IProps): Promise<any>;
 }
 
