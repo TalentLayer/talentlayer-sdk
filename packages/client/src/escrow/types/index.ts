@@ -8,4 +8,9 @@ export interface IEscrow {
   ): Promise<ClientTransactionResponse>;
   release(serviceId: string, amount: bigint, userId: number): Promise<any>;
   reimburse(serviceId: string, amount: bigint, userId: number): Promise<any>;
+  getProtocolAndPlatformsFees(
+    originServicePlatformId: string,
+    originValidatedProposalPlatformId: string,
+  ): Promise<any>;
+  getByService(serviceId: string, paymentType?: string): Promise<any>;
 }
