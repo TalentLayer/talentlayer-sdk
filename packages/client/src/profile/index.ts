@@ -93,7 +93,7 @@ export class Profile {
     );
   }
 
-  public async getUsers(params: {
+  public async getBy(params: {
     numberPerPage?: number;
     offset?: number;
     searchQuery?: string;

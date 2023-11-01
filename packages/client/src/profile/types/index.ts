@@ -17,7 +17,7 @@ export interface IProfile {
   getById(userId: string): Promise<any>;
   create(handle: string): Promise<any>;
   update(profileData: TalentLayerProfile, userId: string): Promise<ClientTransactionResponse>;
-  getUsers(params: {
+  getBy(params: {
     numberPerPage?: number;
     offset?: number;
     searchQuery?: string;
