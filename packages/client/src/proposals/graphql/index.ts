@@ -87,40 +87,40 @@ export const getAllProposalsByServiceId = (id: string) => `
 `;
 
 export const getAllProposalsByUser = (id: string) => `
-  {
-    proposals(where: {seller: "${id}", status: "Pending"}) {
+{
+  proposals(where: {seller: "${id}", status: "Pending"}) {
+    id
+    rateAmount
+    rateToken {
+      address
+      decimals
+      name
+      symbol
+    }
+    status
+    cid
+    createdAt
+    seller {
       id
-      rateAmount
-      rateToken {
-        address
-        decimals
-        name
-        symbol
-      }
-      status
+      handle
+    }
+    service {
+      id
       cid
       createdAt
-      seller {
+      buyer {
         id
         handle
       }
-      service {
-        id
-        cid
-        createdAt
-        buyer {
-          id
-          handle
-        }
-      }
-      description {
-        id
-        about
-        expectedHours
-        startDate
-        video_url
-      }
-      expirationDate
     }
+    description {
+      id
+      about
+      expectedHours
+      startDate
+      video_url
+    }
+    expirationDate
   }
+}
 `;
