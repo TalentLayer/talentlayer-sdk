@@ -16,8 +16,8 @@ import { IProfile } from './profile/types';
 import { Escrow } from './escrow';
 import { IEscrow } from './escrow/types';
 import { IService, Service } from './services';
-import { IReview } from './review/types';
-import { Review } from './review';
+import { IReview } from './reviews/types';
+import { Review } from './reviews';
 
 /**
  * Main client for interacting with the TalentLayer protocol.
@@ -93,7 +93,7 @@ export class TalentLayerClient {
 
   /**
    * Provides access to service functionalities.
-   * @type {IDispute}
+   * @type {IService}
    */
 
   // @ts-ignore

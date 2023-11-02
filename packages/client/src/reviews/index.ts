@@ -2,6 +2,7 @@ import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
 import { ClientTransactionResponse } from '../types';
 import { ViemClient } from '../viem';
+import { getReviewsByService } from './graphql';
 import { ReviewDetails } from './types';
 
 export class Review {
@@ -54,5 +55,13 @@ export class Review {
     }
 
     throw new Error(Review.CREATE_ERROR);
+  }
+  
+  public async getByService(serviceId: string): Promise<any> {
+    const query = getReviewsByService(serviceId);
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data || null;
   }
 }

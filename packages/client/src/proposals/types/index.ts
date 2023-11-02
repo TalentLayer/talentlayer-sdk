@@ -1,4 +1,4 @@
-import { ClientTransactionResponse } from '../../types';
+import { ClientTransactionResponse } from "../../types";
 
 export type ProposalDetails = {
   about: string;
@@ -17,13 +17,17 @@ export interface IProposal {
 
   getOne(proposalId: string): Promise<any>;
 
+  getByServiceId(serviceId: string): Promise<any>;
+
+  getByUser(userId: string): Promise<any>;
+
   create(
     proposalDetails: ProposalDetails,
     userId: string,
     serviceId: string,
     rateToken: string,
     rateAmount: string,
-    expirationDate: string,
+    expirationDate: string
   ): Promise<ClientTransactionResponse>;
 
   update(
@@ -32,7 +36,7 @@ export interface IProposal {
     serviceId: string,
     rateToken: string,
     rateAmount: string,
-    expirationDate: string,
+    expirationDate: string
   ): Promise<ClientTransactionResponse>;
 
   upload(proposalDetails: ProposalDetails): Promise<string>;
