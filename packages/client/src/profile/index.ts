@@ -4,7 +4,7 @@ import IPFSClient from '../ipfs';
 import { getProtocolById } from '../platform/graphql/queries';
 import { ClientTransactionResponse } from '../types';
 import { ViemClient } from '../viem';
-import { getProfileByAddress } from './graphql';
+import { getPaymentsForUser, getProfileByAddress, getProfileById, getProfiles, getUserTotalGains } from './graphql';
 import { TalentLayerProfile } from './types';
 
 export class Profile {
@@ -36,6 +36,14 @@ export class Profile {
     }
 
     return null;
+  }
+  
+  public async getById(userId: string): Promise<any> {
+    const query = getProfileById(userId);
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data?.user || null;
   }
 
   public async upload(profileData: TalentLayerProfile): Promise<string> {
@@ -83,5 +91,52 @@ export class Profile {
       [this.platformId.toString(), handle],
       BigInt(fee),
     );
+  }
+
+  public async getBy(params: {
+    numberPerPage?: number;
+    offset?: number;
+    searchQuery?: string;
+  }): Promise<any> {
+    const query = getProfiles(params.numberPerPage, params.offset, params.searchQuery);
+
+    return this.graphQlClient.get(query);
+  }
+
+  public async getTotalGains(userId: string): Promise<any> {
+    const query = getUserTotalGains(userId);
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data?.user?.totalGains || null;
+  }
+
+  public async getPayments(
+    userId: string,
+    numberPerPage?: number,
+    offset?: number,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<any> {
+    const query = getPaymentsForUser(userId, numberPerPage, offset, startDate, endDate)
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data?.payments || null
+  }
+
+  public async getMintFees(): Promise<any> {
+    const query = `
+        {
+            protocols {
+                userMintFee,
+                shortHandlesMaxPrice
+            }
+        }
+        `;
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data || null;
   }
 }

@@ -6,7 +6,7 @@ import { Service } from '../services';
 import { ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
 import { calculateApprovalAmount } from '../utils/fees';
 import { ViemClient } from '../viem';
-import { getProtocolAndPlatformsFees } from './graphql/queries';
+import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
 
 export class Escrow {
   graphQlClient: GraphQLClient;
@@ -59,21 +59,21 @@ export class Escrow {
     let tx,
       cid = proposal.cid;
 
-    const protocolAndPlatformsFeesResponse = await this.graphQlClient.get(
-      getProtocolAndPlatformsFees(proposal.service.platform.id, proposal.platform.id),
+    const protocolAndPlatformsFees = await this.getProtocolAndPlatformsFees(
+      proposal.service.platform.id, proposal.platform.id
     );
 
-    console.log('SDK: fees', protocolAndPlatformsFeesResponse);
+    console.log('SDK: fees', protocolAndPlatformsFees);
 
-    if (!protocolAndPlatformsFeesResponse.data) {
+    if (!protocolAndPlatformsFees.data) {
       throw Error('Unable to fetch fees');
     }
 
     const approvalAmount = calculateApprovalAmount(
       proposal.rateAmount,
-      protocolAndPlatformsFeesResponse.data.servicePlatform.originServiceFeeRate,
-      protocolAndPlatformsFeesResponse.data.proposalPlatform.originValidatedProposalFeeRate,
-      protocolAndPlatformsFeesResponse.data.protocols[0].protocolEscrowFeeRate,
+      protocolAndPlatformsFees.servicePlatform.originServiceFeeRate,
+      protocolAndPlatformsFees.proposalPlatform.originValidatedProposalFeeRate,
+      protocolAndPlatformsFees.protocols[0].protocolEscrowFeeRate,
     );
 
     console.log('SDK: escrow seeking approval for amount: ', approvalAmount);
@@ -187,4 +187,24 @@ export class Escrow {
 
     return tx;
   }
+
+  public async getProtocolAndPlatformsFees(
+    originServicePlatformId: string,
+    originValidatedProposalPlatformId: string,
+  ): Promise<any> {
+    const query = getProtocolAndPlatformsFees(originServicePlatformId, originValidatedProposalPlatformId);
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data || null;
+  }
+  
+  public async getByService(serviceId: string, paymentType?: string): Promise<any> {
+    const query = getPaymentsByService(serviceId, paymentType);
+
+    const response = await this.graphQlClient.get(query);
+
+    return response?.data?.payments || null
+  }
+
 }

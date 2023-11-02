@@ -12,4 +12,6 @@ export interface IReview {
     serviceId: string,
     userId: string,
   ): Promise<ClientTransactionResponse>;
+
+  getByService(serviceId: string): Promise<any>
 }
