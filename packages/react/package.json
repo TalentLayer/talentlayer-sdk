@@ -19,7 +19,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "@talentlayer/client": "^0.1.6",
+        "@talentlayer/client": "^0.1.7",
         "net": "^1.0.2",
         "react": "^18.2.0",
         "wagmi": "^1.4.2"

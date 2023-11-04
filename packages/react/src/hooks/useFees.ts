@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IFees } from '../types';
 import useTalentLayer from './useTalentLayer';
-import queries from '../queries';
 
 export default function useFees(
   originServicePlatformId: string,
@@ -25,17 +24,12 @@ export default function useFees(
       originValidatedProposalFeeRate: 0,
     };
     try {
-      const query = queries.fees.getProtocolAndPlatformsFees(
-        originServicePlatformId,
-        originValidatedProposalPlatformId,
-      );
-      const response = await talentLayer.subgraph.query(query);
-      const data = response.data;
-
-      if (data) {
-        fees.protocolEscrowFeeRate = data.protocols[0].protocolEscrowFeeRate;
-        fees.originServiceFeeRate = data.servicePlatform.originServiceFeeRate;
-        fees.originValidatedProposalFeeRate = data.proposalPlatform.originValidatedProposalFeeRate;
+      const response = await talentLayer.client?.escrow.getProtocolAndPlatformsFees(originServicePlatformId, originValidatedProposalPlatformId)
+      
+      if (response) {
+        fees.protocolEscrowFeeRate = response.protocols[0].protocolEscrowFeeRate;
+        fees.originServiceFeeRate = response.servicePlatform.originServiceFeeRate;
+        fees.originValidatedProposalFeeRate = response.proposalPlatform.originValidatedProposalFeeRate;
       }
 
       setFees(fees);

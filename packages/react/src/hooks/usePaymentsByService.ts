@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { IPayment, PaymentTypeEnum } from '../types';
-import queries from '../queries';
 import useTalentLayer from './useTalentLayer';
 
 export default function usePaymentsByService(id: string, paymentType?: PaymentTypeEnum) {
@@ -12,11 +11,10 @@ export default function usePaymentsByService(id: string, paymentType?: PaymentTy
 
   async function loadData() {
     try {
-      const query = queries.payments.getPaymentsByService(id, paymentType);
-      const response = await talentLayer.subgraph.query(query);
+      const response = await talentLayer.client?.escrow.getByService(id)
 
-      if (response?.data?.data?.payments) {
-        setPayments(response.data.data.payments);
+      if (response) {
+        setPayments(response);
       }
     } catch (error: any) {
       console.error(error);

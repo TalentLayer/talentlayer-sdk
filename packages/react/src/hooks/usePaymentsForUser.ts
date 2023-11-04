@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IPayment } from '../types';
 import useTalentLayer from './useTalentLayer';
-import queries from '../queries';
 
 export default function usePaymentsForUser(options: {
   id: string;
@@ -27,26 +26,28 @@ export default function usePaymentsForUser(options: {
   const end = endDate ? new Date(endDate).getTime() / 1000 : '';
 
   async function loadData() {
+    if (!talentLayer.client) return;
+
     setLoading(true);
     try {
-      const query = queries.payments.getPaymentsForUser(
-        id,
-        total,
-        0,
-        start.toString(),
-        end.toString(),
+      const response = await talentLayer.client?.profile.getPayments(
+        options.id,
+        options.numberPerPage,
+        offset,
+        options.startDate,
+        options.endDate,
       );
-      const response = talentLayer.subgraph.query(query);
 
-      if (response && response.data && response.data.data) {
-        setPayments([...response.data.data.payments]);
+      if (response) {
+        setPayments([...response]);
 
-        if (response.data.data.payments.length < total) {
+        if (response.length < total) {
           setHasMoreData(false);
         }
       }
     } catch (error: any) {
       console.error(error);
+      setError(error);
     } finally {
       setLoading(false);
     }

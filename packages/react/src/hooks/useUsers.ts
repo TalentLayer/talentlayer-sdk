@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getUsers } from '../queries/users';
 import { IUser } from '../types';
 import useTalentLayer from './useTalentLayer';
-import queries from '../queries';
 
-export default function useUsers  (options: {
-  searchQuery?: string;
-  numberPerPage?: number;
-}) {
+export default function useUsers(options: { searchQuery?: string; numberPerPage?: number }) {
   const [users, setUsers] = useState<IUser[]>([]);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [offset, setOffset] = useState(0);
@@ -21,14 +16,13 @@ export default function useUsers  (options: {
 
     try {
       setLoading(true);
-      const query = queries.users.getUsers(options.numberPerPage, offset, options.searchQuery);
-      const response = await talentLayer.subgraph.query(query);
+      const response = await talentLayer.client.profile.getBy({});
 
-        if (offset === 0) {
-          setUsers(response.data.users || []);
-        } else {
-          setUsers([...users, ...response.data.users]);
-        }
+      if (offset === 0) {
+        setUsers(response.data.users || []);
+      } else {
+        setUsers([...users, ...response.data.users]);
+      }
 
       if (options.numberPerPage && response?.data?.users.length < options.numberPerPage) {
         setHasMoreData(false);
@@ -37,7 +31,7 @@ export default function useUsers  (options: {
       }
     } catch (error: any) {
       console.error(error);
-      setError(error)
+      setError(error);
     } finally {
       setLoading(false);
     }
@@ -57,5 +51,4 @@ export default function useUsers  (options: {
   }
 
   return [{ items: users, hasMoreData, loadMore } as const, loading, error] as const;
-};
-
+}

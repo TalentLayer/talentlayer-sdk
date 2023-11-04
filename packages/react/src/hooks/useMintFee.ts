@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react';
 import useTalentLayer from './useTalentLayer';
 
-const query = `
-{
-  protocols {
-    userMintFee,
-    shortHandlesMaxPrice
-  }
-}
-  `;
-
 export default function useMintFee() {
   const [mintFee, setMintFee] = useState(0);
   const [shortHandlesMaxPrice, setShortHandlesMaxPrice] = useState(0);
@@ -18,11 +9,10 @@ export default function useMintFee() {
 
   async function loadData() {
     try {
-      const response = await talentLayer.subgraph.query(query);
-      const data = response.data;
+      const response = await talentLayer.client?.profile.getMintFees();
 
-      if (data) {
-        const protocol = data.protocols[0];
+      if (response) {
+        const protocol = response.protocols[0];
         setMintFee(protocol.userMintFee);
         setShortHandlesMaxPrice(protocol.shortHandlesMaxPrice);
       }

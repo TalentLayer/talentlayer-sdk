@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { IProposal, IReview } from '../types';
+import { IReview } from '../types';
 import useTalentLayer from './useTalentLayer';
-import queries from '../queries';
 
 export default function useReviews(serviceId: string) {
   const [data, setData] = useState<IReview[]>();
@@ -15,12 +14,9 @@ export default function useReviews(serviceId: string) {
     if (!talentLayer.client) return;
 
     try {
-      const query = queries.reviews.getReviewsByService(serviceId);
-      const reviews = await talentLayer.subgraph.query(query);
-      console.log(reviews.data)
-      return setData(reviews.data);
+      const reviews = await talentLayer.client.review.getByService(serviceId);
 
-      throw new Error('Proposal not found');
+      return setData(reviews.data);
     } catch (error: any) {
       console.error(error);
       setError(error);

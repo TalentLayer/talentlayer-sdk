@@ -83,7 +83,7 @@ export function TalentLayerProvider(props: TalentLayerProviderProps) {
   }
 
   useEffect(() => {
-    if (chainId && account.address) {
+    if (chainId && account.address && !talentLayerClient) {
       const tlClient = new TalentLayerClient(config);
       setTalentLayerClient(tlClient);
     }
