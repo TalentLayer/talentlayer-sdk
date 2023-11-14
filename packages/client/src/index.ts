@@ -1,7 +1,6 @@
-import { getGraphQLConfig } from './config';
-import axios from 'axios';
+import { getChainConfig, getGraphQLConfig } from './config';
 import GraphQLClient from './graphql';
-import { NetworkEnum, TalentLayerClientConfig } from './types';
+import { Config, NetworkEnum, TalentLayerClientConfig } from './types';
 import IPFSClient from './ipfs';
 import { ViemClient } from './viem';
 import { IERC20, ERC20 } from './blockchain-bindings/erc20';
@@ -46,6 +45,13 @@ export class TalentLayerClient {
     this.viemClient = new ViemClient(config.chainId, config.walletConfig || {});
     this.chainId = config.chainId;
     this.signatureApiUrl = config?.signatureApiUrl;
+  }
+
+  /**
+   * Returns chain config based on netowrk ID
+   */
+  public getChainConfig(networkId: NetworkEnum): Config {
+    return getChainConfig(networkId);
   }
 
   /**
