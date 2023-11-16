@@ -4,7 +4,7 @@ import IPFSClient from '../ipfs';
 import { getProtocolById } from '../platform/graphql/queries';
 import { ClientTransactionResponse } from '../types';
 import { ViemClient } from '../viem';
-import { getPaymentsForUser, getProfileByAddress, getProfileById, getProfiles, getUserTotalGains } from './graphql';
+import { getMintFees, getPaymentsForUser, getProfileByAddress, getProfileById, getProfiles, getUserTotalGains } from './graphql';
 import { TalentLayerProfile } from './types';
 
 export class Profile {
@@ -37,7 +37,7 @@ export class Profile {
 
     return null;
   }
-  
+
   public async getById(userId: string): Promise<any> {
     const query = getProfileById(userId);
 
@@ -126,14 +126,7 @@ export class Profile {
   }
 
   public async getMintFees(): Promise<any> {
-    const query = `
-        {
-            protocols {
-                userMintFee,
-                shortHandlesMaxPrice
-            }
-        }
-        `;
+    const query = getMintFees();
 
     const response = await this.graphQlClient.get(query);
 

@@ -1,22 +1,32 @@
-import { getProfileByAddress } from "../profile/graphql";
-import { mockGraphQlUsersResponse, testAddress, testIpfsHash } from "./fixtures";
+import { getProtocolById } from "../platform/graphql/queries";
+import { getMintFees, getProfileByAddress } from "../profile/graphql";
+import { mockGraphQlMintFeesResponse, mockGraphQlProtocolByIdResponse, mockGraphQlUsersResponse, testAddress, testIpfsHash } from "./fixtures";
 
 export class MockGraphQLClient {
-    async get(query: string) {
+    get = jest.fn(async (query: string) => {
         if (query === getProfileByAddress(testAddress)) {
             return mockGraphQlUsersResponse;
         }
-        // Mock response based on the query
+
+        if (query === getMintFees()) {
+            return mockGraphQlMintFeesResponse
+        }
+
+        if (query === getProtocolById(1)) {
+            return mockGraphQlProtocolByIdResponse;
+        }
+
         return { data: { "racoon": "bar" } };
-    }
+    })
+
 }
 
 export class MockViemClient {
-    // Add methods that are used in the Profile class
-    async writeContract(/* parameters */) {
-        // Mock response for writeContract
+    writeContract = jest.fn(async (...args) => {
+        console.log("args:", args)
         return testAddress;
-    }
+    })
+
 }
 
 export class MockIPFSClient {
