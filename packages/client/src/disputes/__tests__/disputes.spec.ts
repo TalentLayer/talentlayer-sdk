@@ -1,4 +1,3 @@
-// START of disputes.spec.ts
 import { parseEther, toHex } from "viem";
 import { Disputes } from "..";
 import { getChainConfig, getGraphQLConfig } from "../../config";
@@ -58,7 +57,7 @@ describe('Disputes', () => {
     });
 
     describe('setPrice', () => {
-        it.only('should set the price for arbitration', async () => {
+        it('should set the price for arbitration', async () => {
             // Arrange
             const value = 5;
             const expectedTxHash = testAddress;
@@ -79,4 +78,3 @@ describe('Disputes', () => {
 
 });
 
-// END of disputes.spec.ts
