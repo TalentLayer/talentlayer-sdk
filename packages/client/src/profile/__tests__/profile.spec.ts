@@ -4,8 +4,8 @@ import { Profile } from "..";
 // import GraphQLClient from "../../graphql";
 import { getProtocolById } from "../../platform/graphql/queries";
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from "../../__mocks__/clientMocks";
-import { mockGraphQlMintFeesResponse, testAddress, testIpfsHash, testName, testPlatformId, testProfileData } from "../../__mocks__/fixtures";
-import { getMintFees } from "../graphql";
+import { mockGraphQlMintFeesResponse, testAddress, testGetProfilesResponse, testIpfsHash, testName, testPlatformId, testProfileData, testUserId, testUserPaymentsResponse, testUserResponse, testUserTotalGainsResponse } from "../../__mocks__/fixtures";
+import { getMintFees, getProfileById, getProfiles } from "../graphql";
 
 describe('Profile', () => {
     let mockGraphQLClient: any;
@@ -25,6 +25,29 @@ describe('Profile', () => {
     it('constructor initializes correctly', () => {
         expect(profile).toBeInstanceOf(Profile);
     });
+
+    describe('getById', () => {
+        it('should return user based on input it', async () => {
+            const userId = testUserId;
+            const result = await profile.getById(userId);
+            expect(result).toEqual(testUserResponse.data.user);
+            expect(mockGraphQLClient.get).toHaveBeenCalledWith(getProfileById(userId));
+
+        })
+    })
+
+    describe('update', () => {
+        it('should successfully update profile hash and update on contract', async () => {
+            const profileData = testProfileData;
+            const updateResponse = await profile.update(profileData, testUserId);
+            expect(updateResponse.cid).toEqual(testIpfsHash);
+            expect(updateResponse.tx).toEqual(testAddress);
+            expect(mockViemClient.writeContract).toHaveBeenCalledWith('talentLayerId', 'updateProfileData', [
+                testUserId,
+                testIpfsHash
+            ])
+        })
+    })
 
     describe('create', () => {
         it('should create a new profile and return a response', async () => {
@@ -58,6 +81,32 @@ describe('Profile', () => {
             const result = await profile.getMintFees();
             expect(mockGraphQLClient.get).toHaveBeenCalledWith(getMintFees());
             expect(result).toEqual(mockGraphQlMintFeesResponse.data);
+        });
+    });
+
+    describe('getBy', () => {
+        it('should return profiles based on provided parameters', async () => {
+            const params = { numberPerPage: 1, offset: 0, searchQuery: 'racoon' };
+
+            const result = await profile.getBy(params);
+            expect(mockGraphQLClient.get).toHaveBeenCalledWith(getProfiles(params.numberPerPage, params.offset, params.searchQuery));
+            expect(result).toEqual(testGetProfilesResponse);
+        });
+    });
+
+    describe('getTotalGains', () => {
+        it('should return the total gains for a user', async () => {
+            const userId = testUserId;
+            const result = await profile.getTotalGains(userId);
+            expect(result).toEqual(testUserTotalGainsResponse.data.user.totalGains);
+        });
+    });
+
+    describe('getPayments', () => {
+        it('should return payment data for a user', async () => {
+            const userId = testUserId;
+            const result = await profile.getPayments(userId);
+            expect(result).toEqual(testUserPaymentsResponse.data.payments);
         });
     });
 
