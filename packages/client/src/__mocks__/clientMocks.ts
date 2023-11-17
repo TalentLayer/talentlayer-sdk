@@ -1,6 +1,6 @@
-import { getProtocolById } from "../platform/graphql/queries";
+import { getPlatformById, getProtocolById } from "../platform/graphql/queries";
 import { getMintFees, getPaymentsForUser, getProfileByAddress, getProfileById, getProfiles, getUserTotalGains } from "../profile/graphql";
-import { mockGraphQlMintFeesResponse, mockGraphQlProtocolByIdResponse, mockGraphQlUsersResponse, testAddress, testGetProfilesResponse, testIpfsHash, testUserId, testUserPaymentsResponse, testUserResponse, testUserTotalGainsResponse } from "./fixtures";
+import { mockGraphQlMintFeesResponse, mockGraphQlProtocolByIdResponse, mockGraphQlUsersResponse, testAddress, testGetProfilesResponse, testIpfsHash, testPlatformId, testPlatformResponse, testPlatformResponseWithArbitrator, testUserId, testUserPaymentsResponse, testUserResponse, testUserTotalGainsResponse } from "./fixtures";
 
 export class MockGraphQLClient {
     get = jest.fn(async (query: string) => {
@@ -32,20 +32,28 @@ export class MockGraphQLClient {
             return testUserTotalGainsResponse;
         }
 
+        if (query === getPlatformById(testPlatformId.toString())) {
+            return testPlatformResponse;
+        }
+
+        if (query === getPlatformById("2")) {
+            return testPlatformResponseWithArbitrator;
+        }
+
         return { data: { "racoon": "bar" } };
     })
 
 }
 
 export class MockViemClient {
-    writeContract = jest.fn(async (...args) => {
-        console.log("args:", args)
-        return testAddress;
-    })
+    writeContract = jest.fn(async () => testAddress)
+    readContract = jest.fn(async () => "randomData")
+    publicClient = {
+        readContract: jest.fn(async () => "randomData")
+    }
 
 }
 
 export class MockIPFSClient {
     post = jest.fn().mockResolvedValue(testIpfsHash);
-
 }
