@@ -1,5 +1,4 @@
 export const testAddress = "0xRacoon";
-export const testCid = 'abcd';
 export const testName = 'racoon';
 export const testUserId = '2371';
 export const testChainId = 137;
@@ -60,7 +59,8 @@ export const mockGraphQlProtocolByIdResponse = {
         }
     }
 }
-export const testIpfsHash = 'ipfsHash';
+export const testIpfsHash = 'abcd';
+export const testCid = testIpfsHash;
 export const testProfileData = { name: testName, about: testAbout };
 export const testGetProfilesResponse = { "data": { "users": [{ "id": "11962", "address": "0x02289d0ebf8836e6f98af170b88b9f8eb889e2c6", "handle": "racoon", "userStats": { "numReceivedReviews": "0" }, "rating": "0" }] } }
 export const testUserTotalGainsResponse = { data: { user: { totalGains: [{ "id": "2371-0x2791bca1f2de4661ed88a30c99a7a9449aa84174", "totalGain": "850000000", "token": { "id": "0xracoon", "name": "USD Coin (PoS)", "symbol": "USDC", "decimals": "6" } }] } } }
@@ -76,3 +76,17 @@ export const testServiceId = '12';
 export const testAmount = BigInt('1000');
 export const testServiceResponse = { "data": { "service": { "id": "12", "status": "Finished", "createdAt": "1683203526", "cid": "QmdZhsfn1BhE3shW8TeR4f22MCG7nTWTtT55NkwH6McWfJ", "transaction": { "id": "2" }, "buyer": { "id": "11207", "handle": "0xrik", "address": "0x946f0711dfea25dc2ab60e6ff0df6dbda32ee6c6", "rating": "0", "userStats": { "numReceivedReviews": "0" } }, "seller": { "id": "83", "handle": "maartenvantwout" }, "proposals": [{ "id": "12-83" }], "validatedProposal": [{ "id": "12-83", "rateToken": { "address": "0x0000000000000000000000000000000000000000", "decimals": "18", "name": "Polygon", "symbol": "MATIC" }, "rateAmount": "10000000000000000000" }], "description": { "id": "QmdZhsfn1BhE3shW8TeR4f22MCG7nTWTtT55NkwH6McWfJ-1683203526", "title": "Create a logo", "video_url": null, "about": "Create a logo for our company", "startDate": null, "expectedEndDate": null, "rateAmount": "1000000000000000000", "rateToken": "0x0000000000000000000000000000000000000000", "keywords_raw": "ux/ui,3d graphic design software", "keywords": [] } } } };
 export const testPaymentsByServiceResponse = { "data": { "payments": [{ "id": "0xbae7cb57cef86c17a0ca0ca9af0f1b845912fe65448169f0a93a15e5e6dfae25-200", "amount": "10000000000000000000", "rateToken": { "address": "0x0000000000000000000000000000000000000000", "decimals": "18", "name": "Polygon", "symbol": "MATIC" }, "paymentType": "Release", "transactionHash": "0xbae7cb57cef86c17a0ca0ca9af0f1b845912fe65448169f0a93a15e5e6dfae25", "createdAt": "1683204479" }] } }
+export const testPlatformDetails = {
+    about: 'test data',
+    website: 'example.com',
+    video_url: 'example.com',
+    image_url: 'example.com'
+}
+
+export const testOwnerAddress = '0xOwnerAddress';
+export const testPlatformsByOwnerResponse = { "data": { "platforms": [{ "id": "1", "address": "0x4444444e2f8ccd0e323c959b02a93561b911f9b6", "name": "workx", "createdAt": "1681454011", "updatedAt": "1681454011", "originServiceFeeRate": 0, "originValidatedProposalFeeRate": 0, "servicePostingFee": "0", "proposalPostingFee": "0", "arbitrator": "0x0000000000000000000000000000000000000000", "arbitratorExtraData": "0x00000000", "arbitrationFeeTimeout": "864000", "cid": null, "signer": "0x4444444e2f8ccd0e323c959b02a93561b911f9b6", "description": null }] } }
+export const testProposalsByServiceId = { "data": { "proposals": [{ "id": testProposalId, "seller": { "id": "83", "handle": "maartenvantwout", "address": "0x9c8ca52fa6f12fd7b70c6b6e9a2704149af676ea", "cid": "QmWm6biFCf1GwNj7u78ub7c1dgPDHphd285KzmtddYWQu9", "rating": "0", "userStats": { "numReceivedReviews": "0" } }, "platform": { "id": "1" }, "service": { "id": "12", "platform": { "id": "1" } }, "cid": "abcd", "rateToken": { "address": "0x0000000000000000000000000000000000000000" }, "rateAmount": "10000000000000000000", "description": { "about": "I would love to do this job", "video_url": null }, "status": "Validated", "expirationDate": "1685796297" }] } }
+export const testProposalsByUser = { "data": { "proposals": [{ "id": testProposalId, "seller": { "id": "83", "handle": "maartenvantwout", "address": "0x9c8ca52fa6f12fd7b70c6b6e9a2704149af676ea", "cid": "QmWm6biFCf1GwNj7u78ub7c1dgPDHphd285KzmtddYWQu9", "rating": "0", "userStats": { "numReceivedReviews": "0" } }, "platform": { "id": "1" }, "service": { "id": "12", "platform": { "id": "1" } }, "cid": "abcd", "rateToken": { "address": "0x0000000000000000000000000000000000000000" }, "rateAmount": "10000000000000000000", "description": { "about": "I would love to do this job", "video_url": null }, "status": "Validated", "expirationDate": "1685796297" }] } }
+export const testProposalDetails = { about: 'test about', video_url: 'hello world' }
+export const testExpirationDate = '123456';
+export const testSignature = '';
