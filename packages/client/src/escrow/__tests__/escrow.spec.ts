@@ -47,8 +47,6 @@ describe('Escrow', () => {
                 checkAllowance: jest.fn(async () => BigInt('10100000000000000001'))
             };
 
-            console.log('checking escrow erc20: ', escrow.erc20.checkAllowance)
-
             // Act
             const result = await escrow.approve(serviceId, proposalId, metaEvidenceCid);
 
