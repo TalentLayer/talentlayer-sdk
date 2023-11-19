@@ -1,3 +1,4 @@
+import { serviceDescriptionQueryFields, serviceQueryFields } from '../../graphql';
 import { IProps } from '../types';
 
 export const getFilteredServiceDescriptionCondition = (params: IProps): string => {
@@ -19,3 +20,14 @@ export const getFilteredServiceCondition = (params: IProps): string => {
   condition += '}';
   return condition === ', where: {}' ? '' : condition;
 };
+
+export const getOne = (id: string) => (`
+{
+  service(id: "${id}") {
+    ${serviceQueryFields}
+    description {
+      ${serviceDescriptionQueryFields}
+    }
+  }
+}
+`)

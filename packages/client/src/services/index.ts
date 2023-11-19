@@ -7,6 +7,7 @@ import { ViemClient } from '../viem';
 import {
   getFilteredServiceCondition,
   getFilteredServiceDescriptionCondition,
+  getOne,
 } from './graphql/queries';
 import { ICreateServiceSignature, IProps, ServiceDetails } from './types';
 
@@ -49,16 +50,7 @@ export class Service {
   }
 
   public async getOne(id: string): Promise<any> {
-    const query = `
-          {
-            service(id: "${id}") {
-              ${serviceQueryFields}
-              description {
-                ${serviceDescriptionQueryFields}
-              }
-            }
-          }
-          `;
+    const query = getOne(id);
 
     const response = await this.graphQlClient.get(query);
 
@@ -80,8 +72,8 @@ export class Service {
     const query = `
             {
               services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
-                params,
-              )}) {
+      params,
+    )}) {
                 ${serviceQueryFields}
                 description {
                   ${serviceDescriptionQueryFields}
@@ -101,8 +93,8 @@ export class Service {
               serviceDescriptionSearchRank(
                 text: "${params.searchQuery}",
                 orderBy: id orderDirection: desc ${pagination} ${getFilteredServiceDescriptionCondition(
-                  params,
-                )}
+      params,
+    )}
               ){
                 ${serviceDescriptionQueryFields}
                 service {

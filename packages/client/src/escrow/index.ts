@@ -65,7 +65,7 @@ export class Escrow {
 
     console.log('SDK: fees', protocolAndPlatformsFees);
 
-    if (!protocolAndPlatformsFees.data) {
+    if (!protocolAndPlatformsFees) {
       throw Error('Unable to fetch fees');
     }
 
@@ -102,7 +102,6 @@ export class Escrow {
             approvalAmount,
           );
 
-          // @ts-ignore
           const approvalTransactionReceipt =
             await this.viemClient.publicClient.waitForTransactionReceipt({
               hash: approvalTransaction,
@@ -198,7 +197,7 @@ export class Escrow {
 
     return response?.data || null;
   }
-  
+
   public async getByService(serviceId: string, paymentType?: string): Promise<any> {
     const query = getPaymentsByService(serviceId, paymentType);
 
