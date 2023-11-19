@@ -31,3 +31,46 @@ export const getOne = (id: string) => (`
   }
 }
 `)
+
+export const getServices = (params: IProps) => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
+    : '';
+
+  const query = `
+  {
+    services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
+    params,
+  )}) {
+      ${serviceQueryFields}
+      description {
+        ${serviceDescriptionQueryFields}
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const searchServices = (params: IProps) => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ' skip: ' + params.offset
+    : '';
+
+  const query = `
+            {
+              serviceDescriptionSearchRank(
+                text: "${params.searchQuery}",
+                orderBy: id orderDirection: desc ${pagination} ${getFilteredServiceDescriptionCondition(
+    params,
+  )}
+              ){
+                ${serviceDescriptionQueryFields}
+                service {
+                  ${serviceQueryFields}
+                }
+              }
+            }`;
+
+  return query;
+}

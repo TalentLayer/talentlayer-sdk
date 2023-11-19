@@ -2,8 +2,8 @@ import { getPaymentsByService, getProtocolAndPlatformsFees } from "../escrow/gra
 import { getPlatformById, getPlatformsByOwner, getProtocolById } from "../platform/graphql/queries";
 import { getMintFees, getPaymentsForUser, getProfileByAddress, getProfileById, getProfiles, getUserTotalGains } from "../profile/graphql";
 import { getAllProposalsByServiceId, getAllProposalsByUser, getProposalById } from "../proposals/graphql";
-import { getOne } from "../services/graphql/queries";
-import { mockGraphQlMintFeesResponse, mockGraphQlProtocolByIdResponse, mockGraphQlUsersResponse, testAddress, testChainId, testGetProfilesResponse, testIpfsHash, testOwnerAddress, testPaymentsByServiceResponse, testPlatformId, testPlatformResponse, testPlatformResponseWithArbitrator, testPlatformsByOwnerResponse, testProposalId, testProposalResponse, testProposalsByServiceId, testProposalsByUser, testProtocolAndPlatformResponse, testServiceId, testServiceResponse, testUserId, testUserPaymentsResponse, testUserResponse, testUserTotalGainsResponse } from "./fixtures";
+import { getOne, getServices, searchServices } from "../services/graphql/queries";
+import { mockGraphQlMintFeesResponse, mockGraphQlProtocolByIdResponse, mockGraphQlUsersResponse, testAddress, testChainId, testGetProfilesResponse, testIpfsHash, testOwnerAddress, testPaymentsByServiceResponse, testPlatformId, testPlatformResponse, testPlatformResponseWithArbitrator, testPlatformsByOwnerResponse, testProposalId, testProposalIdWithDifferentRateToken, testProposalResponse, testProposalResponseWithDifferentRateToken, testProposalsByServiceId, testProposalsByUser, testProtocolAndPlatformResponse, testSearchServiceProps, testSearchServicesResponse, testServiceId, testServiceResponse, testUserId, testUserPaymentsResponse, testUserResponse, testUserTotalGainsResponse } from "./fixtures";
 
 export class MockGraphQLClient {
     get = jest.fn(async (query: string) => {
@@ -47,6 +47,10 @@ export class MockGraphQLClient {
             return testProposalResponse;
         }
 
+        if (query === getProposalById(testProposalIdWithDifferentRateToken)) {
+            return testProposalResponseWithDifferentRateToken;
+        }
+
         if (query === getProtocolAndPlatformsFees(testProposalResponse.data.proposal.service.platform.id, testProposalResponse.data.proposal.platform.id)) {
             return testProtocolAndPlatformResponse;
         }
@@ -71,6 +75,10 @@ export class MockGraphQLClient {
             return testProposalsByUser;
         }
 
+        if (query === searchServices(testSearchServiceProps) || query === getServices(testSearchServiceProps)) {
+            return testSearchServicesResponse;
+        }
+
         return { data: { "racoon": "bar" } };
     })
 
@@ -81,7 +89,8 @@ export class MockViemClient {
     chainId = 137;
     readContract = jest.fn(async () => "randomData")
     publicClient = {
-        readContract: jest.fn(async () => "randomData")
+        readContract: jest.fn(async () => "randomData"),
+        waitForTransactionReceipt: jest.fn(async () => ({ status: 'success' }))
     }
 
 }
