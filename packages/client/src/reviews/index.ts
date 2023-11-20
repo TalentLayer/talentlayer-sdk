@@ -56,7 +56,7 @@ export class Review {
 
     throw new Error(Review.CREATE_ERROR);
   }
-  
+
   public async getByService(serviceId: string): Promise<any> {
     const query = getReviewsByService(serviceId);
 

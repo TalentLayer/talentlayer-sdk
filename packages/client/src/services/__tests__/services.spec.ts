@@ -4,7 +4,7 @@ import { getPlatformById } from '../../platform/graphql/queries';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
 import { testAddress, testIpfsHash, testPlatformId, testPlatformResponse, testSearchServiceProps, testSearchServicesResponse, testServiceDetails, testServiceId, testServiceResponse, testSignature, testUserId } from '../../__mocks__/fixtures';
 
-describe('Platform', () => {
+describe('Service', () => {
     let service: Service;
     let mockGraphQLClient: any;
     let mockIPFSClient: any;

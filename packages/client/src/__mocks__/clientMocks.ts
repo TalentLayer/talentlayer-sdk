@@ -2,8 +2,9 @@ import { getPaymentsByService, getProtocolAndPlatformsFees } from "../escrow/gra
 import { getPlatformById, getPlatformsByOwner, getProtocolById } from "../platform/graphql/queries";
 import { getMintFees, getPaymentsForUser, getProfileByAddress, getProfileById, getProfiles, getUserTotalGains } from "../profile/graphql";
 import { getAllProposalsByServiceId, getAllProposalsByUser, getProposalById } from "../proposals/graphql";
+import { getReviewsByService } from "../reviews/graphql";
 import { getOne, getServices, searchServices } from "../services/graphql/queries";
-import { mockGraphQlMintFeesResponse, mockGraphQlProtocolByIdResponse, mockGraphQlUsersResponse, testAddress, testChainId, testGetProfilesResponse, testIpfsHash, testOwnerAddress, testPaymentsByServiceResponse, testPlatformId, testPlatformResponse, testPlatformResponseWithArbitrator, testPlatformsByOwnerResponse, testProposalId, testProposalIdWithDifferentRateToken, testProposalResponse, testProposalResponseWithDifferentRateToken, testProposalsByServiceId, testProposalsByUser, testProtocolAndPlatformResponse, testSearchServiceProps, testSearchServicesResponse, testServiceId, testServiceResponse, testUserId, testUserPaymentsResponse, testUserResponse, testUserTotalGainsResponse } from "./fixtures";
+import { mockGraphQlMintFeesResponse, mockGraphQlProtocolByIdResponse, mockGraphQlUsersResponse, testAddress, testChainId, testGetProfilesResponse, testIpfsHash, testOwnerAddress, testPaymentsByServiceResponse, testPlatformId, testPlatformResponse, testPlatformResponseWithArbitrator, testPlatformsByOwnerResponse, testProposalId, testProposalIdWithDifferentRateToken, testProposalResponse, testProposalResponseWithDifferentRateToken, testProposalsByServiceId, testProposalsByUser, testProtocolAndPlatformResponse, testReviewsByService, testSearchServiceProps, testSearchServicesResponse, testServiceId, testServiceResponse, testUserId, testUserPaymentsResponse, testUserResponse, testUserTotalGainsResponse } from "./fixtures";
 
 export class MockGraphQLClient {
     get = jest.fn(async (query: string) => {
@@ -77,6 +78,10 @@ export class MockGraphQLClient {
 
         if (query === searchServices(testSearchServiceProps) || query === getServices(testSearchServiceProps)) {
             return testSearchServicesResponse;
+        }
+
+        if (query === getReviewsByService(testServiceId)) {
+            return testReviewsByService;
         }
 
         return { data: { "racoon": "bar" } };
