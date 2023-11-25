@@ -44,7 +44,7 @@ export class Escrow {
       this.platformID,
     );
     const proposal = await proposalInstance.getOne(proposalId);
-    const erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
+    const erc20 = this.erc20;
 
     if (!proposal) {
       throw new Error('Proposal not found');
@@ -65,7 +65,7 @@ export class Escrow {
 
     console.log('SDK: fees', protocolAndPlatformsFees);
 
-    if (!protocolAndPlatformsFees.data) {
+    if (!protocolAndPlatformsFees) {
       throw Error('Unable to fetch fees');
     }
 
@@ -76,7 +76,7 @@ export class Escrow {
       protocolAndPlatformsFees.protocols[0].protocolEscrowFeeRate,
     );
 
-    console.log('SDK: escrow seeking approval for amount: ', approvalAmount);
+    console.log('SDK: escrow seeking approval for amount: ', approvalAmount.toString());
 
     if (proposal.rateToken.address === RateToken.NATIVE) {
       tx = await this.viemClient.writeContract(
@@ -102,7 +102,6 @@ export class Escrow {
             approvalAmount,
           );
 
-          // @ts-ignore
           const approvalTransactionReceipt =
             await this.viemClient.publicClient.waitForTransactionReceipt({
               hash: approvalTransaction,
@@ -198,7 +197,7 @@ export class Escrow {
 
     return response?.data || null;
   }
-  
+
   public async getByService(serviceId: string, paymentType?: string): Promise<any> {
     const query = getPaymentsByService(serviceId, paymentType);
 

@@ -1,12 +1,13 @@
-import GraphQLClient, { serviceDescriptionQueryFields, serviceQueryFields } from '../graphql';
+import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
 import { getPlatformById } from '../platform/graphql/queries';
 import { ClientTransactionResponse } from '../types';
 import { getSignature } from '../utils/signature';
 import { ViemClient } from '../viem';
 import {
-  getFilteredServiceCondition,
-  getFilteredServiceDescriptionCondition,
+  getOne,
+  getServices,
+  searchServices,
 } from './graphql/queries';
 import { ICreateServiceSignature, IProps, ServiceDetails } from './types';
 
@@ -49,16 +50,7 @@ export class Service {
   }
 
   public async getOne(id: string): Promise<any> {
-    const query = `
-          {
-            service(id: "${id}") {
-              ${serviceQueryFields}
-              description {
-                ${serviceDescriptionQueryFields}
-              }
-            }
-          }
-          `;
+    const query = getOne(id);
 
     const response = await this.graphQlClient.get(query);
 
@@ -74,43 +66,12 @@ export class Service {
   }
 
   public async getServices(params: IProps): Promise<any> {
-    const pagination = params.numberPerPage
-      ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
-      : '';
-    const query = `
-            {
-              services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
-                params,
-              )}) {
-                ${serviceQueryFields}
-                description {
-                  ${serviceDescriptionQueryFields}
-                }
-              }
-            }`;
 
-    return this.graphQlClient.get(query);
+    return this.graphQlClient.get(getServices(params));
   }
 
   public async search(params: IProps): Promise<any> {
-    const pagination = params.numberPerPage
-      ? 'first: ' + params.numberPerPage + ' skip: ' + params.offset
-      : '';
-    const query = `
-            {
-              serviceDescriptionSearchRank(
-                text: "${params.searchQuery}",
-                orderBy: id orderDirection: desc ${pagination} ${getFilteredServiceDescriptionCondition(
-                  params,
-                )}
-              ){
-                ${serviceDescriptionQueryFields}
-                service {
-                  ${serviceQueryFields}
-                }
-              }
-            }`;
-    return this.graphQlClient.get(query);
+    return this.graphQlClient.get(searchServices(params));
   }
 
   public async create(

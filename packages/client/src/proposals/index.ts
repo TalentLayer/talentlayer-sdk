@@ -50,7 +50,7 @@ export class Proposal {
 
   public async getByUser(userId: string): Promise<any> {
     const query = getAllProposalsByUser(userId)
-    
+
     const response = await this.graphQlClient.get(query);
 
     return response?.data?.proposals || null

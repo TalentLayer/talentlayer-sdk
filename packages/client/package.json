@@ -12,7 +12,7 @@
     "prepare": "npm run build",
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "npm run build -- --watch",
-    "test": "jest --coverage"
+    "test": "jest --verbose --coverage"
   },
   "devDependencies": {
     "@turbo/gen": "^1.10.12",

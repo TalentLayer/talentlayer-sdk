@@ -1,3 +1,4 @@
+import { serviceDescriptionQueryFields, serviceQueryFields } from '../../graphql';
 import { IProps } from '../types';
 
 export const getFilteredServiceDescriptionCondition = (params: IProps): string => {
@@ -19,3 +20,57 @@ export const getFilteredServiceCondition = (params: IProps): string => {
   condition += '}';
   return condition === ', where: {}' ? '' : condition;
 };
+
+export const getOne = (id: string) => (`
+{
+  service(id: "${id}") {
+    ${serviceQueryFields}
+    description {
+      ${serviceDescriptionQueryFields}
+    }
+  }
+}
+`)
+
+export const getServices = (params: IProps) => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
+    : '';
+
+  const query = `
+  {
+    services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
+    params,
+  )}) {
+      ${serviceQueryFields}
+      description {
+        ${serviceDescriptionQueryFields}
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const searchServices = (params: IProps) => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ' skip: ' + params.offset
+    : '';
+
+  const query = `
+            {
+              serviceDescriptionSearchRank(
+                text: "${params.searchQuery}",
+                orderBy: id orderDirection: desc ${pagination} ${getFilteredServiceDescriptionCondition(
+    params,
+  )}
+              ){
+                ${serviceDescriptionQueryFields}
+                service {
+                  ${serviceQueryFields}
+                }
+              }
+            }`;
+
+  return query;
+}

@@ -5,6 +5,7 @@ import {
   http,
   WalletClient,
   PublicClient,
+  Hash,
 } from 'viem';
 import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts';
 import { getChainConfig } from '../config';
@@ -80,7 +81,7 @@ export class ViemClient {
     functionName: string,
     args: Array<any>,
     value?: bigint,
-  ) {
+  ): Promise<Hash> {
     // @ts-ignore
     const [address] = await this.client.getAddresses();
 

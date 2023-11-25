@@ -148,3 +148,12 @@ export const getPaymentsForUser = (
 `;
   return query;
 };
+
+export const getMintFees = () => `
+{
+    protocols {
+        userMintFee,
+        shortHandlesMaxPrice
+    }
+}
+`;

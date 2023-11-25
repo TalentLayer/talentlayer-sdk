@@ -1,4 +1,4 @@
-import { numberToBytes, numberToHex, parseEther, toBytes, toHex, zeroAddress } from 'viem';
+import { parseEther, toHex, zeroAddress } from 'viem';
 import { getChainConfig } from '../config';
 import GraphQLClient from '../graphql';
 import { getPlatformById } from '../platform/graphql/queries';
@@ -36,7 +36,6 @@ export class Disputes {
       return 0;
     }
 
-    // Start
     const chainConfig = getChainConfig(this.chainId);
     const contract = chainConfig.contracts['talentLayerArbitrator'];
 
@@ -45,7 +44,6 @@ export class Disputes {
       throw Error('Invalid contract name passed.');
     }
 
-    // @ts-ignore
     return this.wallet.publicClient.readContract({
       address: arbitrator,
       abi: contract.abi,
