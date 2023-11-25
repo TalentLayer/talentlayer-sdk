@@ -27,12 +27,18 @@ export interface IService {
  * Class representing Services inside TalentLayer
  */
 export class Service {
+  /** @hidden */
   graphQlClient: GraphQLClient;
+  /** @hidden */
   ipfsClient: IPFSClient;
+  /** @hidden */
   viemClient: ViemClient;
+  /** @hidden */
   platformID: number;
+  /** @hidden */
   signatureApiUrl?: string;
 
+  /** @hidden */
   constructor(
     graphQlClient: GraphQLClient,
     ipfsClient: IPFSClient,

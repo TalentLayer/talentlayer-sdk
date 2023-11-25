@@ -22,17 +22,20 @@ import { Review } from './reviews';
  * Main client for interacting with the TalentLayer protocol.
  */
 export class TalentLayerClient {
+  /** @hidden */
   graphQlClient: GraphQLClient;
+  /** @hidden */
   ipfsClient: IPFSClient;
+  /** @hidden */
   viemClient: ViemClient;
+  /** @hidden */
   platformID: number;
+  /** @hidden */
   chainId: NetworkEnum;
+  /** @hidden */
   signatureApiUrl?: string;
 
-  /**
-   * Initializes a new instance of the TalentLayerClient.
-   * @param {TalentLayerClientConfig} config - Configuration options for the client.
-   */
+  /** @hidden */
   constructor(config: TalentLayerClientConfig) {
     console.log('SDK: client initialising', config);
     this.platformID = config.platformId;

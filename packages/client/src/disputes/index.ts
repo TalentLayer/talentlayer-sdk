@@ -1,8 +1,8 @@
-import { parseEther, toHex, zeroAddress } from 'viem';
+import { Hash, parseEther, toHex, zeroAddress } from 'viem';
 import { getChainConfig } from '../config';
 import GraphQLClient from '../graphql';
 import { getPlatformById } from '../platform/graphql/queries';
-import { NetworkEnum, TransactionHash } from '../types';
+import { NetworkEnum } from '../types';
 import { ViemClient } from '../viem';
 
 /**
@@ -27,6 +27,10 @@ export class Disputes {
     this.chainId = chainId;
   }
 
+  /**
+ * getArbitrationCost - Retrieves the current cost of arbitration. This function is useful for understanding the financial implications of initiating an arbitration process.
+ * @returns {Promise<any>} - Returns a Promise that resolves to the arbitration cost, typically in a numerical or string format representing the cost value.
+ */
   public async getArbitrationCost(): Promise<any> {
     const platformResponse = await this.subgraph.get(getPlatformById(this.platformID.toString()));
 
@@ -57,7 +61,12 @@ export class Disputes {
     });
   }
 
-  public async setPrice(value: number | string): Promise<TransactionHash> {
+  /**
+ * setPrice - Sets the price of arbitration. This function allows for modifying the arbitration cost for the current platform
+ * @param {number | string} value - The new price value for arbitration, which can be specified as a number or a string representing the price.
+ * @returns {Promise<Hash>} - A promise that resolves to the transaction hash of the set operation.
+ */
+  public async setPrice(value: number | string): Promise<Hash> {
     const transformedPrice = parseEther(value.toString());
     console.log('SDK: setting arbitration price');
     const tx = await this.wallet.writeContract('talentLayerArbitrator', 'setArbitrationPrice', [
