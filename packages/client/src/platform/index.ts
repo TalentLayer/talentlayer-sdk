@@ -9,13 +9,19 @@ import { getPlatformById, getPlatformsByOwner } from './graphql/queries';
 import { Arbitrator, PlatformDetails } from './types';
 
 export class Platform {
+  /** @hidden */
   subgraph: GraphQLClient;
+  /** @hidden */
   wallet: ViemClient;
+  /** @hidden */
   platformID: number;
+  /** @hidden */
   ipfs: IPFSClient;
 
+  /** @hidden */
   static readonly UPDATE_ERROR = 'unable to update platform details';
 
+  /** @hidden */
   constructor(
     graphQlClient: GraphQLClient,
     walletClient: ViemClient,
@@ -28,6 +34,13 @@ export class Platform {
     this.ipfs = ipfsClient;
   }
 
+  /**
+ * Retrieves the details of a specific platform based on the provided ID.
+ * This method queries the GraphQL client for the platform data and returns the platform details if found.
+ *
+ * @param {string} id - The unique identifier of the platform to retrieve.
+ * @returns {Promise<any>} A promise that resolves to the platform details if found, otherwise null.
+ */
   public async getOne(id: string): Promise<any> {
     const response = await this.subgraph.get(getPlatformById(id));
 

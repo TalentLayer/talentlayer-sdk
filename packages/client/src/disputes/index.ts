@@ -5,6 +5,11 @@ import { getPlatformById } from '../platform/graphql/queries';
 import { NetworkEnum, TransactionHash } from '../types';
 import { ViemClient } from '../viem';
 
+/**
+ * Get arbitration cost. Set price of arbitration
+ *
+ * @group TalentLayerClient Modules
+ */
 export class Disputes {
   wallet: ViemClient;
   platformID: number;

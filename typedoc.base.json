@@ -1,4 +1,12 @@
 {
     "$schema": "https://typedoc.org/schema.json",
-    "includeVersion": true
+    "includeVersion": true,
+    "excludeExternals": false,
+    "excludeInternal": true,
+    "excludeNotDocumented": false,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "disableSources": true,
+    "gitRevision": "develop",
+    "hideGenerator": true
 }
