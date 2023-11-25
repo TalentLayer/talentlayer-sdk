@@ -2,7 +2,7 @@ import { parseEther, toHex, zeroAddress } from 'viem';
 import { getChainConfig } from '../config';
 import GraphQLClient from '../graphql';
 import { getPlatformById } from '../platform/graphql/queries';
-import { NetworkEnum, TransactionHash } from '../types';
+import { Config, DevConfig, NetworkEnum, TransactionHash } from '../types';
 import { ViemClient } from '../viem';
 
 export class Disputes {
@@ -10,16 +10,19 @@ export class Disputes {
   platformID: number;
   subgraph: GraphQLClient;
   chainId: NetworkEnum;
+  devConfig?: DevConfig
   constructor(
     walletClient: ViemClient,
     platformId: number,
     graphQlClient: GraphQLClient,
     chainId: number,
+    devConfig?: DevConfig
   ) {
     this.wallet = walletClient;
     this.platformID = platformId;
     this.subgraph = graphQlClient;
     this.chainId = chainId;
+    this.devConfig = devConfig;
   }
 
   public async getArbitrationCost(): Promise<any> {
@@ -36,7 +39,7 @@ export class Disputes {
       return 0;
     }
 
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts['talentLayerArbitrator'];
 
     console.log('SDK: reading contract');

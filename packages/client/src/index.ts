@@ -1,6 +1,6 @@
 import { getChainConfig, getGraphQLConfig } from './config';
 import GraphQLClient from './graphql';
-import { Config, NetworkEnum, TalentLayerClientConfig } from './types';
+import { Config, DevConfig, NetworkEnum, TalentLayerClientConfig } from './types';
 import IPFSClient from './ipfs';
 import { ViemClient } from './viem';
 import { IERC20, ERC20 } from './blockchain-bindings/erc20';
@@ -26,8 +26,9 @@ export class TalentLayerClient {
   ipfsClient: IPFSClient;
   viemClient: ViemClient;
   platformID: number;
-  chainId: NetworkEnum;
+  chainId: NetworkEnum | number;
   signatureApiUrl?: string;
+  devConfig?: DevConfig;
 
   /**
    * Initializes a new instance of the TalentLayerClient.
@@ -45,12 +46,23 @@ export class TalentLayerClient {
     this.viemClient = new ViemClient(config.chainId, config.walletConfig || {});
     this.chainId = config.chainId;
     this.signatureApiUrl = config?.signatureApiUrl;
+
+    // DEV mode overrides
+    if (config.devConfig) {
+      this.devConfig = config?.devConfig;
+      this.chainId = config.devConfig.chainConfig.id
+      this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.devConfig.chainConfig.id));
+      this.viemClient = new ViemClient(config.devConfig.chainConfig.id, config.walletConfig || {}, this.devConfig);
+    }
   }
 
   /**
    * Returns chain config based on netowrk ID
    */
   public getChainConfig(networkId: NetworkEnum): Config {
+    if (this.devConfig) {
+      return this.devConfig.contractConfig;
+    }
     return getChainConfig(networkId);
   }
 
@@ -60,7 +72,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get erc20(): IERC20 {
-    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
+    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId, this.devConfig);
   }
 
   /**

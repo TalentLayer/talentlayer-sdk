@@ -9,7 +9,7 @@ import {
 } from 'viem';
 import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts';
 import { getChainConfig } from '../config';
-import { NetworkEnum, ViemClientConfig } from '../types';
+import { Config, DevConfig, NetworkEnum, ViemClientConfig } from '../types';
 import TalentLayerID from '../contracts/ABI/TalentLayerID.json';
 import { chains } from '../blockchain-bindings/chains';
 
@@ -17,18 +17,23 @@ export class ViemClient {
   client: WalletClient;
   publicClient: PublicClient;
   chainId: NetworkEnum;
+  devConfig?: DevConfig;
 
-  constructor(chainId: NetworkEnum, config: ViemClientConfig) {
-    // if chainId is not provided, set it to mumbai
-    this.chainId = chainId || config.chainId || NetworkEnum.MUMBAI;
+  constructor(chainId: NetworkEnum, config: ViemClientConfig, devConfig?: DevConfig) {
+    // dev config chain Id is prioritized. 
+    // If chainId is not provided, set it to mumbai
+    this.chainId = devConfig?.chainConfig.id || chainId || config.chainId || NetworkEnum.MUMBAI;
+    this.devConfig = devConfig;
 
     // initialise a default public wallet client;
     this.client = createWalletClient({
-      chain: chains[this.chainId],
+      // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
+      chain: this.chainId === NetworkEnum.LOCAL ? devConfig?.chainConfig : chains[this.chainId],
       transport: http(),
     });
     this.publicClient = createPublicClient({
-      chain: chains[this.chainId],
+      // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
+      chain: this.chainId === NetworkEnum.LOCAL ? devConfig?.chainConfig : chains[this.chainId],
       transport: http(),
     });
 
@@ -45,7 +50,8 @@ export class ViemClient {
       const account = privateKeyToAccount(config.privateKey);
       this.client = createWalletClient({
         account,
-        chain: chains[this.chainId],
+        // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
+        chain: this.chainId === NetworkEnum.LOCAL ? this.devConfig?.chainConfig : chains[this.chainId],
         transport: transportProtocol,
       });
 
@@ -56,7 +62,7 @@ export class ViemClient {
       const account = mnemonicToAccount(config.mnemonic);
       this.client = createWalletClient({
         account,
-        chain: chains[this.chainId],
+        chain: this.chainId === NetworkEnum.LOCAL ? this.devConfig?.chainConfig : chains[this.chainId],
         transport: transportProtocol,
       });
 
@@ -67,7 +73,8 @@ export class ViemClient {
     let browserProvider = globalThis?.ethereum || window?.ethereum;
     if (browserProvider) {
       this.client = createWalletClient({
-        chain: chains[this.chainId],
+        // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
+        chain: this.chainId === NetworkEnum.LOCAL ? this.devConfig?.chainConfig : chains[this.chainId],
         transport: custom(browserProvider),
       });
       return true;
@@ -89,7 +96,7 @@ export class ViemClient {
       throw Error('Wallet Client not initialised properly');
     }
 
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts[contractName];
 
     if (!contract) {
@@ -113,7 +120,7 @@ export class ViemClient {
   }
 
   public async readContract(contractName: string, functionName: string, args: Array<any>) {
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts[contractName];
 
     console.log('SDK: reading contract', contract);
@@ -138,7 +145,7 @@ export class ViemClient {
       throw Error('Wallet Client not initialised properly');
     }
 
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(this.chainId);
 
     // @ts-ignore
     return this.client.writeContract({

@@ -1,4 +1,4 @@
-import { Hash } from 'viem';
+import { Chain, Hash } from 'viem';
 
 export type IToken = {
   name: string;
@@ -12,6 +12,7 @@ export enum NetworkEnum {
   MUMBAI = 80001,
   IEXEC = 134,
   POLYGON = 137,
+  LOCAL = 1
 }
 
 export enum RateToken {
@@ -46,12 +47,27 @@ export type ViemClientConfig = {
   chainId?: NetworkEnum;
 };
 
+type Currency = {
+  decimals: number;
+  name: string;
+  symbol: string;
+}
+
+export type chainConfig = Chain;
+
+export type DevConfig = {
+  chainConfig: chainConfig,
+  contractConfig: Config
+
+}
+
 export type TalentLayerClientConfig = {
   chainId: NetworkEnum;
   ipfsConfig: IPFSClientConfig;
   walletConfig?: ViemClientConfig;
   platformId: number;
   signatureApiUrl?: string;
+  devConfig?: DevConfig
 };
 
 export type ClientTransactionResponse = {
