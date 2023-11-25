@@ -1,0 +1,27 @@
+{
+    "name": "@talentlayer/react",
+    "version": "0.0.1",
+    "description": "The TalentLayer Client for React with abstractions for easy interaction with the TalentLayer protocol",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "license": "Apache-2.0",
+    "private": false,
+    "scripts": {
+        "lint": "eslint .",
+        "prepare": "npm run build",
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "@turbo/gen": "^1.10.12",
+        "@types/node": "^20.6.0",
+        "eslint-config-custom": "*",
+        "tsconfig": "*",
+        "typescript": "^5.2.2"
+    },
+    "dependencies": {
+        "@talentlayer/client": "^0.1.7",
+        "net": "^1.0.2",
+        "react": "^18.2.0",
+        "wagmi": "^1.4.2"
+    }
+}
