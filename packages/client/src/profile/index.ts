@@ -70,9 +70,9 @@ export class Profile {
   }
 
   public async create(handle: string): Promise<any> {
-    const proposolResponse = await this.graphQlClient.get(getProtocolById(1));
+    const proposalResponse = await this.graphQlClient.get(getProtocolById(1));
 
-    const protocol = proposolResponse?.data?.protocol;
+    const protocol = proposalResponse?.data?.protocol;
 
     console.log('SDK: protocol', protocol);
 
