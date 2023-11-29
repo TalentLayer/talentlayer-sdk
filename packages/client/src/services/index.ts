@@ -17,6 +17,14 @@ export interface IService {
     serviceDetails: ServiceDetails,
     userId: string,
     platformId: number,
+    token: string,
+    referralAmount?: number,
+  ): Promise<ClientTransactionResponse>;
+  update(
+    serviceDetails: ServiceDetails,
+    userId: string,
+    serviceId: number,
+    referralAmount?: number,
   ): Promise<ClientTransactionResponse>;
   updloadServiceDataToIpfs(serviceData: ServiceDetails): Promise<string>;
   getServices(params: IProps): Promise<any>;
@@ -78,6 +86,8 @@ export class Service {
     serviceDetails: ServiceDetails,
     userId: string,
     platformId: number,
+    token: string,
+    referralAmount?: number,
   ): Promise<ClientTransactionResponse> {
     const platformDetailsResponse = await this.graphQlClient.get(
       getPlatformById(this.platformID.toString()),
@@ -92,10 +102,13 @@ export class Service {
       cid,
     });
 
+    // Referral amount is optional and can be 0
+    const refAmount = referralAmount ? BigInt(referralAmount) : BigInt(0);
+
     const tx = await this.viemClient.writeContract(
       'talentLayerService',
       'createService',
-      [userId, platformId, cid, signature],
+      [userId, platformId, cid, signature, token, refAmount],
       servicePostingFee,
     );
 
@@ -104,5 +117,29 @@ export class Service {
     }
 
     throw new Error('Unable to create service');
+  }
+
+  public async update(
+    serviceDetails: ServiceDetails,
+    userId: string,
+    serviceId: number,
+    referralAmount?: number,
+  ): Promise<ClientTransactionResponse> {
+    const cid = await this.updloadServiceDataToIpfs(serviceDetails);
+
+    // Referral amount is optional and can be 0
+    const refAmount = referralAmount ? BigInt(referralAmount) : BigInt(0);
+
+    const tx = await this.viemClient.writeContract(
+      'talentLayerService',
+      'updateService',
+      [userId, serviceId, refAmount, cid]
+    );
+
+    if (cid && tx) {
+      return { cid, tx };
+    }
+
+    throw new Error('Unable to update service');
   }
 }
