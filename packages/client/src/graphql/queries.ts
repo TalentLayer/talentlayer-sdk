@@ -3,6 +3,13 @@ export const serviceQueryFields = `
   status
   createdAt
   cid
+  referralAmount
+  rateToken {
+    address
+    decimals
+    name
+    symbol
+  }
   transaction {
     id
   }
@@ -11,7 +18,7 @@ export const serviceQueryFields = `
     handle
     address
     rating
-    userStats {
+    userStat {
       numReceivedReviews
     }
   }
@@ -42,7 +49,6 @@ export const serviceDescriptionQueryFields = `
   startDate
   expectedEndDate
   rateAmount
-  rateToken
   keywords_raw
   keywords {
     id
@@ -59,7 +65,7 @@ export const getProposalsByService = (serviceId: string) => `
       address
       cid
       rating
-      userStats {
+      userStat {
         numReceivedReviews
       }
     }

@@ -8,7 +8,7 @@ export const getProposalById = (id: string) => `
       address
       cid
       rating
-      userStats {
+      userStat {
         numReceivedReviews
       }
     }
@@ -67,7 +67,7 @@ export const getAllProposalsByServiceId = (id: string) => `
       address
       cid
       rating
-      userStats {
+      userStat {
         numReceivedReviews
       }
     }

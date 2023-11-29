@@ -9,7 +9,7 @@ export const getProfileByAddress = (address: Hash) =>
     handle
     rating
     delegates
-    userStats {
+    userStat {
       numReceivedReviews
     }
     updatedAt
@@ -43,7 +43,7 @@ export const getProfiles = (numberPerPage?: number, offset?: number, searchQuery
     id
     address
     handle
-    userStats {
+    userStat {
       numReceivedReviews
     }
     rating
@@ -60,7 +60,7 @@ export const getProfileById = (id: string) => `
     handle
     rating
     delegates
-    userStats {
+    userStat {
         numReceivedReviews
     }
     updatedAt
