@@ -7,8 +7,9 @@ import { ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
 import { calculateApprovalAmount } from '../utils/fees';
 import { ViemClient } from '../viem';
 import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
+import { IEscrow } from "./types";
 
-export class Escrow {
+export class Escrow implements IEscrow {
   graphQlClient: GraphQLClient;
   ipfsClient: IPFSClient;
   viemClient: ViemClient;
@@ -178,14 +179,19 @@ export class Escrow {
       throw new Error('Transaction Id not found for service');
     }
 
-    const tx = await this.viemClient.writeContract('talentLayerEscrow', 'reimburse', [
+    return await this.viemClient.writeContract('talentLayerEscrow', 'reimburse', [
       userId,
       parseInt(transactionId),
       amount.toString(),
     ]);
-
-    return tx;
   }
+
+    public async claimReferralBalance(referrerId: string, tokenAddress: string): Promise<any> {
+      return await this.viemClient.writeContract('talentLayerEscrow', 'claimReferralBalance', [
+          referrerId,
+          tokenAddress,
+        ]);
+    }
 
   public async getProtocolAndPlatformsFees(
     originServicePlatformId: string,
@@ -205,5 +211,11 @@ export class Escrow {
 
     return response?.data?.payments || null
   }
+
+    public async getClaimableReferralBalance(address: string): Promise<any> {
+        return await this.viemClient.readContract('talentLayerEscrow', 'getClaimableReferralBalance', [
+        address,
+        ]);
+    }
 
 }
