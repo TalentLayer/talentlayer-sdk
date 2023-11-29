@@ -72,7 +72,7 @@ export class Service implements IService {
     userId: string,
     platformId: number,
     token: string,
-    referralAmount: number = 0,
+    referralAmount: string = '0',
   ): Promise<ClientTransactionResponse> {
     const platformDetailsResponse = await this.graphQlClient.get(
       getPlatformById(this.platformID.toString()),
@@ -105,7 +105,7 @@ export class Service implements IService {
     serviceDetails: ServiceDetails,
     userId: string,
     serviceId: number,
-    referralAmount: number = 0,
+    referralAmount: string = '0',
   ): Promise<ClientTransactionResponse> {
     const cid = await this.updloadServiceDataToIpfs(serviceDetails);
 

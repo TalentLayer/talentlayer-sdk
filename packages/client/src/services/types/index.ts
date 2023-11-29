@@ -8,13 +8,13 @@ export interface IService {
       userId: string,
       platformId: number,
       token: string,
-      referralAmount?: number,
+      referralAmount?: string,
   ): Promise<ClientTransactionResponse>;
   update(
       serviceDetails: ServiceDetails,
       userId: string,
       serviceId: number,
-      referralAmount?: number,
+      referralAmount?: string,
   ): Promise<ClientTransactionResponse>;
   updloadServiceDataToIpfs(serviceData: ServiceDetails): Promise<string>;
   getServices(params: IProps): Promise<any>;
