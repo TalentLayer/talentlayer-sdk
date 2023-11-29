@@ -11,26 +11,6 @@ import {
 } from './graphql/queries';
 import { ICreateServiceSignature, IProps, ServiceDetails } from './types';
 
-export interface IService {
-  getOne(id: string): Promise<any>;
-  create(
-    serviceDetails: ServiceDetails,
-    userId: string,
-    platformId: number,
-    token: string,
-    referralAmount?: number,
-  ): Promise<ClientTransactionResponse>;
-  update(
-    serviceDetails: ServiceDetails,
-    userId: string,
-    serviceId: number,
-    referralAmount?: number,
-  ): Promise<ClientTransactionResponse>;
-  updloadServiceDataToIpfs(serviceData: ServiceDetails): Promise<string>;
-  getServices(params: IProps): Promise<any>;
-  search(params: IProps): Promise<any>;
-}
-
 export class Service {
   graphQlClient: GraphQLClient;
   ipfsClient: IPFSClient;
@@ -87,7 +67,7 @@ export class Service {
     userId: string,
     platformId: number,
     token: string,
-    referralAmount?: number,
+    referralAmount: number = 0,
   ): Promise<ClientTransactionResponse> {
     const platformDetailsResponse = await this.graphQlClient.get(
       getPlatformById(this.platformID.toString()),
@@ -102,13 +82,10 @@ export class Service {
       cid,
     });
 
-    // Referral amount is optional and can be 0
-    const refAmount = referralAmount ? BigInt(referralAmount) : BigInt(0);
-
     const tx = await this.viemClient.writeContract(
       'talentLayerService',
       'createService',
-      [userId, platformId, cid, signature, token, refAmount],
+      [userId, platformId, cid, signature, token, referralAmount],
       servicePostingFee,
     );
 
@@ -123,17 +100,14 @@ export class Service {
     serviceDetails: ServiceDetails,
     userId: string,
     serviceId: number,
-    referralAmount?: number,
+    referralAmount: number = 0,
   ): Promise<ClientTransactionResponse> {
     const cid = await this.updloadServiceDataToIpfs(serviceDetails);
-
-    // Referral amount is optional and can be 0
-    const refAmount = referralAmount ? BigInt(referralAmount) : BigInt(0);
 
     const tx = await this.viemClient.writeContract(
       'talentLayerService',
       'updateService',
-      [userId, serviceId, refAmount, cid]
+      [userId, serviceId, referralAmount, cid]
     );
 
     if (cid && tx) {

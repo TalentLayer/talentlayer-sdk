@@ -14,9 +14,10 @@ import { Profile } from './profile';
 import { IProfile } from './profile/types';
 import { Escrow } from './escrow';
 import { IEscrow } from './escrow/types';
-import { IService, Service } from './services';
+import { Service } from './services';
 import { IReview } from './reviews/types';
 import { Review } from './reviews';
+import { IService } from "./services/types";
 
 /**
  * Main client for interacting with the TalentLayer protocol.
