@@ -68,9 +68,9 @@ export class Proposal {
     proposalDetails: ProposalDetails,
     userId: string,
     serviceId: string,
-    rateToken: string,
     rateAmount: string,
     expirationDate: string,
+    referrerId: string = '0',
   ): Promise<ClientTransactionResponse> {
     const cid = await this.upload(proposalDetails);
     const signature = await this.getSignature({
@@ -93,7 +93,7 @@ export class Proposal {
     const tx = await this.viemClient.writeContract(
       'talentLayerService',
       'createProposal',
-      [userId, serviceId, rateToken, rateAmount, this.platformID, cid, expirationDate, signature],
+      [userId, serviceId, rateAmount, this.platformID, cid, expirationDate, signature, referrerId],
       proposalPostingFees,
     );
 
@@ -101,31 +101,31 @@ export class Proposal {
       return { cid, tx };
     }
 
-    throw new Error('Unable to update propsal service');
+    throw new Error('Unable to create the proposal');
   }
 
   public async update(
     proposalDetails: ProposalDetails,
     userId: string,
     serviceId: string,
-    rateToken: string,
     rateAmount: string,
     expirationDate: string,
+    referrerId: string = '0',
   ): Promise<ClientTransactionResponse> {
     const cid = await this.upload(proposalDetails);
     const tx = await this.viemClient.writeContract('talentLayerService', 'updateProposal', [
       userId,
       serviceId,
-      rateToken,
       rateAmount,
       cid,
       expirationDate,
+      referrerId,
     ]);
 
     if (cid && tx) {
       return { cid, tx };
     }
 
-    throw new Error('Unable to update propsal service');
+    throw new Error('Unable to update the proposal');
   }
 }

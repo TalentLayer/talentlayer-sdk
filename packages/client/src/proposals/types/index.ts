@@ -13,31 +13,25 @@ export interface CreateProposalArgs {
 }
 
 export interface IProposal {
+  getOne(id: string): Promise<any>;
+  getByServiceId(id: string): Promise<any>;
+  getByUser(id: string): Promise<any>;
   getSignature(args: CreateProposalArgs): Promise<any>;
-
-  getOne(proposalId: string): Promise<any>;
-
-  getByServiceId(serviceId: string): Promise<any>;
-
-  getByUser(userId: string): Promise<any>;
-
-  create(
-    proposalDetails: ProposalDetails,
-    userId: string,
-    serviceId: string,
-    rateToken: string,
-    rateAmount: string,
-    expirationDate: string
-  ): Promise<ClientTransactionResponse>;
-
-  update(
-    proposalDetails: ProposalDetails,
-    userId: string,
-    serviceId: string,
-    rateToken: string,
-    rateAmount: string,
-    expirationDate: string
-  ): Promise<ClientTransactionResponse>;
-
   upload(proposalDetails: ProposalDetails): Promise<string>;
+  create(
+      proposalDetails: ProposalDetails,
+      userId: string,
+      serviceId: string,
+      rateAmount: string,
+      expirationDate: string,
+      referrerId?: string,
+  ): Promise<ClientTransactionResponse>;
+  update(
+      proposalDetails: ProposalDetails,
+      userId: string,
+      serviceId: string,
+      rateAmount: string,
+      expirationDate: string,
+      referrerId?: string,
+  ): Promise<ClientTransactionResponse>;
 }
