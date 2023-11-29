@@ -5,9 +5,9 @@ import { ClientTransactionResponse } from '../types';
 import { getSignature } from '../utils/signature';
 import { ViemClient } from '../viem';
 import { getAllProposalsByServiceId, getAllProposalsByUser, getProposalById } from './graphql';
-import { CreateProposalArgs, ProposalDetails } from './types';
+import { CreateProposalArgs, IProposal, ProposalDetails } from './types';
 
-export class Proposal {
+export class Proposal implements IProposal {
   graphQlClient: GraphQLClient;
   ipfsClient: IPFSClient;
   viemClient: ViemClient;

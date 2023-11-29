@@ -9,9 +9,14 @@ import {
   getServices,
   searchServices,
 } from './graphql/queries';
-import { ICreateServiceSignature, IProps, ServiceDetails } from './types';
+import {
+  ICreateServiceSignature,
+  IProps,
+  IService,
+  ServiceDetails,
+} from './types';
 
-export class Service {
+export class Service implements IService {
   graphQlClient: GraphQLClient;
   ipfsClient: IPFSClient;
   viemClient: ViemClient;
