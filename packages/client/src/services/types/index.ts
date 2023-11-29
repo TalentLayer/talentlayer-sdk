@@ -25,7 +25,6 @@ export type ServiceDetails = {
   title: string;
   about: string;
   keywords: string;
-  rateToken: string;
   rateAmount: string;
   [key: string]: any;
 };
