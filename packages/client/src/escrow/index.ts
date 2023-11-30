@@ -1,13 +1,13 @@
-import { ERC20, IERC20 } from '../blockchain-bindings/erc20';
+import {ERC20, IERC20} from '../blockchain-bindings/erc20';
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
-import { Proposal } from '../proposals';
-import { Service } from '../services';
-import { ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
-import { calculateApprovalAmount } from '../utils/fees';
-import { ViemClient } from '../viem';
-import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
-import { IEscrow } from "./types";
+import {Proposal} from '../proposals';
+import {Service} from '../services';
+import {ClientTransactionResponse, NetworkEnum, RateToken} from '../types';
+import {calculateApprovalAmount} from '../utils/fees';
+import {ViemClient} from '../viem';
+import {getPaymentsByService, getProtocolAndPlatformsFees} from './graphql/queries';
+import {IEscrow} from "./types";
 
 export class Escrow implements IEscrow {
   graphQlClient: GraphQLClient;
@@ -44,11 +44,24 @@ export class Escrow implements IEscrow {
       this.viemClient,
       this.platformID,
     );
+
+    const serviceInstance = new Service(
+      this.graphQlClient,
+      this.ipfsClient,
+      this.viemClient,
+      this.platformID,
+    );
+
     const proposal = await proposalInstance.getOne(proposalId);
+    const service = await serviceInstance.getOne(serviceId);
     const erc20 = this.erc20;
 
     if (!proposal) {
       throw new Error('Proposal not found');
+    }
+
+    if (!service) {
+      throw new Error('Service not found');
     }
 
     if (!proposal.cid) {
@@ -70,11 +83,14 @@ export class Escrow implements IEscrow {
       throw Error('Unable to fetch fees');
     }
 
+    console.log('SDK: referral amount', service.referralAmount);
+
     const approvalAmount = calculateApprovalAmount(
       proposal.rateAmount,
       protocolAndPlatformsFees.servicePlatform.originServiceFeeRate,
       protocolAndPlatformsFees.proposalPlatform.originValidatedProposalFeeRate,
       protocolAndPlatformsFees.protocols[0].protocolEscrowFeeRate,
+      service.referralAmount,
     );
 
     console.log('SDK: escrow seeking approval for amount: ', approvalAmount.toString());
@@ -152,13 +168,11 @@ export class Escrow implements IEscrow {
       throw new Error('Transaction Id not found for service');
     }
 
-    const tx = await this.viemClient.writeContract('talentLayerEscrow', 'release', [
+    return await this.viemClient.writeContract('talentLayerEscrow', 'release', [
       userId,
       parseInt(transactionId),
       amount.toString(),
     ]);
-
-    return tx;
   }
 
   public async reimburse(serviceId: string, amount: bigint, userId: number): Promise<any> {
