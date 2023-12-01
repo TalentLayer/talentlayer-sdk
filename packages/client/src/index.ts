@@ -17,6 +17,7 @@ import { IEscrow } from './escrow/types';
 import { IService, Service } from './services';
 import { IReview } from './reviews/types';
 import { Review } from './reviews';
+import { isCustomChainConfig, isNetworkEnum } from './utils/typeguard';
 
 /**
  * Main client for interacting with the TalentLayer protocol.
@@ -31,8 +32,6 @@ export class TalentLayerClient {
   /** @hidden */
   platformID: number;
   /** @hidden */
-  chainId: NetworkEnum;
-  /** @hidden */
   signatureApiUrl?: string;
   /** @hidden */
   chainConfig: Config | CustomChainConfig;
@@ -41,19 +40,28 @@ export class TalentLayerClient {
   constructor(config: TalentLayerClientConfig) {
     console.log('SDK: client initialising', config);
     this.platformID = config.platformId;
-    this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId));
+
     this.ipfsClient = new IPFSClient({
       baseUrl: config.ipfsConfig.baseUrl,
       clientId: config.ipfsConfig.clientId,
       clientSecret: config.ipfsConfig.clientSecret,
     });
 
-    this.chainId = config.chainId;
     this.signatureApiUrl = config?.signatureApiUrl;
-    this.chainConfig = getChainConfig(config.chainId);
 
-    if (config.customChainConfig) {
+    if (config?.chainId) {
+      this.chainConfig = getChainConfig(config.chainId);
+    } else if (config.customChainConfig) {
+      // if user has given custom chain config, that will take priority
       this.chainConfig = config.customChainConfig
+    } else {
+      throw Error('Atleast one of chainId or customChainConfig need to be provided')
+    }
+
+    if (isNetworkEnum(this.chainConfig.networkId)) {
+      this.graphQlClient = new GraphQLClient(getGraphQLConfig(this.chainConfig.networkId));
+    } else {
+      this.graphQlClient = new GraphQLClient({ subgraphUrl: this.chainConfig.subgraphUrl, chainId: this.chainConfig.networkId });
     }
 
     this.viemClient = new ViemClient({ ...config.walletConfig, chainConfig: this.chainConfig });
@@ -162,7 +170,6 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
-      this.chainId,
       this.chainConfig
     );
   }

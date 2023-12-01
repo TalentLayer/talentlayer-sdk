@@ -61,7 +61,7 @@ export type ViemClientConfig = {
 };
 
 export type TalentLayerClientConfig = {
-  chainId: NetworkEnum;
+  chainId?: NetworkEnum;
   ipfsConfig: IPFSClientConfig;
   walletConfig?: {
     rpcUrl?: string;

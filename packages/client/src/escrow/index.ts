@@ -26,8 +26,6 @@ export class Escrow {
   /** @hidden */
   platformID: number;
   /** @hidden */
-  chainId: NetworkEnum;
-  /** @hidden */
   erc20: IERC20;
   /** @hidden */
   chainConfig: ChainConfig;
@@ -38,7 +36,6 @@ export class Escrow {
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
-    chainId: NetworkEnum,
     chainConfig: ChainConfig
 
   ) {
@@ -47,7 +44,6 @@ export class Escrow {
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
     this.viemClient = viemClient;
-    this.chainId = chainId;
     this.chainConfig = chainConfig;
     this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainConfig);
   }

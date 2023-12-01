@@ -23,7 +23,7 @@ describe('Escrow', () => {
         mockIPFSClient = new MockIPFSClient();
         mockViemClient = new MockViemClient();
         mockChainConfig = getChainConfig(testChainId);
-        escrow = new Escrow(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, testChainId, mockChainConfig);
+        escrow = new Escrow(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, mockChainConfig);
     });
 
     describe('approve', () => {
