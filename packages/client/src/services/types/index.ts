@@ -14,6 +14,7 @@ export interface IService {
       serviceDetails: ServiceDetails,
       userId: string,
       serviceId: number,
+      rateToken: string,
       referralAmount?: string,
   ): Promise<ClientTransactionResponse>;
   updloadServiceDataToIpfs(serviceData: ServiceDetails): Promise<string>;
