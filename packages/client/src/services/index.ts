@@ -105,7 +105,6 @@ export class Service implements IService {
     serviceDetails: ServiceDetails,
     userId: string,
     serviceId: number,
-    rateToken: string,
     referralAmount: string = '0',
   ): Promise<ClientTransactionResponse> {
     const cid = await this.updloadServiceDataToIpfs(serviceDetails);
@@ -113,7 +112,7 @@ export class Service implements IService {
     const tx = await this.viemClient.writeContract(
       'talentLayerService',
       'updateService',
-      [userId, serviceId, rateToken, referralAmount, cid]
+      [userId, serviceId, referralAmount, cid]
     );
 
     if (cid && tx) {
