@@ -3,7 +3,7 @@ import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
 import { Proposal } from '../proposals';
 import { Service } from '../services';
-import { ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
+import { ChainConfig, ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
 import { calculateApprovalAmount } from '../utils/fees';
 import { ViemClient } from '../viem';
 import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
@@ -29,6 +29,8 @@ export class Escrow {
   chainId: NetworkEnum;
   /** @hidden */
   erc20: IERC20;
+  /** @hidden */
+  chainConfig: ChainConfig;
 
   /** @hidden */
   constructor(
@@ -37,14 +39,17 @@ export class Escrow {
     viemClient: ViemClient,
     platformId: number,
     chainId: NetworkEnum,
+    chainConfig: ChainConfig
+
   ) {
-    console.log('SDK: escrow initialising: ');
+    console.log('SDK: escrow initialising');
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
     this.viemClient = viemClient;
     this.chainId = chainId;
-    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
+    this.chainConfig = chainConfig;
+    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainConfig);
   }
 
   public async approve(

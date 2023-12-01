@@ -1,6 +1,6 @@
 import { getChainConfig, getGraphQLConfig } from './config';
 import GraphQLClient from './graphql';
-import { Config, NetworkEnum, TalentLayerClientConfig } from './types';
+import { Config, CustomChainConfig, NetworkEnum, TalentLayerClientConfig } from './types';
 import IPFSClient from './ipfs';
 import { ViemClient } from './viem';
 import { IERC20, ERC20 } from './blockchain-bindings/erc20';
@@ -34,6 +34,8 @@ export class TalentLayerClient {
   chainId: NetworkEnum;
   /** @hidden */
   signatureApiUrl?: string;
+  /** @hidden */
+  chainConfig: Config | CustomChainConfig;
 
   /** @hidden */
   constructor(config: TalentLayerClientConfig) {
@@ -45,9 +47,16 @@ export class TalentLayerClient {
       clientId: config.ipfsConfig.clientId,
       clientSecret: config.ipfsConfig.clientSecret,
     });
-    this.viemClient = new ViemClient(config.chainId, config.walletConfig || {});
+
     this.chainId = config.chainId;
     this.signatureApiUrl = config?.signatureApiUrl;
+    this.chainConfig = getChainConfig(config.chainId);
+
+    if (config.customChainConfig) {
+      this.chainConfig = config.customChainConfig
+    }
+
+    this.viemClient = new ViemClient({ ...config.walletConfig, chainConfig: this.chainConfig });
   }
 
   /**
@@ -57,13 +66,21 @@ export class TalentLayerClient {
     return getChainConfig(networkId);
   }
 
+
+  /**
+   * Returns chain config for current isntance of SDK
+   */
+  public getCurrentChainConfig(): Config {
+    return this.chainConfig
+  }
+
   /**
    * Provides access to ERC20 token functionalities.
    * @type {IERC20}
    */
   // @ts-ignore
   get erc20(): IERC20 {
-    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
+    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainConfig);
   }
 
   /**
@@ -97,7 +114,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get disputes(): IDispute {
-    return new Disputes(this.viemClient, this.platformID, this.graphQlClient, this.chainId);
+    return new Disputes(this.viemClient, this.platformID, this.graphQlClient, this.chainConfig);
   }
 
   /**
@@ -146,6 +163,7 @@ export class TalentLayerClient {
       this.viemClient,
       this.platformID,
       this.chainId,
+      this.chainConfig
     );
   }
 }
