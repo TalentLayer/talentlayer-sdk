@@ -1,4 +1,4 @@
-import {FEE_RATE_DIVIDER} from '../constants';
+import { FEE_RATE_DIVIDER } from '../constants';
 
 export const calculateApprovalAmount = (
   proposalRateAmount: string,
