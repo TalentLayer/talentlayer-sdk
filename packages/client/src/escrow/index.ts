@@ -1,13 +1,13 @@
-import {ERC20, IERC20} from '../blockchain-bindings/erc20';
+import { ERC20, IERC20 } from '../blockchain-bindings/erc20';
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
-import {Proposal} from '../proposals';
-import {Service} from '../services';
-import {ClientTransactionResponse, NetworkEnum, RateToken} from '../types';
-import {calculateApprovalAmount} from '../utils/fees';
-import {ViemClient} from '../viem';
-import {getPaymentsByService, getProtocolAndPlatformsFees} from './graphql/queries';
-import {IEscrow} from "./types";
+import { Proposal } from '../proposals';
+import { Service } from '../services';
+import { ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
+import { calculateApprovalAmount } from '../utils/fees';
+import { ViemClient } from '../viem';
+import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
+import { IEscrow } from "./types";
 
 export class Escrow implements IEscrow {
   graphQlClient: GraphQLClient;
