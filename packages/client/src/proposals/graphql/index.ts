@@ -12,6 +12,10 @@ export const getProposalById = (id: string) => `
         numReceivedReviews
       }
     }
+    referrer {
+      address
+      handle
+    }
     platform {
       id
     }
@@ -71,6 +75,10 @@ export const getAllProposalsByServiceId = (id: string) => `
         numReceivedReviews
       }
     }
+    referrer {
+      address
+      handle
+    }
     description {
       id
       about
@@ -112,6 +120,10 @@ export const getAllProposalsByUser = (id: string) => `
         id
         handle
       }
+    }
+    referrer {
+      address
+      handle
     }
     description {
       id

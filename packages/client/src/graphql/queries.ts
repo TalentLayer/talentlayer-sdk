@@ -4,6 +4,11 @@ export const serviceQueryFields = `
   createdAt
   cid
   referralAmount
+  referrer {
+    address
+    handle
+    id
+  }
   rateToken {
     address
     decimals
@@ -80,6 +85,11 @@ export const getProposalsByService = (serviceId: string) => `
     description {
       about
       video_url
+    }
+    referrer {
+      address
+      handle
+      id
     }
     status
     expirationDate
