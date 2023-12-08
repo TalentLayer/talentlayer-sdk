@@ -56,7 +56,7 @@ export class TalentLayerClient {
       // if user has given custom chain config, that will take priority
       this.chainConfig = config.customChainConfig
     } else {
-      throw Error('Atleast one of chainId or customChainConfig need to be provided')
+      throw Error('At least one of chainId or customChainConfig need to be provided')
     }
 
     if (isNetworkEnum(this.chainConfig.networkId)) {
