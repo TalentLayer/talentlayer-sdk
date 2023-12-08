@@ -158,7 +158,7 @@ describe('TalentLayerClient:customchainConfig', () => {
                     platformId: testPlatformId,
                     signatureApiUrl: signatureApiUrl
                 })
-            }).toThrow('Atleast one of chainId or customChainConfig need to be provided')
+            }).toThrow('At least one of chainId or customChainConfig need to be provided')
 
 
         })
