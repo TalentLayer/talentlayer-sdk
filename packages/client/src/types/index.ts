@@ -1,4 +1,4 @@
-import { Hash } from 'viem';
+import { Chain, Hash } from 'viem';
 
 export type IToken = {
   name: string;
@@ -18,6 +18,9 @@ export enum RateToken {
   NATIVE = '0x0000000000000000000000000000000000000000',
 }
 
+/**
+ * Defines the Config type for predefined chains supported by TalentLayer
+*/
 export type Config = {
   networkId: NetworkEnum;
   subgraphUrl: string;
@@ -25,6 +28,17 @@ export type Config = {
   contracts: { [key: string]: { address: `0x${string}`; abi: any } };
   tokens: { [key: string]: IToken };
 };
+
+export type CustomChainConfig = {
+  networkId: number;
+  chainDefinition: Chain;
+  subgraphUrl: string;
+  escrowConfig: { [key: string]: any };
+  contracts: { [key: string]: { address: `0x${string}`; abi: any } };
+  tokens: { [key: string]: IToken };
+}
+
+export type ChainConfig = Config | CustomChainConfig;
 
 export type GraphQLConfig = {
   chainId: NetworkEnum;
@@ -43,17 +57,29 @@ export type ViemClientConfig = {
   rpcUrl?: string;
   privateKey?: `0x${string}`;
   mnemonic?: string;
-  chainId?: NetworkEnum;
+  chainConfig: ChainConfig;
 };
 
 export type TalentLayerClientConfig = {
-  chainId: NetworkEnum;
+  chainId?: NetworkEnum;
   ipfsConfig: IPFSClientConfig;
-  walletConfig?: ViemClientConfig;
+  walletConfig?: {
+    rpcUrl?: string;
+    privateKey?: `0x${string}`;
+    mnemonic?: string;
+  };
   platformId: number;
   signatureApiUrl?: string;
+  customChainConfig?: ChainConfig;
 };
 
+/**
+ * Represents the response of a transaction made through the client.
+ * This type is typically used to encapsulate details of blockchain transactions initiated by the client.
+ * 
+ * @property {Hash} tx - The transaction hash that uniquely identifies the transaction on the blockchain.
+ * @property {string} cid - The Content Identifier (CID) referring to the location of the transaction-related data stored on IPFS.
+ */
 export type ClientTransactionResponse = {
   tx: Hash;
   cid: string;

@@ -1,8 +1,8 @@
 import { parseEther, toHex } from "viem";
 import { Disputes } from "..";
 import { getChainConfig, getGraphQLConfig } from "../../config";
-import GraphQLClient from "../../graphql";
 import { getPlatformById } from "../../platform/graphql/queries";
+import { ChainConfig } from "../../types";
 import { MockGraphQLClient, MockViemClient } from "../../__mocks__/clientMocks";
 import { testPlatformId, testChainId, testPlatformResponseWithArbitrator, testAddress } from "../../__mocks__/fixtures";
 
@@ -11,13 +11,15 @@ describe('Disputes', () => {
     let mockGraphQLClient: any;
     let mockViemClient: any;
     let disputes: Disputes;
+    let mockChainConfig: ChainConfig;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
         // DO NOT remove this comments - they are needed for local testing
         // mockGraphQLClient = new GraphQLClient(getGraphQLConfig(137))
         mockViemClient = new MockViemClient();
-        disputes = new Disputes(mockViemClient, testPlatformId, mockGraphQLClient, testChainId);
+        mockChainConfig = getChainConfig(testChainId);
+        disputes = new Disputes(mockViemClient, testPlatformId, mockGraphQLClient, mockChainConfig);
     });
 
     it('constructor initializes correctly', () => {
@@ -41,8 +43,9 @@ describe('Disputes', () => {
         it('should read arbitration contract and return value if arbitrator address is not zero', async () => {
             // Arrange
             // set a new disputes instance with a different platform id
-            disputes = new Disputes(mockViemClient, 2, mockGraphQLClient, testChainId);
-            const chainConfig = getChainConfig(disputes.chainId);
+            mockChainConfig = getChainConfig(testChainId);
+            disputes = new Disputes(mockViemClient, 2, mockGraphQLClient, mockChainConfig);
+            const chainConfig = mockChainConfig
             const contract = chainConfig.contracts['talentLayerArbitrator'];
 
             //Act

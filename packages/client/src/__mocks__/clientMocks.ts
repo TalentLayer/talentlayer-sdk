@@ -1,3 +1,4 @@
+import { polygon } from "viem/chains";
 import { getPaymentsByService, getProtocolAndPlatformsFees } from "../escrow/graphql/queries";
 import { getPlatformById, getPlatformsByOwner, getProtocolById } from "../platform/graphql/queries";
 import { getMintFees, getPaymentsForUser, getProfileByAddress, getProfileById, getProfiles, getUserTotalGains } from "../profile/graphql";
@@ -91,7 +92,7 @@ export class MockGraphQLClient {
 
 export class MockViemClient {
     writeContract = jest.fn(async () => testAddress)
-    chainId = 137;
+    chain = polygon;
     readContract = jest.fn(async () => "randomData")
     publicClient = {
         readContract: jest.fn(async () => "randomData"),
