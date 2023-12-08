@@ -18,7 +18,7 @@ import { Service } from './services';
 import { IReview } from './reviews/types';
 import { Review } from './reviews';
 import { IService } from "./services/types";
-import { isCustomChainConfig, isNetworkEnum } from './utils/typeguard';
+import { isNetworkEnum } from './utils/typeguard';
 
 /**
  * Main client for interacting with the TalentLayer protocol.

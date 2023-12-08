@@ -3,13 +3,11 @@ import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
 import { Proposal } from '../proposals';
 import { Service } from '../services';
-import { ChainConfig, ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
+import { ChainConfig, ClientTransactionResponse, RateToken } from '../types';
 import { calculateApprovalAmount } from '../utils/fees';
 import { ViemClient } from '../viem';
 import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
 import { IEscrow } from "./types";
-
-
 
 /**
  * Release and reimburse payments using TalentLayer escrow

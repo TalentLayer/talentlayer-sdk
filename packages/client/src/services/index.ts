@@ -16,18 +16,6 @@ import {
   ServiceDetails,
 } from './types';
 
-export interface IService {
-  getOne(id: string): Promise<any>;
-  create(
-    serviceDetails: ServiceDetails,
-    userId: string,
-    platformId: number,
-  ): Promise<ClientTransactionResponse>;
-  updloadServiceDataToIpfs(serviceData: ServiceDetails): Promise<string>;
-  getServices(params: IProps): Promise<any>;
-  search(params: IProps): Promise<any>;
-}
-
 /**
  * Class representing Services inside TalentLayer
  */
