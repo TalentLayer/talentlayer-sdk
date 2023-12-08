@@ -106,6 +106,8 @@ export class Service implements IService {
    * @param {ServiceDetails} serviceDetails - The details of the service to create.
    * @param {string} userId - The user ID creating the service.
    * @param {number} platformId - The platform ID where the service is created.
+   * @param {string} token - The address of the token used for this service.
+   * @param {string} referralAmount - The user ID of the referrer (default 0 if no referrer).
    * @returns {Promise<ClientTransactionResponse>} - A promise that resolves to the transaction response of the service creation.
   */
   public async create(
