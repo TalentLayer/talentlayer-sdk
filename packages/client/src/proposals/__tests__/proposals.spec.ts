@@ -1,7 +1,22 @@
 
 import { Proposal } from '..';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
-import { testAddress, testAmount, testChainId, testCid, testExpirationDate, testIpfsHash, testOwnerAddress, testPlatformDetails, testPlatformId, testPlatformResponse, testPlatformsByOwnerResponse, testProposalDetails, testProposalId, testProposalResponse, testProposalsByServiceId, testProposalsByUser, testProtocolAndPlatformResponse, testServiceId, testSignature, testUserId } from '../../__mocks__/fixtures';
+import {
+    testAmount,
+    testExpirationDate,
+    testIpfsHash,
+    testPlatformId,
+    testPlatformResponse,
+    testProposalDetails,
+    testProposalId,
+    testProposalResponse,
+    testProposalsByServiceId,
+    testProposalsByUser,
+    testReferrerUserId,
+    testServiceId,
+    testSignature,
+    testUserId
+} from '../../__mocks__/fixtures';
 // Additional imports...
 
 describe('Platform', () => {
@@ -62,19 +77,19 @@ describe('Platform', () => {
             const proposalDetails = testProposalDetails;
             const userId = testUserId;
             const serviceId = testServiceId;
-            const rateToken = testAddress;
             const rateAmount = testAmount;
             const expirationDate = testExpirationDate;
+            const referrerId = testReferrerUserId;
 
             // Act
-            const resposne = await proposal.update(proposalDetails, userId, serviceId, rateToken, rateAmount.toString(), expirationDate)
+            const response = await proposal.update(proposalDetails, userId, serviceId, rateAmount.toString(), expirationDate, referrerId)
 
             // Assert
             expect(mockIPFSClient.post).toHaveBeenCalledWith(JSON.stringify(proposalDetails));
             expect(mockViemClient.writeContract).toHaveBeenLastCalledWith(
                 'talentLayerService',
                 'updateProposal',
-                [userId, serviceId, rateToken, rateAmount.toString(), testIpfsHash, expirationDate]
+                [userId, serviceId, rateAmount.toString(), testIpfsHash, expirationDate, referrerId]
             )
         })
     })
@@ -85,20 +100,21 @@ describe('Platform', () => {
             const proposalDetails = testProposalDetails;
             const userId = testUserId;
             const serviceId = testServiceId;
-            const rateToken = testAddress;
             const rateAmount = testAmount;
             const expirationDate = testExpirationDate;
             const signatureResponse = testSignature;
+            const referrerId = testReferrerUserId;
+
             jest.spyOn(proposal, 'getSignature').mockResolvedValueOnce(signatureResponse);
 
             // Act
-            const resposne = await proposal.create(proposalDetails, userId, serviceId, rateToken, rateAmount.toString(), expirationDate)
+            const response = await proposal.create(proposalDetails, userId, serviceId, rateAmount.toString(), expirationDate, referrerId)
 
             // Assert
             expect(mockViemClient.writeContract).toHaveBeenCalledWith(
                 'talentLayerService',
                 'createProposal',
-                [userId, serviceId, rateToken, rateAmount.toString(), testPlatformId, testIpfsHash, expirationDate, signatureResponse],
+                [userId, serviceId, rateAmount.toString(), testPlatformId, testIpfsHash, expirationDate, signatureResponse, referrerId],
                 BigInt(testPlatformResponse.data.platform.proposalPostingFee),
             )
 

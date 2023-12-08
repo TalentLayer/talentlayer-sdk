@@ -2,7 +2,20 @@
 import { Service } from '..';
 import { getPlatformById } from '../../platform/graphql/queries';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
-import { testAddress, testIpfsHash, testPlatformId, testPlatformResponse, testSearchServiceProps, testSearchServicesResponse, testServiceDetails, testServiceId, testServiceResponse, testSignature, testUserId } from '../../__mocks__/fixtures';
+import {
+    testAddress,
+    testIpfsHash,
+    testPlatformId,
+    testPlatformResponse,
+    testReferralAmount,
+    testSearchServiceProps,
+    testSearchServicesResponse,
+    testServiceDetails,
+    testServiceId,
+    testServiceResponse,
+    testSignature,
+    testUserId
+} from '../../__mocks__/fixtures';
 
 describe('Service', () => {
     let service: Service;
@@ -41,7 +54,7 @@ describe('Service', () => {
             jest.spyOn(service, 'getServiceSignature').mockResolvedValue(testSignature)
 
             // Act
-            const response = await service.create(serviceDetails, userId, platformID);
+            const response = await service.create(serviceDetails, userId, platformID, testAddress, testReferralAmount);
 
             // Assert
             expect(response.cid).toEqual(testIpfsHash);
@@ -50,7 +63,7 @@ describe('Service', () => {
             expect(mockViemClient.writeContract).toHaveBeenCalledWith(
                 'talentLayerService',
                 'createService',
-                [userId, platformID, testIpfsHash, testSignature],
+                [userId, platformID, testIpfsHash, testSignature, testAddress, testReferralAmount],
                 BigInt(testPlatformResponse.data.platform.servicePostingFee),
 
             );
@@ -58,9 +71,32 @@ describe('Service', () => {
         })
     })
 
+    describe('update', () => {
+        it('should update a new service', async () => {
+            // Arrange
+            const serviceDetails = testServiceDetails;
+            const userId = testUserId;
+            const serviceId = 1;
+            jest.spyOn(service, 'getServiceSignature').mockResolvedValue(testSignature)
+
+            // Act
+            const response = await service.update(serviceDetails, userId, serviceId,testReferralAmount);
+
+            // Assert
+            expect(response.cid).toEqual(testIpfsHash);
+            expect(response.tx).toEqual(testAddress);
+            expect(mockViemClient.writeContract).toHaveBeenCalledWith(
+                'talentLayerService',
+                'updateService',
+                [userId, serviceId, testReferralAmount, testIpfsHash]
+            );
+
+        })
+    })
+
     describe('search', () => {
-        it('should reaturn services based on criteria', async () => {
-            // Arranage
+        it('should return services based on criteria', async () => {
+            // Arrange
             const props = testSearchServiceProps;
 
             // Act
@@ -74,7 +110,7 @@ describe('Service', () => {
 
     describe('getServices', () => {
         it('should return services based on criteria', async () => {
-            // Arranage
+            // Arrange
             const props = testSearchServiceProps;
 
             // Act

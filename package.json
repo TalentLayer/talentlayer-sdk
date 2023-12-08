@@ -1,11 +1,17 @@
 {
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "turbo test"
+    "test": "turbo test",
+    "docs": "typedoc",
+    "docs-all": "npm run docs --workspaces --if-present --verbose"
   },
   "devDependencies": {
     "@types/jest": "^29.5.8",
@@ -14,14 +20,11 @@
     "prettier": "^3.0.3",
     "ts-jest": "^29.1.1",
     "tsconfig": "*",
-    "turbo": "latest"
+    "turbo": "latest",
+    "typedoc": "0.25.3"
   },
   "name": "talentlayer-sdk",
   "packageManager": "yarn@1.22.19",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "dependencies": {
     "@changesets/cli": "^2.26.2"
   }

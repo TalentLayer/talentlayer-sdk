@@ -9,8 +9,16 @@ export const getProfileByAddress = (address: Hash) =>
     handle
     rating
     delegates
-    userStats {
+    userStat {
+      averageReferredRating
+      numCreatedProposals
+      numCreatedServices
+      numFinishedServicesAsBuyer
+      numFinishedServicesAsSeller
+      numGivenReviews
       numReceivedReviews
+      numReferredUsers
+      numReferredUsersReviewsReceived
     }
     updatedAt
     createdAt
@@ -43,8 +51,16 @@ export const getProfiles = (numberPerPage?: number, offset?: number, searchQuery
     id
     address
     handle
-    userStats {
+    userStat {
+      averageReferredRating
+      numCreatedProposals
+      numCreatedServices
+      numFinishedServicesAsBuyer
+      numFinishedServicesAsSeller
+      numGivenReviews
       numReceivedReviews
+      numReferredUsers
+      numReferredUsersReviewsReceived
     }
     rating
   }
@@ -60,8 +76,16 @@ export const getProfileById = (id: string) => `
     handle
     rating
     delegates
-    userStats {
-        numReceivedReviews
+    userStat {
+      averageReferredRating
+      numCreatedProposals
+      numCreatedServices
+      numFinishedServicesAsBuyer
+      numFinishedServicesAsSeller
+      numGivenReviews
+      numReceivedReviews
+      numReferredUsers
+      numReferredUsersReviewsReceived
     }
     updatedAt
     createdAt
@@ -95,16 +119,26 @@ export const getUserTotalGains = (id: string) => `
 {
     user(id: "${id}") {
     totalGains{
-        id
-        totalGain
-        token {
+      id
+      totalGain
+      token {
         id
         name
         symbol
         decimals
-        }
+      }
     }
+    referralGains {
+      availableBalance
+      totalGain
+      token {
+        address
+        decimals
+        symbol
+        name
+      }
     }
+  }
 }
 `;
 

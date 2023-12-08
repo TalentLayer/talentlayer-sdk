@@ -8,9 +8,13 @@ export const getProposalById = (id: string) => `
       address
       cid
       rating
-      userStats {
+      userStat {
         numReceivedReviews
       }
+    }
+    referrer {
+      address
+      handle
     }
     platform {
       id
@@ -67,9 +71,13 @@ export const getAllProposalsByServiceId = (id: string) => `
       address
       cid
       rating
-      userStats {
+      userStat {
         numReceivedReviews
       }
+    }
+    referrer {
+      address
+      handle
     }
     description {
       id
@@ -112,6 +120,10 @@ export const getAllProposalsByUser = (id: string) => `
         id
         handle
       }
+    }
+    referrer {
+      address
+      handle
     }
     description {
       id

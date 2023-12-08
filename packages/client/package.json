@@ -12,7 +12,8 @@
     "prepare": "npm run build",
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "npm run build -- --watch",
-    "test": "jest --verbose --coverage"
+    "test": "jest --verbose --coverage",
+    "docs": "typedoc --out docs"
   },
   "devDependencies": {
     "@turbo/gen": "^1.10.12",

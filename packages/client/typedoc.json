@@ -1,0 +1,16 @@
+{
+    "tsconfig": "./tsconfig.json",
+    "extends": [
+        "../../typedoc.base.json"
+    ],
+    "entryPoints": [
+        "src/disputes/index.ts",
+        "src/escrow/index.ts",
+        "src/platform/index.ts",
+        "src/profile/index.ts",
+        "src/proposals/index.ts",
+        "src/reviews/index.ts",
+        "src/services/index.ts",
+        "src/index.ts"
+    ]
+}

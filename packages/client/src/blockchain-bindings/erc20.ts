@@ -2,8 +2,7 @@ import IPFSClient from '../ipfs';
 import ERC20Contract from '../contracts/ABI/ERC20.json';
 
 import { ViemClient } from '../viem';
-import { getChainConfig } from '../config';
-import { NetworkEnum } from '../types';
+import { ChainConfig } from '../types';
 
 export interface IERC20 {
   balanceOf(tokenAddress: `0x${string}`): Promise<any>;
@@ -15,20 +14,20 @@ export class ERC20 {
   ipfsClient: IPFSClient;
   viemClient: ViemClient;
   platformID: number;
-  chainId: NetworkEnum;
+  chainConfig: ChainConfig;
 
   constructor(
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
-    chainId: NetworkEnum,
+    chainConfig: ChainConfig
   ) {
     console.log('SDK: erc20 initialising: ');
 
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
     this.viemClient = viemClient;
-    this.chainId = chainId;
+    this.chainConfig = chainConfig;
   }
 
   public async balanceOf(tokenAddress: `0x${string}`): Promise<any> {
@@ -50,7 +49,7 @@ export class ERC20 {
     // @ts-ignore
     const [address] = await this.viemClient.client.getAddresses();
 
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig = this.chainConfig;
     const contract = chainConfig.contracts['talentLayerEscrow'];
 
     // @ts-ignore
@@ -68,7 +67,7 @@ export class ERC20 {
     // @ts-ignore
     const [address] = await this.viemClient.client.getAddresses();
 
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig = this.chainConfig;
     const contract = chainConfig.contracts['talentLayerEscrow'];
 
     // @ts-ignore

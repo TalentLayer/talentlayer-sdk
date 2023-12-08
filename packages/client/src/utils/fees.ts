@@ -5,15 +5,13 @@ export const calculateApprovalAmount = (
   originServiceFeeRate: string,
   originValidatedProposalFeeRate: string,
   protocolEscrowFeeRate: string,
+  referralAmount: string,
 ): bigint => {
-  const jobRateAmount = BigInt(proposalRateAmount);
+  const jobRateAmount = BigInt(proposalRateAmount) + BigInt(referralAmount);
   const protocolFee = (jobRateAmount * BigInt(protocolEscrowFeeRate)) / BigInt(FEE_RATE_DIVIDER);
   const originServiceFee =
     (jobRateAmount * BigInt(originServiceFeeRate)) / BigInt(FEE_RATE_DIVIDER);
   const originValidatedProposalFee =
     (jobRateAmount * BigInt(originValidatedProposalFeeRate)) / BigInt(FEE_RATE_DIVIDER);
-  const totalAmount: bigint =
-    jobRateAmount + originServiceFee + originValidatedProposalFee + protocolFee;
-
-  return totalAmount;
+  return jobRateAmount + originServiceFee + originValidatedProposalFee + protocolFee;
 };

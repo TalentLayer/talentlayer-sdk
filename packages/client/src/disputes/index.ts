@@ -1,27 +1,41 @@
-import { parseEther, toHex, zeroAddress } from 'viem';
-import { getChainConfig } from '../config';
+import { Hash, parseEther, toHex, zeroAddress } from 'viem';
 import GraphQLClient from '../graphql';
 import { getPlatformById } from '../platform/graphql/queries';
-import { NetworkEnum, TransactionHash } from '../types';
+import { ChainConfig, NetworkEnum } from '../types';
 import { ViemClient } from '../viem';
 
+/**
+ * Get arbitration cost. Set price of arbitration
+ *
+ * @group TalentLayerClient Modules
+ */
 export class Disputes {
+  /** @hidden */
   wallet: ViemClient;
+  /** @hidden */
   platformID: number;
+  /** @hidden */
   subgraph: GraphQLClient;
-  chainId: NetworkEnum;
+  /** @hidden */
+  chainConfig: ChainConfig;
+
+  /** @hidden */
   constructor(
     walletClient: ViemClient,
     platformId: number,
     graphQlClient: GraphQLClient,
-    chainId: number,
+    chainConfig: ChainConfig
   ) {
     this.wallet = walletClient;
     this.platformID = platformId;
     this.subgraph = graphQlClient;
-    this.chainId = chainId;
+    this.chainConfig = chainConfig;
   }
 
+  /**
+ * getArbitrationCost - Retrieves the current cost of arbitration. This function is useful for understanding the financial implications of initiating an arbitration process.
+ * @returns {Promise<any>} - Returns a Promise that resolves to the arbitration cost, typically in a numerical or string format representing the cost value.
+ */
   public async getArbitrationCost(): Promise<any> {
     const platformResponse = await this.subgraph.get(getPlatformById(this.platformID.toString()));
 
@@ -36,7 +50,7 @@ export class Disputes {
       return 0;
     }
 
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig = this.chainConfig;
     const contract = chainConfig.contracts['talentLayerArbitrator'];
 
     console.log('SDK: reading contract');
@@ -52,7 +66,12 @@ export class Disputes {
     });
   }
 
-  public async setPrice(value: number | string): Promise<TransactionHash> {
+  /**
+ * setPrice - Sets the price of arbitration. This function allows for modifying the arbitration cost for the current platform
+ * @param {number | string} value - The new price value for arbitration, which can be specified as a number or a string representing the price.
+ * @returns {Promise<Hash>} - A promise that resolves to the transaction hash of the set operation.
+ */
+  public async setPrice(value: number | string): Promise<Hash> {
     const transformedPrice = parseEther(value.toString());
     console.log('SDK: setting arbitration price');
     const tx = await this.wallet.writeContract('talentLayerArbitrator', 'setArbitrationPrice', [

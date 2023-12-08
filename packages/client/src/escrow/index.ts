@@ -3,33 +3,48 @@ import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
 import { Proposal } from '../proposals';
 import { Service } from '../services';
-import { ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
+import { ChainConfig, ClientTransactionResponse, RateToken } from '../types';
 import { calculateApprovalAmount } from '../utils/fees';
 import { ViemClient } from '../viem';
 import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
+import { IEscrow } from "./types";
 
-export class Escrow {
+/**
+ * Release and reimburse payments using TalentLayer escrow
+ *
+ * @group TalentLayerClient Modules
+ */
+export class Escrow implements IEscrow {
+
+  /** @hidden */
   graphQlClient: GraphQLClient;
+  /** @hidden */
   ipfsClient: IPFSClient;
+  /** @hidden */
   viemClient: ViemClient;
+  /** @hidden */
   platformID: number;
-  chainId: NetworkEnum;
+  /** @hidden */
   erc20: IERC20;
+  /** @hidden */
+  chainConfig: ChainConfig;
 
+  /** @hidden */
   constructor(
     graphQlClient: GraphQLClient,
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
-    chainId: NetworkEnum,
+    chainConfig: ChainConfig
+
   ) {
-    console.log('SDK: escrow initialising: ');
+    console.log('SDK: escrow initialising');
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
     this.viemClient = viemClient;
-    this.chainId = chainId;
-    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
+    this.chainConfig = chainConfig;
+    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainConfig);
   }
 
   public async approve(
@@ -43,11 +58,24 @@ export class Escrow {
       this.viemClient,
       this.platformID,
     );
+
+    const serviceInstance = new Service(
+      this.graphQlClient,
+      this.ipfsClient,
+      this.viemClient,
+      this.platformID,
+    );
+
     const proposal = await proposalInstance.getOne(proposalId);
+    const service = await serviceInstance.getOne(serviceId);
     const erc20 = this.erc20;
 
     if (!proposal) {
       throw new Error('Proposal not found');
+    }
+
+    if (!service) {
+      throw new Error('Service not found');
     }
 
     if (!proposal.cid) {
@@ -69,11 +97,14 @@ export class Escrow {
       throw Error('Unable to fetch fees');
     }
 
+    console.log('SDK: referral amount', service.referralAmount);
+
     const approvalAmount = calculateApprovalAmount(
       proposal.rateAmount,
       protocolAndPlatformsFees.servicePlatform.originServiceFeeRate,
       protocolAndPlatformsFees.proposalPlatform.originValidatedProposalFeeRate,
       protocolAndPlatformsFees.protocols[0].protocolEscrowFeeRate,
+      service.referralAmount,
     );
 
     console.log('SDK: escrow seeking approval for amount: ', approvalAmount.toString());
@@ -151,13 +182,11 @@ export class Escrow {
       throw new Error('Transaction Id not found for service');
     }
 
-    const tx = await this.viemClient.writeContract('talentLayerEscrow', 'release', [
+    return await this.viemClient.writeContract('talentLayerEscrow', 'release', [
       userId,
       parseInt(transactionId),
       amount.toString(),
     ]);
-
-    return tx;
   }
 
   public async reimburse(serviceId: string, amount: bigint, userId: number): Promise<any> {
@@ -178,14 +207,19 @@ export class Escrow {
       throw new Error('Transaction Id not found for service');
     }
 
-    const tx = await this.viemClient.writeContract('talentLayerEscrow', 'reimburse', [
+    return await this.viemClient.writeContract('talentLayerEscrow', 'reimburse', [
       userId,
       parseInt(transactionId),
       amount.toString(),
     ]);
-
-    return tx;
   }
+
+    public async claimReferralBalance(referrerId: string, tokenAddress: string): Promise<any> {
+      return await this.viemClient.writeContract('talentLayerEscrow', 'claimReferralBalance', [
+          referrerId,
+          tokenAddress,
+        ]);
+    }
 
   public async getProtocolAndPlatformsFees(
     originServicePlatformId: string,
@@ -205,5 +239,11 @@ export class Escrow {
 
     return response?.data?.payments || null
   }
+
+    public async getClaimableReferralBalance(address: string): Promise<any> {
+        return await this.viemClient.readContract('talentLayerEscrow', 'getClaimableReferralBalance', [
+        address,
+        ]);
+    }
 
 }
