@@ -55,7 +55,15 @@ type Currency = {
 
 export type chainConfig = Chain;
 
-export type DevConfig = {
+/**
+ * Represents a custom config that can be passed to the sdk during initialisation of the client
+ * Typically, it should bne used in order to use the sdk with a custom chain and contracts
+ * 
+ * @property {chainConfig} chainConfig - The config of the custom chain that the sdk is being used for
+ * @property {Config} contractConfig - The custom contracts to be used with the sdk
+ */
+
+export type CustomConfig = {
   chainConfig: chainConfig,
   contractConfig: Config
 
@@ -67,7 +75,7 @@ export type TalentLayerClientConfig = {
   walletConfig?: ViemClientConfig;
   platformId: number;
   signatureApiUrl?: string;
-  devConfig?: DevConfig
+  customConfig?: CustomConfig
 };
 
 /**

@@ -1,6 +1,6 @@
 import { getChainConfig, getGraphQLConfig } from './config';
 import GraphQLClient from './graphql';
-import { Config, DevConfig, NetworkEnum, TalentLayerClientConfig } from './types';
+import { Config, CustomConfig, NetworkEnum, TalentLayerClientConfig } from './types';
 import IPFSClient from './ipfs';
 import { ViemClient } from './viem';
 import { IERC20, ERC20 } from './blockchain-bindings/erc20';
@@ -32,7 +32,7 @@ export class TalentLayerClient {
   platformID: number;
   chainId: NetworkEnum | number;
   signatureApiUrl?: string;
-  devConfig?: DevConfig;
+  customConfig?: CustomConfig;
 
   /** @hidden */
   constructor(config: TalentLayerClientConfig) {
@@ -49,11 +49,11 @@ export class TalentLayerClient {
     this.signatureApiUrl = config?.signatureApiUrl;
 
     // DEV mode overrides
-    if (config.devConfig) {
-      this.devConfig = config?.devConfig;
-      this.chainId = config.devConfig.chainConfig.id
-      this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.devConfig.chainConfig.id));
-      this.viemClient = new ViemClient(config.devConfig.chainConfig.id, config.walletConfig || {}, this.devConfig);
+    if (config.customConfig) {
+      this.customConfig = config?.customConfig;
+      this.chainId = config.customConfig.chainConfig.id
+      this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.customConfig.chainConfig.id));
+      this.viemClient = new ViemClient(config.customConfig.chainConfig.id, config.walletConfig || {}, this.customConfig);
     }
   }
 
@@ -61,8 +61,8 @@ export class TalentLayerClient {
    * Returns chain config based on netowrk ID
    */
   public getChainConfig(networkId: NetworkEnum): Config {
-    if (this.devConfig) {
-      return this.devConfig.contractConfig;
+    if (this.customConfig) {
+      return this.customConfig.contractConfig;
     }
     return getChainConfig(networkId);
   }
@@ -73,7 +73,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get erc20(): IERC20 {
-    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId, this.devConfig);
+    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId, this.customConfig);
   }
 
   /**

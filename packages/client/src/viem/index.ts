@@ -9,7 +9,7 @@ import {
 } from 'viem';
 import { mnemonicToAccount, privateKeyToAccount } from 'viem/accounts';
 import { getChainConfig } from '../config';
-import { Config, DevConfig, NetworkEnum, ViemClientConfig } from '../types';
+import { Config, CustomConfig, NetworkEnum, ViemClientConfig } from '../types';
 import TalentLayerID from '../contracts/ABI/TalentLayerID.json';
 import { chains } from '../blockchain-bindings/chains';
 
@@ -17,23 +17,23 @@ export class ViemClient {
   client: WalletClient;
   publicClient: PublicClient;
   chainId: NetworkEnum;
-  devConfig?: DevConfig;
+  customConfig?: CustomConfig;
 
-  constructor(chainId: NetworkEnum, config: ViemClientConfig, devConfig?: DevConfig) {
+  constructor(chainId: NetworkEnum, config: ViemClientConfig, customConfig?: CustomConfig) {
     // dev config chain Id is prioritized. 
     // If chainId is not provided, set it to mumbai
-    this.chainId = devConfig?.chainConfig.id || chainId || config.chainId || NetworkEnum.MUMBAI;
-    this.devConfig = devConfig;
+    this.chainId = customConfig?.chainConfig.id || chainId || config.chainId || NetworkEnum.MUMBAI;
+    this.customConfig = customConfig;
 
     // initialise a default public wallet client;
     this.client = createWalletClient({
       // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
-      chain: this.chainId === NetworkEnum.LOCAL ? devConfig?.chainConfig : chains[this.chainId],
+      chain: this.chainId === NetworkEnum.LOCAL ? customConfig?.chainConfig : chains[this.chainId],
       transport: http(),
     });
     this.publicClient = createPublicClient({
       // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
-      chain: this.chainId === NetworkEnum.LOCAL ? devConfig?.chainConfig : chains[this.chainId],
+      chain: this.chainId === NetworkEnum.LOCAL ? customConfig?.chainConfig : chains[this.chainId],
       transport: http(),
     });
 
@@ -51,7 +51,7 @@ export class ViemClient {
       this.client = createWalletClient({
         account,
         // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
-        chain: this.chainId === NetworkEnum.LOCAL ? this.devConfig?.chainConfig : chains[this.chainId],
+        chain: this.chainId === NetworkEnum.LOCAL ? this.customConfig?.chainConfig : chains[this.chainId],
         transport: transportProtocol,
       });
 
@@ -62,7 +62,7 @@ export class ViemClient {
       const account = mnemonicToAccount(config.mnemonic);
       this.client = createWalletClient({
         account,
-        chain: this.chainId === NetworkEnum.LOCAL ? this.devConfig?.chainConfig : chains[this.chainId],
+        chain: this.chainId === NetworkEnum.LOCAL ? this.customConfig?.chainConfig : chains[this.chainId],
         transport: transportProtocol,
       });
 
@@ -74,7 +74,7 @@ export class ViemClient {
     if (browserProvider) {
       this.client = createWalletClient({
         // when chain ID is NetworkEnum.LOCAL, we use the overriding dev config for chain
-        chain: this.chainId === NetworkEnum.LOCAL ? this.devConfig?.chainConfig : chains[this.chainId],
+        chain: this.chainId === NetworkEnum.LOCAL ? this.customConfig?.chainConfig : chains[this.chainId],
         transport: custom(browserProvider),
       });
       return true;
@@ -96,7 +96,7 @@ export class ViemClient {
       throw Error('Wallet Client not initialised properly');
     }
 
-    const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(this.chainId);
+    const chainConfig: Config = this.customConfig ? this.customConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts[contractName];
 
     if (!contract) {
@@ -120,7 +120,7 @@ export class ViemClient {
   }
 
   public async readContract(contractName: string, functionName: string, args: Array<any>) {
-    const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(this.chainId);
+    const chainConfig: Config = this.customConfig ? this.customConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts[contractName];
 
     console.log('SDK: reading contract', contract);
@@ -145,7 +145,7 @@ export class ViemClient {
       throw Error('Wallet Client not initialised properly');
     }
 
-    const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(this.chainId);
+    const chainConfig: Config = this.customConfig ? this.customConfig.contractConfig : getChainConfig(this.chainId);
 
     // @ts-ignore
     return this.client.writeContract({

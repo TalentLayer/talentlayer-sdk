@@ -8,7 +8,7 @@ import { Profile } from '../profile';
 import { Proposal } from '../proposals';
 import { Review } from '../reviews';
 import { Service } from '../services';
-import { DevConfig, NetworkEnum } from '../types';
+import { CustomConfig, NetworkEnum } from '../types';
 import { testPlatformId } from '../__mocks__/fixtures';
 import TalentLayerID from '../contracts/ABI/TalentLayerID.json';
 import TalerLayerService from '../contracts/ABI/TalentLayerService.json';
@@ -103,7 +103,7 @@ describe('TalentLayerClient:dev', () => {
         const platformID = testPlatformId;
         const signatureApiUrl = 'www.example.com';
         const localNetworkId = NetworkEnum.LOCAL;
-        const devConfig: DevConfig = {
+        const customConfig: CustomConfig = {
             chainConfig: {
                 id: localNetworkId,
                 name: 'local',
@@ -181,7 +181,7 @@ describe('TalentLayerClient:dev', () => {
             ipfsConfig: ipfsConfig,
             platformId: testPlatformId,
             signatureApiUrl: signatureApiUrl,
-            devConfig: devConfig
+            customConfig: customConfig
         })
     })
 
@@ -214,7 +214,7 @@ describe('TalentLayerClient:dev', () => {
             const config = client.getChainConfig(networkId);
 
             // Assert
-            expect(config).toEqual(client.devConfig.contractConfig);
+            expect(config).toEqual(client.customConfig.contractConfig);
         })
     })
 })
