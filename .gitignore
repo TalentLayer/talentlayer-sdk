@@ -16,6 +16,9 @@ build
 # client
 dist
 
+# docs
+docs
+
 # misc
 .DS_Store
 *.pem

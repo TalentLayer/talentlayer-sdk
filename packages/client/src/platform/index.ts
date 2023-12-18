@@ -1,4 +1,4 @@
-import { parseEther, zeroAddress } from 'viem';
+import { Hash, parseEther, zeroAddress } from 'viem';
 import { getChainConfig } from '../config';
 import { FEE_RATE_DIVIDER } from '../constants';
 import GraphQLClient from '../graphql';
@@ -9,14 +9,20 @@ import { getPlatformById, getPlatformsByOwner } from './graphql/queries';
 import { Arbitrator, PlatformDetails } from './types';
 
 export class Platform {
+  /** @hidden */
   subgraph: GraphQLClient;
+  /** @hidden */
   wallet: ViemClient;
+  /** @hidden */
   platformID: number;
+  /** @hidden */
   ipfs: IPFSClient;
   devConfig?: DevConfig;
 
+  /** @hidden */
   static readonly UPDATE_ERROR = 'unable to update platform details';
 
+  /** @hidden */
   constructor(
     graphQlClient: GraphQLClient,
     walletClient: ViemClient,
@@ -31,6 +37,13 @@ export class Platform {
     this.devConfig = devConfig;
   }
 
+  /**
+ * Retrieves the details of a specific platform based on the provided ID.
+ * This method queries the GraphQL client for the platform data and returns the platform details if found.
+ *
+ * @param {string} id - The unique identifier of the platform to retrieve.
+ * @returns {Promise<any>} A promise that resolves to the platform details if found, otherwise null.
+ */
   public async getOne(id: string): Promise<any> {
     const response = await this.subgraph.get(getPlatformById(id));
 
@@ -41,10 +54,22 @@ export class Platform {
     return null;
   }
 
+  /**
+ * Uploads platform details to IPFS and returns the corresponding CID.
+ *
+ * @param {PlatformDetails} data - The platform details to be uploaded.
+ * @returns {Promise<string>} A promise that resolves to the CID of the uploaded data.
+ */
   public async upload(data: PlatformDetails): Promise<string> {
     return this.ipfs.post(JSON.stringify(data));
   }
 
+  /**
+ * Fetches platforms owned by a specific address.
+ *
+ * @param {string} address - The wallet address of the platform owner.
+ * @returns {Promise<any>} A promise that resolves to an array of platforms owned by the address, or an empty array if none.
+ */
   public async getByOwner(address: `0x${string}`): Promise<any> {
     const response = await this.subgraph.get(getPlatformsByOwner(address));
 
@@ -55,6 +80,12 @@ export class Platform {
     return [];
   }
 
+  /**
+ * Updates the platform details on the blockchain using the provided data.
+ *
+ * @param {PlatformDetails} data - The new platform details to be updated.
+ * @returns {Promise<ClientTransactionResponse>} A promise that resolves to the transaction response of the update operation.
+ */
   public async update(data: PlatformDetails): Promise<ClientTransactionResponse> {
     console.log('SDK: update platform details');
     const cid = await this.upload(data);
@@ -71,7 +102,13 @@ export class Platform {
     return { cid, tx };
   }
 
-  public async setFeeTimeout(timeout: number): Promise<TransactionHash> {
+  /**
+ * Sets the fee timeout for the platform.
+ * 
+ * @param {number} timeout - The timeout value in seconds.
+ * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the update operation.
+ */
+  public async setFeeTimeout(timeout: number): Promise<Hash> {
     const tx = await this.wallet.writeContract(
       'talentLayerPlatformId',
       'updateArbitrationFeeTimeout',
@@ -81,6 +118,12 @@ export class Platform {
     return tx;
   }
 
+  /**
+ * Retrieves a list of available arbitrators for a given chain ID.
+ * 
+ * @param {NetworkEnum} chainId - The blockchain network chain ID.
+ * @returns {Arbitrator[]} An array of arbitrator objects available for the specified chain.
+ */
   public getArbitrators(chainId: NetworkEnum): Arbitrator[] {
     const chainConfig: Config = this.devConfig ? this.devConfig.contractConfig : getChainConfig(chainId);
     const contract = chainConfig.contracts['talentLayerArbitrator'];
@@ -92,7 +135,14 @@ export class Platform {
     return allowedArbitrators;
   }
 
-  public async updateArbitrator(address: `0x${string}`): Promise<TransactionHash> {
+  /**
+ * Updates the arbitrator address for the platform.
+ * Throws an error if the provided address is not an allowed arbitrator.
+ * 
+ * @param {Hash} address - The new arbitrator's address.
+ * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the update operation.
+ */
+  public async updateArbitrator(address: Hash): Promise<Hash> {
     const allowedArbitrators: Arbitrator[] = this.getArbitrators(this.wallet.chainId);
 
     const allowedArbitratorAddresses = allowedArbitrators.map((_arbitrator: Arbitrator) =>
@@ -113,7 +163,14 @@ export class Platform {
   }
 
   // Fee functions
-  public async updateOriginServiceFeeRate(value: number): Promise<TransactionHash> {
+
+  /**
+ * Updates the service fee rate for origin services on the platform.
+ * 
+ * @param {number} value - The new fee rate as a percentage ( if you want to set the fees to 5%, pass in 5).
+ * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the update operation.
+ */
+  public async updateOriginServiceFeeRate(value: number): Promise<Hash> {
     const transformedFeeRate = Math.round((Number(value) * FEE_RATE_DIVIDER) / 100);
 
     console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
@@ -126,7 +183,13 @@ export class Platform {
     return tx;
   }
 
-  public async updateOriginValidatedProposalFeeRate(value: number): Promise<TransactionHash> {
+  /**
+ * Updates the fee rate for validated proposals
+ * 
+ * @param {number} value - The new fee rate as a percentage ( if you want to set the fees to 5%, pass in 5).
+ * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the update operation.
+ */
+  public async updateOriginValidatedProposalFeeRate(value: number): Promise<Hash> {
     const transformedFeeRate = Math.round((Number(value) * FEE_RATE_DIVIDER) / 100);
 
     console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
@@ -139,7 +202,13 @@ export class Platform {
     return tx;
   }
 
-  public async updateServicePostingFee(value: number): Promise<TransactionHash> {
+  /**
+ * Updates the posting fee for services on the platform.
+ * 
+ * @param {number} value - The new fee rate.
+ * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the update operation.
+ */
+  public async updateServicePostingFee(value: number): Promise<Hash> {
     const transformedFeeRate = parseEther(value.toString());
 
     console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
@@ -151,7 +220,13 @@ export class Platform {
     return tx;
   }
 
-  public async updateProposalPostingFee(value: number): Promise<TransactionHash> {
+  /**
+ * Updates the posting fee for proposals on the platform.
+ * 
+ * @param {number} value - The new fee rate.
+ * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the update operation.
+ */
+  public async updateProposalPostingFee(value: number): Promise<Hash> {
     const transformedFeeRate = parseEther(value.toString());
     console.log('SDK: updateProposalPostingFee', transformedFeeRate);
 

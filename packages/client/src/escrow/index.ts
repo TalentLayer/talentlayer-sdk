@@ -8,14 +8,29 @@ import { calculateApprovalAmount } from '../utils/fees';
 import { ViemClient } from '../viem';
 import { getPaymentsByService, getProtocolAndPlatformsFees } from './graphql/queries';
 
+
+
+/**
+ * Release and reimburse payments using TalentLayer escrow
+ *
+ * @group TalentLayerClient Modules
+ */
 export class Escrow {
+
+  /** @hidden */
   graphQlClient: GraphQLClient;
+  /** @hidden */
   ipfsClient: IPFSClient;
+  /** @hidden */
   viemClient: ViemClient;
+  /** @hidden */
   platformID: number;
+  /** @hidden */
   chainId: NetworkEnum;
+  /** @hidden */
   erc20: IERC20;
 
+  /** @hidden */
   constructor(
     graphQlClient: GraphQLClient,
     ipfsClient: IPFSClient,

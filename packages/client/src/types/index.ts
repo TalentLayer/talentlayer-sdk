@@ -70,6 +70,13 @@ export type TalentLayerClientConfig = {
   devConfig?: DevConfig
 };
 
+/**
+ * Represents the response of a transaction made through the client.
+ * This type is typically used to encapsulate details of blockchain transactions initiated by the client.
+ * 
+ * @property {Hash} tx - The transaction hash that uniquely identifies the transaction on the blockchain.
+ * @property {string} cid - The Content Identifier (CID) referring to the location of the transaction-related data stored on IPFS.
+ */
 export type ClientTransactionResponse = {
   tx: Hash;
   cid: string;
