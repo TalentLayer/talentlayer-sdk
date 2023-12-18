@@ -140,14 +140,14 @@ export class Platform {
  * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the update operation.
  */
   public async updateArbitrator(address: Hash): Promise<Hash> {
-    const allowedArbitrators: Arbitrator[] = this.getArbitrators(this.wallet.chainId);
+    const allowedArbitrators: Arbitrator[] = this.getArbitrators(this.wallet.chain.id);
 
     const allowedArbitratorAddresses = allowedArbitrators.map((_arbitrator: Arbitrator) =>
       _arbitrator.address.toLowerCase(),
     );
 
     if (!allowedArbitratorAddresses.includes(address.toLowerCase())) {
-      throw new Error(`Invalid Arbitrator: ${address}`);
+      throw new Error(`Invalid Arbitrator: ${address} allowed arbitrators: ${JSON.stringify(allowedArbitratorAddresses)}`);
     }
 
     const tx = await this.wallet.writeContract('talentLayerPlatformId', 'updateArbitrator', [

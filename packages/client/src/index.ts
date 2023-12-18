@@ -1,6 +1,6 @@
 import { getChainConfig, getGraphQLConfig } from './config';
 import GraphQLClient from './graphql';
-import { Config, NetworkEnum, TalentLayerClientConfig } from './types';
+import { Config, CustomChainConfig, NetworkEnum, TalentLayerClientConfig } from './types';
 import IPFSClient from './ipfs';
 import { ViemClient } from './viem';
 import { IERC20, ERC20 } from './blockchain-bindings/erc20';
@@ -17,6 +17,7 @@ import { IEscrow } from './escrow/types';
 import { IService, Service } from './services';
 import { IReview } from './reviews/types';
 import { Review } from './reviews';
+import { isCustomChainConfig, isNetworkEnum } from './utils/typeguard';
 
 /**
  * Main client for interacting with the TalentLayer protocol.
@@ -31,23 +32,39 @@ export class TalentLayerClient {
   /** @hidden */
   platformID: number;
   /** @hidden */
-  chainId: NetworkEnum;
-  /** @hidden */
   signatureApiUrl?: string;
+  /** @hidden */
+  chainConfig: Config | CustomChainConfig;
 
   /** @hidden */
   constructor(config: TalentLayerClientConfig) {
     console.log('SDK: client initialising', config);
     this.platformID = config.platformId;
-    this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId));
+
     this.ipfsClient = new IPFSClient({
       baseUrl: config.ipfsConfig.baseUrl,
       clientId: config.ipfsConfig.clientId,
       clientSecret: config.ipfsConfig.clientSecret,
     });
-    this.viemClient = new ViemClient(config.chainId, config.walletConfig || {});
-    this.chainId = config.chainId;
+
     this.signatureApiUrl = config?.signatureApiUrl;
+
+    if (config?.chainId) {
+      this.chainConfig = getChainConfig(config.chainId);
+    } else if (config.customChainConfig) {
+      // if user has given custom chain config, that will take priority
+      this.chainConfig = config.customChainConfig
+    } else {
+      throw Error('Atleast one of chainId or customChainConfig need to be provided')
+    }
+
+    if (isNetworkEnum(this.chainConfig.networkId)) {
+      this.graphQlClient = new GraphQLClient(getGraphQLConfig(this.chainConfig.networkId));
+    } else {
+      this.graphQlClient = new GraphQLClient({ subgraphUrl: this.chainConfig.subgraphUrl, chainId: this.chainConfig.networkId });
+    }
+
+    this.viemClient = new ViemClient({ ...config.walletConfig, chainConfig: this.chainConfig });
   }
 
   /**
@@ -57,13 +74,21 @@ export class TalentLayerClient {
     return getChainConfig(networkId);
   }
 
+
+  /**
+   * Returns chain config for current isntance of SDK
+   */
+  public getCurrentChainConfig(): Config {
+    return this.chainConfig
+  }
+
   /**
    * Provides access to ERC20 token functionalities.
    * @type {IERC20}
    */
   // @ts-ignore
   get erc20(): IERC20 {
-    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
+    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainConfig);
   }
 
   /**
@@ -97,7 +122,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get disputes(): IDispute {
-    return new Disputes(this.viemClient, this.platformID, this.graphQlClient, this.chainId);
+    return new Disputes(this.viemClient, this.platformID, this.graphQlClient, this.chainConfig);
   }
 
   /**
@@ -145,7 +170,7 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
-      this.chainId,
+      this.chainConfig
     );
   }
 }

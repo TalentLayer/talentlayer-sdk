@@ -1,5 +1,7 @@
 
 import { Escrow } from '..';
+import { getChainConfig } from '../../config';
+import { ChainConfig } from '../../types';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
 import { testAddress, testAmount, testChainId, testCid, testIpfsHash, testMetaEvidenceCid, testPlatformId, testProposalId, testProposalIdWithDifferentRateToken, testProposalResponse, testProtocolAndPlatformResponse, testServiceId, testServiceResponse, testUserId } from '../../__mocks__/fixtures';
 // DO NOT remove this comments - they are needed for local testing
@@ -12,6 +14,7 @@ describe('Escrow', () => {
     let mockGraphQLClient: any;
     let mockIPFSClient: any;
     let mockViemClient: any;
+    let mockChainConfig: ChainConfig;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
@@ -19,7 +22,8 @@ describe('Escrow', () => {
         // mockGraphQLClient = new GraphQLClient(getGraphQLConfig(137))
         mockIPFSClient = new MockIPFSClient();
         mockViemClient = new MockViemClient();
-        escrow = new Escrow(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, testChainId);
+        mockChainConfig = getChainConfig(testChainId);
+        escrow = new Escrow(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, mockChainConfig);
     });
 
     describe('approve', () => {
