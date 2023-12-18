@@ -1,0 +1,8 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": [
+        "packages/client"
+    ],
+    "entryPointStrategy": "packages",
+    "name": "TalentLayer SDK Reference",
+}
