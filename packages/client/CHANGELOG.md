@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.8
+
+### Patch Changes
+
+- custom config
+
 ## 0.1.7
 
 ### Patch Changes
