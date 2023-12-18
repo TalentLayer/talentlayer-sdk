@@ -3,7 +3,7 @@ import { getChainConfig } from '../config';
 import { FEE_RATE_DIVIDER } from '../constants';
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
-import { ClientTransactionResponse, NetworkEnum } from '../types';
+import { ClientTransactionResponse, Config, CustomConfig, NetworkEnum, TransactionHash } from '../types';
 import { ViemClient } from '../viem';
 import { getPlatformById, getPlatformsByOwner } from './graphql/queries';
 import { Arbitrator, PlatformDetails } from './types';
@@ -17,6 +17,7 @@ export class Platform {
   platformID: number;
   /** @hidden */
   ipfs: IPFSClient;
+  customConfig?: CustomConfig;
 
   /** @hidden */
   static readonly UPDATE_ERROR = 'unable to update platform details';
@@ -27,11 +28,13 @@ export class Platform {
     walletClient: ViemClient,
     platformId: number,
     ipfsClient: IPFSClient,
+    customConfig?: CustomConfig
   ) {
     this.subgraph = graphQlClient;
     this.wallet = walletClient;
     this.platformID = platformId;
     this.ipfs = ipfsClient;
+    this.customConfig = customConfig;
   }
 
   /**
@@ -122,7 +125,7 @@ export class Platform {
  * @returns {Arbitrator[]} An array of arbitrator objects available for the specified chain.
  */
   public getArbitrators(chainId: NetworkEnum): Arbitrator[] {
-    const chainConfig = getChainConfig(chainId);
+    const chainConfig: Config = this.customConfig ? this.customConfig.contractConfig : getChainConfig(chainId);
     const contract = chainConfig.contracts['talentLayerArbitrator'];
     const allowedArbitrators = [
       { address: zeroAddress, name: 'None' },

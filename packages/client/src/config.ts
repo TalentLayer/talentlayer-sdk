@@ -167,6 +167,9 @@ const chains: { [networkId in NetworkEnum]: Config } = {
   [NetworkEnum.MUMBAI]: mumbai,
   [NetworkEnum.IEXEC]: iexec,
   [NetworkEnum.POLYGON]: polygon,
+  // This value is a place holder. The local value is provided through
+  // dev config when using the sdk in dev mode
+  [NetworkEnum.LOCAL]: mumbai,
 };
 
 export const getChainConfig = (networkId: NetworkEnum) => chains[networkId];

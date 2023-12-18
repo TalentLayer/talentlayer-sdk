@@ -1,4 +1,4 @@
-import { Hash } from 'viem';
+import { Chain, Hash } from 'viem';
 
 export type IToken = {
   name: string;
@@ -12,6 +12,7 @@ export enum NetworkEnum {
   MUMBAI = 80001,
   IEXEC = 134,
   POLYGON = 137,
+  LOCAL = 1
 }
 
 export enum RateToken {
@@ -46,12 +47,35 @@ export type ViemClientConfig = {
   chainId?: NetworkEnum;
 };
 
+type Currency = {
+  decimals: number;
+  name: string;
+  symbol: string;
+}
+
+export type chainConfig = Chain;
+
+/**
+ * Represents a custom config that can be passed to the sdk during initialisation of the client
+ * Typically, it should bne used in order to use the sdk with a custom chain and contracts
+ * 
+ * @property {chainConfig} chainConfig - The config of the custom chain that the sdk is being used for
+ * @property {Config} contractConfig - The custom contracts to be used with the sdk
+ */
+
+export type CustomConfig = {
+  chainConfig: chainConfig,
+  contractConfig: Config
+
+}
+
 export type TalentLayerClientConfig = {
   chainId: NetworkEnum;
   ipfsConfig: IPFSClientConfig;
   walletConfig?: ViemClientConfig;
   platformId: number;
   signatureApiUrl?: string;
+  customConfig?: CustomConfig
 };
 
 /**

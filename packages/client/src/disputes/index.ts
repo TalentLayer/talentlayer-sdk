@@ -2,7 +2,7 @@ import { Hash, parseEther, toHex, zeroAddress } from 'viem';
 import { getChainConfig } from '../config';
 import GraphQLClient from '../graphql';
 import { getPlatformById } from '../platform/graphql/queries';
-import { NetworkEnum } from '../types';
+import { Config, CustomConfig, NetworkEnum, TransactionHash } from '../types';
 import { ViemClient } from '../viem';
 
 /**
@@ -15,16 +15,19 @@ export class Disputes {
   platformID: number;
   subgraph: GraphQLClient;
   chainId: NetworkEnum;
+  customConfig?: CustomConfig
   constructor(
     walletClient: ViemClient,
     platformId: number,
     graphQlClient: GraphQLClient,
     chainId: number,
+    customConfig?: CustomConfig
   ) {
     this.wallet = walletClient;
     this.platformID = platformId;
     this.subgraph = graphQlClient;
     this.chainId = chainId;
+    this.customConfig = customConfig;
   }
 
   /**
@@ -45,7 +48,7 @@ export class Disputes {
       return 0;
     }
 
-    const chainConfig = getChainConfig(this.chainId);
+    const chainConfig: Config = this.customConfig ? this.customConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts['talentLayerArbitrator'];
 
     console.log('SDK: reading contract');
