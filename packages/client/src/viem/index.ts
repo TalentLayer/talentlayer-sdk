@@ -103,9 +103,6 @@ export class ViemClient {
     // @ts-ignore
     const [address] = await this.client.getAddresses();
 
-    const accounts = await this.client.requestAddresses();
-    console.log('SDK: viem accounts request', accounts);
-
     if (!address) {
       throw Error('Wallet Client not initialised properly');
     }
