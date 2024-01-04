@@ -1,4 +1,4 @@
-import { Chain, Hash } from 'viem';
+import { Chain, Hash, WalletClient } from 'viem';
 
 export type IToken = {
   name: string;
@@ -45,6 +45,7 @@ export type ViemClientConfig = {
   privateKey?: `0x${string}`;
   mnemonic?: string;
   chainId?: NetworkEnum;
+  walletClient?: WalletClient;
 };
 
 type Currency = {

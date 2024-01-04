@@ -69,6 +69,17 @@ export class ViemClient {
       return true;
     }
 
+    /*
+    * If consumer passes a walletClient, we use that directly.
+    * This enabled the compatibility of the sdk with multisig wallets like safe
+    */
+    if (config?.walletClient) {
+      console.log('SDK: viem client - wallet client object found', config?.walletClient);
+      this.client = config.walletClient;
+      console.log('SDK: viem client - initalised successfully with custom wallet client!');
+      return true;
+    }
+
     // @ts-ignore
     let browserProvider = globalThis?.ethereum || window?.ethereum;
     if (browserProvider) {
