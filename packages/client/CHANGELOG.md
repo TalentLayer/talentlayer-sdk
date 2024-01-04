@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.9
+
+### Patch Changes
+
+- add new walletClient arg to constructor
+
 ## 0.1.8
 
 ### Patch Changes
