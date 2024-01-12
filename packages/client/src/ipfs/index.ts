@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { IPFSClientConfig } from '../types';
 
 export default class IPFSClient {
@@ -28,7 +27,7 @@ export default class IPFSClient {
 
     if (this.ipfs) {
       const result = await this.ipfs.add(data);
-      await this.ipfs.pin(result.path);
+      await this.ipfs.pin.add(result.path);
       return result.path;
     }
 
