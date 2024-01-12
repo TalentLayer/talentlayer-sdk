@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.11
+
+### Patch Changes
+
+- Fix pin IPFS
+
 ## 0.1.10
 
 ### Patch Changes
