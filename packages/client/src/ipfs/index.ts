@@ -28,6 +28,7 @@ export default class IPFSClient {
 
     if (this.ipfs) {
       const result = await this.ipfs.add(data);
+      await this.ipfs.pin(result.path);
       return result.path;
     }
 
