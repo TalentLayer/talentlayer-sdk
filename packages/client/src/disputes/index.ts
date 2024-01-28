@@ -1,6 +1,7 @@
 import { Hash, parseEther, toHex, zeroAddress } from 'viem';
 import { getChainConfig } from '../config';
 import GraphQLClient from '../graphql';
+import { Logger } from '../logger';
 import { getPlatformById } from '../platform/graphql/queries';
 import { Config, CustomConfig, NetworkEnum, TransactionHash } from '../types';
 import { ViemClient } from '../viem';
@@ -11,18 +12,30 @@ import { ViemClient } from '../viem';
  * @group TalentLayerClient Modules
  */
 export class Disputes {
+
+  /** @hidden */
   wallet: ViemClient;
+  /** @hidden */
   platformID: number;
+  /** @hidden */
   subgraph: GraphQLClient;
+  /** @hidden */
   chainId: NetworkEnum;
-  customConfig?: CustomConfig
+  /** @hidden */
+  customConfig?: CustomConfig;
+  /** @hidden */
+  logger: Logger;
+
+  /** @hidden */
   constructor(
     walletClient: ViemClient,
     platformId: number,
     graphQlClient: GraphQLClient,
     chainId: number,
+    logger: Logger,
     customConfig?: CustomConfig
   ) {
+    this.logger = logger
     this.wallet = walletClient;
     this.platformID = platformId;
     this.subgraph = graphQlClient;
@@ -51,7 +64,7 @@ export class Disputes {
     const chainConfig: Config = this.customConfig ? this.customConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts['talentLayerArbitrator'];
 
-    console.log('SDK: reading contract');
+    this.logger.debug(`Reading Arbitrator contract at address ${contract.address}`);
     if (!contract) {
       throw Error('Invalid contract name passed.');
     }
@@ -71,7 +84,8 @@ export class Disputes {
  */
   public async setPrice(value: number | string): Promise<Hash> {
     const transformedPrice = parseEther(value.toString());
-    console.log('SDK: setting arbitration price');
+    this.logger.debug(`Setting arbitration price to ${transformedPrice}`);
+
     const tx = await this.wallet.writeContract('talentLayerArbitrator', 'setArbitrationPrice', [
       this.platformID,
       transformedPrice,

@@ -1,5 +1,6 @@
 
 import { Escrow } from '..';
+import { Logger } from '../../logger';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
 import { testAddress, testAmount, testChainId, testCid, testIpfsHash, testMetaEvidenceCid, testPlatformId, testProposalId, testProposalIdWithDifferentRateToken, testProposalResponse, testProtocolAndPlatformResponse, testServiceId, testServiceResponse, testUserId } from '../../__mocks__/fixtures';
 // DO NOT remove this comments - they are needed for local testing
@@ -12,6 +13,7 @@ describe('Escrow', () => {
     let mockGraphQLClient: any;
     let mockIPFSClient: any;
     let mockViemClient: any;
+    let logger: Logger;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
@@ -19,7 +21,8 @@ describe('Escrow', () => {
         // mockGraphQLClient = new GraphQLClient(getGraphQLConfig(137))
         mockIPFSClient = new MockIPFSClient();
         mockViemClient = new MockViemClient();
-        escrow = new Escrow(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, testChainId);
+        logger = new Logger('TalentLayer SDK', true);
+        escrow = new Escrow(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, testChainId, logger);
     });
 
     describe('approve', () => {

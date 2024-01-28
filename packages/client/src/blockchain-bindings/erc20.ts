@@ -4,6 +4,7 @@ import ERC20Contract from '../contracts/ABI/ERC20.json';
 import { ViemClient } from '../viem';
 import { getChainConfig } from '../config';
 import { Config, CustomConfig, NetworkEnum } from '../types';
+import { Logger } from '../logger';
 
 export interface IERC20 {
   balanceOf(tokenAddress: `0x${string}`): Promise<any>;
@@ -23,9 +24,10 @@ export class ERC20 {
     viemClient: ViemClient,
     platformId: number,
     chainId: NetworkEnum,
+    logger: Logger,
     customConfig?: CustomConfig
   ) {
-    console.log('SDK: erc20 initialising: ');
+    logger.info('ERC20 initialising: ');
 
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;

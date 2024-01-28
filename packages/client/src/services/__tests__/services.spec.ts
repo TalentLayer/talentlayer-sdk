@@ -1,5 +1,6 @@
 
 import { Service } from '..';
+import { Logger } from '../../logger';
 import { getPlatformById } from '../../platform/graphql/queries';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
 import { testAddress, testIpfsHash, testPlatformId, testPlatformResponse, testSearchServiceProps, testSearchServicesResponse, testServiceDetails, testServiceId, testServiceResponse, testSignature, testUserId } from '../../__mocks__/fixtures';
@@ -9,13 +10,15 @@ describe('Service', () => {
     let mockGraphQLClient: any;
     let mockIPFSClient: any;
     let mockViemClient: any;
+    let logger: Logger;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
         // mockGraphQLClient = new GraphQLClient(getGraphQLConfig(137))
         mockIPFSClient = new MockIPFSClient();
         mockViemClient = new MockViemClient();
-        service = new Service(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, 'example.com');
+        logger = new Logger('TalentLayer SDK', true);
+        service = new Service(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, logger, 'example.com');
     });
 
     describe('getOne', () => {

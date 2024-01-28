@@ -1,6 +1,7 @@
 import { Hash } from 'viem';
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
+import { Logger } from '../logger';
 import { getProtocolById } from '../platform/graphql/queries';
 import { ClientTransactionResponse } from '../types';
 import { ViemClient } from '../viem';
@@ -16,6 +17,8 @@ export class Profile {
   viemClient: ViemClient;
   /** @hidden */
   platformId: number;
+  /** @hidden */
+  logger: Logger;
 
   /** @hidden */
   static CREATE_ERROR = 'unable to create profile';
@@ -28,7 +31,9 @@ export class Profile {
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
+    logger: Logger
   ) {
+    this.logger = logger;
     this.graphQlClient = graphQlClient;
     this.platformId = platformId;
     this.ipfsClient = ipfsClient;
@@ -82,7 +87,7 @@ export class Profile {
     profileData: TalentLayerProfile,
     userId: string,
   ): Promise<ClientTransactionResponse> {
-    console.log('SDK: updating profile');
+    this.logger.debug('Updating profile');
     const cid = await this.upload(profileData);
 
     const tx = await this.viemClient.writeContract('talentLayerId', 'updateProfileData', [
@@ -107,7 +112,7 @@ export class Profile {
 
     const protocol = proposolResponse?.data?.protocol;
 
-    console.log('SDK: protocol', protocol);
+    this.logger.debug('Fetched protocol details', protocol);
 
     if (!protocol?.id) {
       throw new Error('Protocol not found');
@@ -115,9 +120,7 @@ export class Profile {
 
     const fee: string = protocol.userMintFee;
 
-    console.log('SDK: protocol fee', this.platformId, fee, handle);
-
-    console.log('SDK: creating profile');
+    this.logger.debug('SDK: creating profile');
     return this.viemClient.writeContract(
       'talentLayerId',
       'mint',

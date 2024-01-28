@@ -3,6 +3,7 @@ import { getChainConfig } from '../config';
 import { FEE_RATE_DIVIDER } from '../constants';
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
+import { Logger } from '../logger';
 import { ClientTransactionResponse, Config, CustomConfig, NetworkEnum, TransactionHash } from '../types';
 import { ViemClient } from '../viem';
 import { getPlatformById, getPlatformsByOwner } from './graphql/queries';
@@ -17,7 +18,10 @@ export class Platform {
   platformID: number;
   /** @hidden */
   ipfs: IPFSClient;
+  /** @hidden */
   customConfig?: CustomConfig;
+  /** @hidden */
+  logger: Logger
 
   /** @hidden */
   static readonly UPDATE_ERROR = 'unable to update platform details';
@@ -28,8 +32,11 @@ export class Platform {
     walletClient: ViemClient,
     platformId: number,
     ipfsClient: IPFSClient,
+    logger: Logger,
     customConfig?: CustomConfig
   ) {
+    logger.info('Initialising platform');
+    this.logger = logger
     this.subgraph = graphQlClient;
     this.wallet = walletClient;
     this.platformID = platformId;
@@ -87,9 +94,9 @@ export class Platform {
  * @returns {Promise<ClientTransactionResponse>} A promise that resolves to the transaction response of the update operation.
  */
   public async update(data: PlatformDetails): Promise<ClientTransactionResponse> {
-    console.log('SDK: update platform details');
+    this.logger.debug('updating platform details');
     const cid = await this.upload(data);
-    console.log('SDK: platform details uploaded to ipfs', cid);
+    this.logger.debug('platform details uploaded to ipfs', cid);
     const tx = await this.wallet.writeContract('talentLayerPlatformId', 'updateProfileData', [
       this.platformID,
       cid,
@@ -173,7 +180,7 @@ export class Platform {
   public async updateOriginServiceFeeRate(value: number): Promise<Hash> {
     const transformedFeeRate = Math.round((Number(value) * FEE_RATE_DIVIDER) / 100);
 
-    console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
+    this.logger.info(`updating service fee rate for platform id: ${this.platformID} to ${transformedFeeRate}`);
     const tx = await this.wallet.writeContract(
       'talentLayerPlatformId',
       'updateOriginServiceFeeRate',
@@ -192,7 +199,7 @@ export class Platform {
   public async updateOriginValidatedProposalFeeRate(value: number): Promise<Hash> {
     const transformedFeeRate = Math.round((Number(value) * FEE_RATE_DIVIDER) / 100);
 
-    console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
+    this.logger.debug('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
     const tx = await this.wallet.writeContract(
       'talentLayerPlatformId',
       'updateOriginValidatedProposalFeeRate',
@@ -211,7 +218,7 @@ export class Platform {
   public async updateServicePostingFee(value: number): Promise<Hash> {
     const transformedFeeRate = parseEther(value.toString());
 
-    console.log('SDK: transformedFeeRate', transformedFeeRate, this.platformID);
+    this.logger.debug(`updating service posting fee rate for platform id: ${this.platformID} to ${transformedFeeRate}`);
     const tx = await this.wallet.writeContract('talentLayerPlatformId', 'updateServicePostingFee', [
       this.platformID,
       transformedFeeRate,
@@ -228,7 +235,7 @@ export class Platform {
  */
   public async updateProposalPostingFee(value: number): Promise<Hash> {
     const transformedFeeRate = parseEther(value.toString());
-    console.log('SDK: updateProposalPostingFee', transformedFeeRate);
+    this.logger.debug(`updating proposal posting fee rate for platform id: ${this.platformID} to ${transformedFeeRate}`);
 
     const tx = await this.wallet.writeContract(
       'talentLayerPlatformId',

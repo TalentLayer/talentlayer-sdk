@@ -12,18 +12,29 @@ import { getChainConfig } from '../config';
 import { Config, CustomConfig, NetworkEnum, ViemClientConfig } from '../types';
 import TalentLayerID from '../contracts/ABI/TalentLayerID.json';
 import { chains } from '../blockchain-bindings/chains';
+import { Logger } from '../logger';
 
 export class ViemClient {
-  client: WalletClient;
-  publicClient: PublicClient;
-  chainId: NetworkEnum;
-  customConfig?: CustomConfig;
 
-  constructor(chainId: NetworkEnum, config: ViemClientConfig, customConfig?: CustomConfig) {
+  /** @hidden */
+  client: WalletClient;
+  /** @hidden */
+  publicClient: PublicClient;
+  /** @hidden */
+  chainId: NetworkEnum;
+  /** @hidden */
+  customConfig?: CustomConfig;
+  /** @hidden */
+  logger: Logger
+
+  /** @hidden */
+  constructor(chainId: NetworkEnum, config: ViemClientConfig, logger: Logger, customConfig?: CustomConfig) {
+    logger.info('Wallet Client initialising with viem')
     // dev config chain Id is prioritized. 
     // If chainId is not provided, set it to mumbai
     this.chainId = customConfig?.chainConfig.id || chainId || config.chainId || NetworkEnum.MUMBAI;
     this.customConfig = customConfig;
+    this.logger = logger;
 
     // initialise a default public wallet client;
     this.client = createWalletClient({
@@ -74,9 +85,9 @@ export class ViemClient {
     * This enabled the compatibility of the sdk with multisig wallets like safe
     */
     if (config?.walletClient) {
-      console.log('SDK: viem client - wallet client object found', config?.walletClient);
+      this.logger.debug('Wallet client object found: ', config?.walletClient);
       this.client = config.walletClient;
-      console.log('SDK: viem client - initalised successfully with custom wallet client!');
+      this.logger.debug('SDK: viem client - initalised successfully with custom wallet client!');
       return true;
     }
 
@@ -114,7 +125,7 @@ export class ViemClient {
       throw Error(`Invalid contract name passed. ${contractName}`);
     }
 
-    console.log('SDK: simulating contract call');
+    this.logger.debug('Simulating contract call');
     // @ts-ignore
     const { request } = await this.publicClient.simulateContract({
       address: contract.address,
@@ -125,7 +136,7 @@ export class ViemClient {
       value,
     });
 
-    console.log('SDK: executing contract call with request', request);
+    this.logger.debug('Executing contract call with request', request);
     // @ts-ignore
     return this.client.writeContract(request);
   }
@@ -134,7 +145,7 @@ export class ViemClient {
     const chainConfig: Config = this.customConfig ? this.customConfig.contractConfig : getChainConfig(this.chainId);
     const contract = chainConfig.contracts[contractName];
 
-    console.log('SDK: reading contract', contract);
+    this.logger.debug('Reading contract', contract);
     if (!contract) {
       throw Error('Invalid contract name passed.');
     }

@@ -1,5 +1,6 @@
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
+import { Logger } from '../logger';
 import { Platform } from '../platform';
 import { ClientTransactionResponse } from '../types';
 import { getSignature } from '../utils/signature';
@@ -21,6 +22,8 @@ export class Proposal {
   platformID: number;
   /** @hidden */
   signatureApiUrl?: string;
+  /** @hidden */
+  logger: Logger;
 
   /** @hidden */
   constructor(
@@ -28,9 +31,11 @@ export class Proposal {
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
+    logger: Logger,
     signatureApiUrl?: string,
   ) {
-    console.log('SDK: proposal initialising: ');
+    this.logger = logger;
+    logger.info('Proposal initialising: ');
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
@@ -129,6 +134,7 @@ export class Proposal {
       this.viemClient,
       this.platformID,
       this.ipfsClient,
+      this.logger
     );
 
     const platformDetails = await platform.getOne(this.platformID.toString());

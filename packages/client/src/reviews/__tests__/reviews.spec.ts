@@ -2,6 +2,7 @@
 import { Review } from '..';
 import { getGraphQLConfig } from '../../config';
 import GraphQLClient from '../../graphql';
+import { Logger } from '../../logger';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
 import { testAddress, testAmount, testChainId, testCid, testIpfsHash, testMetaEvidenceCid, testPlatformId, testProposalId, testProposalIdWithDifferentRateToken, testProposalResponse, testProtocolAndPlatformResponse, testReviewDetails, testReviewsByService, testServiceId, testServiceResponse, testUserId } from '../../__mocks__/fixtures';
 import { getReviewsByService } from '../graphql';
@@ -15,6 +16,7 @@ describe('Review', () => {
     let mockGraphQLClient: any;
     let mockIPFSClient: any;
     let mockViemClient: any;
+    let logger: Logger;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
@@ -22,7 +24,8 @@ describe('Review', () => {
         // mockGraphQLClient = new GraphQLClient(getGraphQLConfig(80001))
         mockIPFSClient = new MockIPFSClient();
         mockViemClient = new MockViemClient();
-        review = new Review(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId);
+        logger = new Logger('TalentLayer SDK', true);
+        review = new Review(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, logger);
     });
 
     describe('uploadReviewDataToIpfs', () => {

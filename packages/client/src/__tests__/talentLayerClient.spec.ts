@@ -24,6 +24,7 @@ jest.mock('axios')
 jest.mock('ipfs-http-client', () => ({
     create: jest.fn().mockImplementation(() => ({
         add: jest.fn().mockResolvedValue({ path: '0xracoon' }), // Mocking the add method of IPFS client
+        pin: { add: jest.fn().mockResolvedValue({ path: '0xRacoon' }) }
     })),
 }));
 
@@ -46,7 +47,8 @@ describe('TalentLayerClient', () => {
             chainId: chainId,
             ipfsConfig: ipfsConfig,
             platformId: testPlatformId,
-            signatureApiUrl: signatureApiUrl
+            signatureApiUrl: signatureApiUrl,
+            debug: false
         })
 
 

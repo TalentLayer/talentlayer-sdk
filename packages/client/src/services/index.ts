@@ -1,5 +1,6 @@
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
+import { Logger } from '../logger';
 import { getPlatformById } from '../platform/graphql/queries';
 import { ClientTransactionResponse } from '../types';
 import { getSignature } from '../utils/signature';
@@ -37,6 +38,8 @@ export class Service {
   platformID: number;
   /** @hidden */
   signatureApiUrl?: string;
+  /** @hidden */
+  logger: Logger
 
   /** @hidden */
   constructor(
@@ -44,13 +47,15 @@ export class Service {
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
+    logger: Logger,
     signatureApiUrl?: string,
   ) {
-    console.log('SDK: service initialising: ');
+    logger.info('Service initialising');
     this.graphQlClient = graphQlClient;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
     this.viemClient = viemClient;
+    this.logger = logger;
     this.signatureApiUrl = signatureApiUrl;
   }
 
