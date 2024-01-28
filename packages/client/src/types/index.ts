@@ -76,7 +76,8 @@ export type TalentLayerClientConfig = {
   walletConfig?: ViemClientConfig;
   platformId: number;
   signatureApiUrl?: string;
-  customConfig?: CustomConfig
+  customConfig?: CustomConfig;
+  debug?: Boolean
 };
 
 /**

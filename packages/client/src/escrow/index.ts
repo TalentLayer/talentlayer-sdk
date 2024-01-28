@@ -1,6 +1,7 @@
 import { ERC20, IERC20 } from '../blockchain-bindings/erc20';
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
+import { Logger } from '../logger';
 import { Proposal } from '../proposals';
 import { Service } from '../services';
 import { ClientTransactionResponse, NetworkEnum, RateToken } from '../types';
@@ -29,6 +30,8 @@ export class Escrow {
   chainId: NetworkEnum;
   /** @hidden */
   erc20: IERC20;
+  /** @hidden */
+  logger: Logger;
 
   /** @hidden */
   constructor(
@@ -37,14 +40,16 @@ export class Escrow {
     viemClient: ViemClient,
     platformId: number,
     chainId: NetworkEnum,
+    logger: Logger
   ) {
-    console.log('SDK: escrow initialising: ');
+    logger.info('Escrow initialising: ');
     this.graphQlClient = graphQlClient;
+    this.logger = logger;
     this.platformID = platformId;
     this.ipfsClient = ipfsClient;
     this.viemClient = viemClient;
     this.chainId = chainId;
-    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId);
+    this.erc20 = new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId, logger);
   }
 
   public async approve(
@@ -57,6 +62,7 @@ export class Escrow {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
+      this.logger
     );
     const proposal = await proposalInstance.getOne(proposalId);
     const erc20 = this.erc20;
@@ -78,7 +84,7 @@ export class Escrow {
       proposal.service.platform.id, proposal.platform.id
     );
 
-    console.log('SDK: fees', protocolAndPlatformsFees);
+    this.logger.debug(`Fetched protocol and platform fees: ${protocolAndPlatformsFees}`);
 
     if (!protocolAndPlatformsFees) {
       throw Error('Unable to fetch fees');
@@ -91,7 +97,7 @@ export class Escrow {
       protocolAndPlatformsFees.protocols[0].protocolEscrowFeeRate,
     );
 
-    console.log('SDK: escrow seeking approval for amount: ', approvalAmount.toString());
+    this.logger.debug(`Escrow seeking approval for amount: ${approvalAmount.toString()}`);
 
     if (proposal.rateToken.address === RateToken.NATIVE) {
       tx = await this.viemClient.writeContract(
@@ -101,14 +107,14 @@ export class Escrow {
         approvalAmount,
       );
     } else {
-      console.log('SDK: fetching allowance');
+      this.logger.debug('Fetching allowance');
       // @ts-ignore
       const allowance: bigint = await erc20.checkAllowance(proposal.rateToken.address);
 
-      console.log('SDK: fetched allowance', allowance, allowance < BigInt(proposal.rateAmount));
+      this.logger.debug(`SDK: fetched allowance ${allowance}`);
 
       if (allowance < approvalAmount) {
-        console.log('SDK: approvalAmount less than allowance. Now requesting allowance');
+        this.logger.debug('Approval amount less than allowance. Now requesting allowance');
 
         let approvalTransaction;
         try {
@@ -122,13 +128,13 @@ export class Escrow {
               hash: approvalTransaction,
             });
 
-          console.log('SDK: approvalTransactionReceipt', approvalTransactionReceipt);
+          this.logger.debug('SDK: approvalTransactionReceipt', approvalTransactionReceipt);
 
           if (approvalTransactionReceipt.status !== 'success') {
             throw new Error('Unable to get approval');
           }
         } catch (e) {
-          console.error('SDK error: ', e);
+          this.logger.error('Error occured while fetching approval', e);
           throw new Error('Approval transaction failed with error');
         }
       }
@@ -154,6 +160,7 @@ export class Escrow {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
+      this.logger
     );
     const service = await serviceInstance.getOne(serviceId);
     const transactionId = service?.transaction?.id;
@@ -181,6 +188,7 @@ export class Escrow {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
+      this.logger
     );
     const service = await serviceInstance.getOne(serviceId);
     const transactionId = service?.transaction?.id;

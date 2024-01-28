@@ -3,6 +3,7 @@ import { parseEther } from 'viem';
 import { Platform } from '..';
 import { getChainConfig, getGraphQLConfig } from '../../config';
 import { FEE_RATE_DIVIDER } from '../../constants';
+import { Logger } from '../../logger';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
 import { testAddress, testChainId, testCid, testIpfsHash, testOwnerAddress, testPlatformDetails, testPlatformId, testPlatformResponse, testPlatformsByOwnerResponse, testProtocolAndPlatformResponse } from '../../__mocks__/fixtures';
 import { getPlatformById } from '../graphql/queries';
@@ -12,12 +13,14 @@ describe('Platform', () => {
     let mockGraphQLClient: any;
     let mockIPFSClient: any;
     let mockViemClient: any;
+    let logger: Logger;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
         mockIPFSClient = new MockIPFSClient();
         mockViemClient = new MockViemClient();
-        platform = new Platform(mockGraphQLClient, mockViemClient, testPlatformId, mockIPFSClient);
+        logger = new Logger('TalentLayer SDK', true);
+        platform = new Platform(mockGraphQLClient, mockViemClient, testPlatformId, mockIPFSClient, logger);
     });
 
     describe('getOne', () => {
@@ -130,7 +133,6 @@ describe('Platform', () => {
         it('should update the arbitrator of the platform', async () => {
             // Arrange
             const chainConfig = getChainConfig(testChainId);
-            console.log('chain config: ', chainConfig);
             const contract = chainConfig.contracts['talentLayerArbitrator'];
             const talentLayerArbitratorAddress = contract.address;
 

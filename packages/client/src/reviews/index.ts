@@ -1,5 +1,6 @@
 import GraphQLClient from '../graphql';
 import IPFSClient from '../ipfs';
+import { Logger } from '../logger';
 import { ClientTransactionResponse } from '../types';
 import { ViemClient } from '../viem';
 import { getReviewsByService } from './graphql';
@@ -14,6 +15,8 @@ export class Review {
   viemClient: ViemClient;
   /** @hidden */
   platformId: number;
+  /** @hidden */
+  logger: Logger;
 
   /** @hidden */
   static CREATE_ERROR = 'unable to submit review';
@@ -24,7 +27,10 @@ export class Review {
     ipfsClient: IPFSClient,
     viemClient: ViemClient,
     platformId: number,
+    logger: Logger
   ) {
+    logger.info('Initialising Review');
+    this.logger = logger;
     this.graphQlClient = graphQlClient;
     this.platformId = platformId;
 
@@ -59,7 +65,7 @@ export class Review {
     serviceId: string,
     userId: string,
   ): Promise<ClientTransactionResponse> {
-    console.log('SDK: creating review');
+    this.logger.debug('Creating review');
     const cid = await this.uploadReviewDataToIpfs(data);
 
     const tx = await this.viemClient.writeContract('talentLayerReview', 'mint', [

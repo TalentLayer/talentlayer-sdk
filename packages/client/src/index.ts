@@ -17,6 +17,7 @@ import { IEscrow } from './escrow/types';
 import { IService, Service } from './services';
 import { IReview } from './reviews/types';
 import { Review } from './reviews';
+import { Logger } from './logger';
 
 /**
  * Main client for interacting with the TalentLayer protocol.
@@ -33,10 +34,13 @@ export class TalentLayerClient {
   chainId: NetworkEnum | number;
   signatureApiUrl?: string;
   customConfig?: CustomConfig;
+  logger: Logger;
 
   /** @hidden */
   constructor(config: TalentLayerClientConfig) {
-    console.log('SDK: client initialising', config);
+    this.logger = new Logger('TalentLayer SDK', Boolean(config.debug));
+
+    this.logger.info('Client Initialising', config);
     this.platformID = config.platformId;
     this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.chainId));
     this.ipfsClient = new IPFSClient({
@@ -44,7 +48,7 @@ export class TalentLayerClient {
       clientId: config.ipfsConfig.clientId,
       clientSecret: config.ipfsConfig.clientSecret,
     });
-    this.viemClient = new ViemClient(config.chainId, config.walletConfig || {});
+    this.viemClient = new ViemClient(config.chainId, config.walletConfig || {}, this.logger);
     this.chainId = config.chainId;
     this.signatureApiUrl = config?.signatureApiUrl;
 
@@ -53,7 +57,7 @@ export class TalentLayerClient {
       this.customConfig = config?.customConfig;
       this.chainId = config.customConfig.chainConfig.id
       this.graphQlClient = new GraphQLClient(getGraphQLConfig(config.customConfig.chainConfig.id));
-      this.viemClient = new ViemClient(config.customConfig.chainConfig.id, config.walletConfig || {}, this.customConfig);
+      this.viemClient = new ViemClient(config.customConfig.chainConfig.id, config.walletConfig || {}, this.logger, this.customConfig);
     }
   }
 
@@ -73,7 +77,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get erc20(): IERC20 {
-    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId, this.customConfig);
+    return new ERC20(this.ipfsClient, this.viemClient, this.platformID, this.chainId, this.logger, this.customConfig);
   }
 
   /**
@@ -88,6 +92,7 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
+      this.logger,
       this.signatureApiUrl,
     );
   }
@@ -98,7 +103,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get platform(): IPlatform {
-    return new Platform(this.graphQlClient, this.viemClient, this.platformID, this.ipfsClient);
+    return new Platform(this.graphQlClient, this.viemClient, this.platformID, this.ipfsClient, this.logger);
   }
 
   /**
@@ -107,7 +112,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get disputes(): IDispute {
-    return new Disputes(this.viemClient, this.platformID, this.graphQlClient, this.chainId);
+    return new Disputes(this.viemClient, this.platformID, this.graphQlClient, this.chainId, this.logger);
   }
 
   /**
@@ -122,6 +127,7 @@ export class TalentLayerClient {
       this.ipfsClient,
       this.viemClient,
       this.platformID,
+      this.logger,
       this.signatureApiUrl,
     );
   }
@@ -132,7 +138,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get profile(): IProfile {
-    return new Profile(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID);
+    return new Profile(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID, this.logger);
   }
 
   /**
@@ -141,7 +147,7 @@ export class TalentLayerClient {
    */
   // @ts-ignore
   get review(): IReview {
-    return new Review(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID);
+    return new Review(this.graphQlClient, this.ipfsClient, this.viemClient, this.platformID, this.logger);
   }
 
   /**
@@ -156,6 +162,7 @@ export class TalentLayerClient {
       this.viemClient,
       this.platformID,
       this.chainId,
+      this.logger
     );
   }
 }

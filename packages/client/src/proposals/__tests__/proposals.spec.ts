@@ -1,5 +1,6 @@
 
 import { Proposal } from '..';
+import { Logger } from '../../logger';
 import { MockGraphQLClient, MockIPFSClient, MockViemClient } from '../../__mocks__/clientMocks';
 import { testAddress, testAmount, testChainId, testCid, testExpirationDate, testIpfsHash, testOwnerAddress, testPlatformDetails, testPlatformId, testPlatformResponse, testPlatformsByOwnerResponse, testProposalDetails, testProposalId, testProposalResponse, testProposalsByServiceId, testProposalsByUser, testProtocolAndPlatformResponse, testServiceId, testSignature, testUserId } from '../../__mocks__/fixtures';
 // Additional imports...
@@ -9,13 +10,15 @@ describe('Platform', () => {
     let mockGraphQLClient: any;
     let mockIPFSClient: any;
     let mockViemClient: any;
+    let logger: Logger;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
         // mockGraphQLClient = new GraphQLClient(getGraphQLConfig(137))
         mockIPFSClient = new MockIPFSClient();
         mockViemClient = new MockViemClient();
-        proposal = new Proposal(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, 'example.com');
+        logger = new Logger('TalentLayer SDK', true);
+        proposal = new Proposal(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, logger, 'example.com');
     });
 
     describe('getOne', () => {

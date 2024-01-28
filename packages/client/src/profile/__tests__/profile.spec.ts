@@ -1,4 +1,5 @@
 import { Profile } from "..";
+import { Logger } from "../../logger";
 // DO NOT remove this comments - they are needed for local testing
 // import { getGraphQLConfig } from "../../config";
 // import GraphQLClient from "../../graphql";
@@ -12,6 +13,7 @@ describe('Profile', () => {
     let mockViemClient: any;
     let mockIPFSClient: any;
     let profile: Profile;
+    let logger: Logger;
 
     beforeEach(() => {
         mockGraphQLClient = new MockGraphQLClient();
@@ -19,7 +21,8 @@ describe('Profile', () => {
         // mockGraphQLClient = new GraphQLClient(getGraphQLConfig(137))
         mockViemClient = new MockViemClient();
         mockIPFSClient = new MockIPFSClient();
-        profile = new Profile(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId);
+        logger = new Logger('TalentLayer SDK', true);
+        profile = new Profile(mockGraphQLClient, mockIPFSClient, mockViemClient, testPlatformId, logger);
     });
 
     it('constructor initializes correctly', () => {

@@ -5,6 +5,7 @@ jest.mock('axios')
 jest.mock('ipfs-http-client', () => ({
     create: jest.fn().mockImplementation(() => ({
         add: jest.fn().mockResolvedValue({ path: '0xracoon' }), // Mocking the add method of IPFS client
+        pin: { add: jest.fn().mockResolvedValue({ path: '0xRacoon' }) }
     })),
 }));
 
@@ -23,6 +24,7 @@ describe('IPFSClient', () => {
             const data = 'someData';
 
             // Act
+            console.log(ipfsClient)
             const result = await ipfsClient.post(data);
 
             // Assert
