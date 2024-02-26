@@ -1,12 +1,17 @@
 {
   "name": "@talentlayer/client",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "The TalentLayer Client for interacting with TalentLayer Smart Contracts and Graph end-points",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TalentLayer/talentlayer-sdk.git",
+    "directory": "packages/client"
+  },
   "scripts": {
     "lint": "eslint .",
     "prepare": "npm run build",
