@@ -96,13 +96,16 @@ export class ViemClient {
   ): Promise<Hash> {
     // @ts-ignore
     const [address] = await this.client.getAddresses();
-
+    console.log('racoon address', address)
     if (!address) {
       throw Error('Wallet Client not initialised properly');
     }
 
     const chainConfig = this.chainConfig;
     const contract = chainConfig.contracts[contractName];
+    console.log('racoon contract', contract)
+    console.log('racoon this.client.getAddresses()', address)
+    console.log('racoon args', args)
 
     if (!contract) {
       throw Error(`Invalid contract name passed. ${contractName}`);

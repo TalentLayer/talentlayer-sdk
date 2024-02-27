@@ -39,7 +39,7 @@ export class TalentLayerClient {
 
   /** @hidden */
   constructor(config: TalentLayerClientConfig) {
-    console.log('SDK: client initialising', config);
+    console.log('SDK: client initialising with special Racoon versionzzzz', config);
     this.platformID = config.platformId;
 
     this.ipfsClient = new IPFSClient({
