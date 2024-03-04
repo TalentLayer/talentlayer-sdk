@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.13
+
+### Patch Changes
+
+- add platform mint function
+
 ## 0.1.12
 
 ### Patch Changes
