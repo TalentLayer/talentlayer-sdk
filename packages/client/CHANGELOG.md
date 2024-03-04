@@ -1,5 +1,11 @@
 # @talentlayer/client
 
+## 0.1.14
+
+### Patch Changes
+
+- add new mint function typing
+
 ## 0.1.13
 
 ### Patch Changes
