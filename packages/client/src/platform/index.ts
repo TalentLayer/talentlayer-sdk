@@ -110,6 +110,22 @@ export class Platform {
   }
 
   /**
+   * Mints a platform Id.
+   *
+   * @param {string} platformName - The name of the platform.
+   * @returns {Promise<Hash>} A promise that resolves to the transaction hash of the create operation.
+   */
+  public async mint(platformName: string): Promise<Hash> {
+    const tx = await this.wallet.writeContract(
+        'talentLayerPlatformId',
+        'mint',
+        [platformName],
+    );
+
+    return tx;
+  }
+
+  /**
  * Sets the fee timeout for the platform.
  * 
  * @param {number} timeout - The timeout value in seconds.
