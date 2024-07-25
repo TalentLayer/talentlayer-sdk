@@ -31,8 +31,8 @@ export class ViemClient {
   constructor(chainId: NetworkEnum, config: ViemClientConfig, logger: Logger, customConfig?: CustomConfig) {
     logger.info('Wallet Client initialising with viem')
     // dev config chain Id is prioritized. 
-    // If chainId is not provided, set it to mumbai
-    this.chainId = customConfig?.chainConfig.id || chainId || config.chainId || NetworkEnum.MUMBAI;
+    // If chainId is not provided, set it to amoy
+    this.chainId = customConfig?.chainConfig.id || chainId || config.chainId || NetworkEnum.AMOY;
     this.customConfig = customConfig;
     this.logger = logger;
 

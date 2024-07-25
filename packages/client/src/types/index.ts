@@ -10,8 +10,10 @@ export type IToken = {
 
 export enum NetworkEnum {
   MUMBAI = 80001,
+  AMOY = 80002,
   IEXEC = 134,
   POLYGON = 137,
+  FUJI = 43113,
   LOCAL = 1,
 }
 

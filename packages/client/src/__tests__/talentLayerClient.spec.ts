@@ -69,7 +69,7 @@ describe('TalentLayerClient', () => {
   describe('getChainConfig', () => {
     it('should return the chain config based on the network id passed', () => {
       // Arrange
-      const networkId = NetworkEnum.MUMBAI;
+      const networkId = NetworkEnum.AMOY;
 
       // Act
       const config = client.getChainConfig(networkId);
@@ -195,7 +195,7 @@ describe('TalentLayerClient:dev', () => {
   describe('getChainConfig', () => {
     it('should return the chain config irrespective of the network id passed', () => {
       // Arrange
-      const networkId = NetworkEnum.MUMBAI;
+      const networkId = NetworkEnum.AMOY;
 
       // Act
       const config = client.getChainConfig(networkId);
