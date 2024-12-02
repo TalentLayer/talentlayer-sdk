@@ -1,0 +1,10 @@
+{
+    "extends": "tsconfig/base.json",
+    "include": ["."],
+    "exclude": ["dist", "build", "node_modules"],
+    "compilerOptions": {
+        "jsx": "react",
+        "outDir": "dist",
+        "lib": [ "ES2023", "DOM"]
+    }
+}
